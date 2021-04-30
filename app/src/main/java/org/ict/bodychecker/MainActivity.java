@@ -8,14 +8,18 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     Context context = this;
     View drawerView;
     ListView listView;
+    TextView hitext;
 
 
     @Override
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.menubar);
+        hitext = (TextView) findViewById(R.id.hitext);
 
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -44,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                item.setChecked(true);
                 drawerLayout.closeDrawers();
 
                 int id = item.getItemId();
@@ -53,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
                 if (id == R.id.myProfile) {
                     Toast.makeText(getApplicationContext(), "프로필", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.myGoal) {
-                    Toast.makeText(getApplicationContext(), "목표 리스트", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), GoalActivity.class);
+
+                    startActivity(intent);
                 } else if (id == R.id.notice) {
                     Toast.makeText(getApplicationContext(), "공지사항", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.FAQ) {
@@ -81,17 +88,17 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-            drawerLayout.openDrawer(drawerView);
+//            drawerLayout.openDrawer(drawerView);
         }
 
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
-            drawerLayout.openDrawer(drawerView);
+//            drawerLayout.openDrawer(drawerView);
         }
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
-
+            hitext.setVisibility(View.VISIBLE);
         }
 
         @Override
