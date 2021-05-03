@@ -1,20 +1,17 @@
 package org.ict.bodychecker;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,48 +19,35 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FinishFragment extends Fragment {
+public class ExerciseActivity extends AppCompatActivity {
 
+    private View dialog;
     private RecyclerAdapter adapter;
-    private RecyclerView recyclerView2;
-    private Activity GoalActivity;
-    View dialog;
-    EditText edtTitle, edtContent;
-    DatePicker dPicker;
+    private RecyclerView recyclerView3;
 
-    @Nullable
+
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_finish, container, false);
-
-        recyclerView2 = (RecyclerView) rootview.findViewById(R.id.recyclerView2);
-
-        recyclerView2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_exercise);
 
         init();
 
         getData();
-
-        return rootview;
     }
+
+
 
     private void init() {
+        recyclerView3 = findViewById(R.id.recyclerView3);
 
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView2.setLayoutManager(linearLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView3.setLayoutManager(linearLayoutManager);
 
         adapter = new RecyclerAdapter();
-        recyclerView2.setAdapter(adapter);
+        recyclerView3.setAdapter(adapter);
     }
-
-
-
 
     private void getData() {
         List<String> listTitle = Arrays.asList("1", "2", "3", "1", "2", "3", "1", "2", "3");
@@ -72,8 +56,9 @@ public class FinishFragment extends Fragment {
 
         for (int i = 0; i < listTitle.size(); i++) {
 
-            Data2 data = new Data2();
-            data.setFinishTitle(listTitle.get(i));
+            Data3 data = new Data3();
+            data.setExerciseTitle(listTitle.get(i));
+            data.setExerciseKcal(listContent.get(i));
 
             adapter.addItem(data);
         }
@@ -81,23 +66,16 @@ public class FinishFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
 
-        if (context instanceof Activity) {
-            GoalActivity = (Activity) context;
-        }
-    }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
-        private ArrayList<Data2> listData = new ArrayList<Data2>();
+        private ArrayList<Data3> listData = new ArrayList<Data3>();
 
         @NonNull
         @Override
         public RecyclerAdapter.ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.finish_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.exercise_item, parent, false);
             return new RecyclerAdapter.ItemViewHolder(view);
         }
 
@@ -111,42 +89,42 @@ public class FinishFragment extends Fragment {
             return listData.size();
         }
 
-        void addItem(Data2 data) {
+        void addItem(Data3 data) {
             listData.add(data);
         }
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView finishTitle;
+            private TextView exerciseTitle, exerciseKcal;
 
             ItemViewHolder(View itemView) {
                 super(itemView);
 
-                finishTitle = itemView.findViewById(R.id.finishTitle);
+                exerciseTitle = itemView.findViewById(R.id.exerciseTitle);
+                exerciseKcal = itemView.findViewById(R.id.exerciseKcal);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        dialog = (View) View.inflate(GoalActivity, R.layout.goal_doing_dialog, null);
-
-                        edtTitle = (EditText) dialog.findViewById(R.id.edtGoalTitle);
-                        edtContent = (EditText) dialog.findViewById(R.id.edtGoalContent);
-                        dPicker = (DatePicker) dialog.findViewById(R.id.goalDatePicker);
-
-                        edtTitle.setEnabled(false);
-                        edtContent.setEnabled(false);
-                        dPicker.setEnabled(false);
+//                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
+                        dialog = (View) View.inflate(ExerciseActivity.this, R.layout.goal_doing_dialog, null);
 
 
-//                        edtContent.setText();
 
-                        AlertDialog.Builder dlg = new AlertDialog.Builder(GoalActivity);
+
+
+                        AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
 
                         dlg.setTitle("목표 상세");
 
                         dlg.setView(dialog);
 
-                        dlg.setPositiveButton("확인", null);
+                        dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
 
                         dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
@@ -160,8 +138,9 @@ public class FinishFragment extends Fragment {
                 });
             }
 
-            void onBind(Data2 data) {
-                finishTitle.setText(data.getFinishTitle());
+            void onBind(Data3 data) {
+                exerciseTitle.setText(data.getExerciseTitle());
+                exerciseKcal.setText(data.getExerciseKcal());
             }
         }
     }

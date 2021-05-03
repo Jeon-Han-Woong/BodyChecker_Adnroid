@@ -11,11 +11,34 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textSize="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="현재 소모 칼로리"></TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="50dp"
+                android:text="639 kcal"
+                android:id="@+id/consumeKcal"></TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="500dp"
             android:layout_weight="5">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/recyclerView3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#636163"></androidx.recyclerview.widget.RecyclerView>
@@ -24,22 +47,25 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="50dp"
             android:layout_margin="20dp"
             android:layout_weight="1"
             android:background="@drawable/border"
             android:gravity="center"
-            android:id="@+id/newGoalBtn">
+            android:id="@+id/newExerciseBtn">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="새로운 목표 추가"
-                android:textSize="40dp"></TextView>
+                android:text="새로운 운동 추가"
+                android:textSize="20dp"></TextView>
         </LinearLayout>
 
 
     </LinearLayout>
 
 
+
+
 </ScrollView>
+
