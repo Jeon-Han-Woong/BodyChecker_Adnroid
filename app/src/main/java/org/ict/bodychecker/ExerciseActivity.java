@@ -7,7 +7,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,17 +31,91 @@ public class ExerciseActivity extends AppCompatActivity {
     private View dialog;
     private RecyclerAdapter adapter;
     private RecyclerView recyclerView3;
+    private Spinner spinner_exer;
 
+    String [] exeritems = {"걷기", "달리기", "계단 오르기", "스쿼트", "윗몸 일으키기", "훌라후프",};
+
+    float [] exerkcal = {0.0067f, 0.0123f, 0.0123f, 0.0123f, 0.014f, 0.007f};
+
+    float selectitem;
+
+    Button accountkcal;
+
+    int temp_min, temp_kg;
+    int temp_result;
+
+    EditText edtminute, edtkg;
+    TextView resultkcal;
+    LinearLayout newExerciseBtn;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_exer);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        newExerciseBtn = (LinearLayout) findViewById(R.id.newExerciseBtn);
+
+        newExerciseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
+                dialog = (View) View.inflate(ExerciseActivity.this, R.layout.exercise_dialog, null);
+
+                AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
+                spinner_exer = (Spinner) dialog.findViewById(R.id.exer_spinner);
+                edtkg = (EditText) dialog.findViewById(R.id.edtkg);
+                edtminute = (EditText) dialog.findViewById(R.id.edtminute);
+                resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
+                accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
+
+                spinner_exer.setAdapter(adapter);
+
+                spinner_exer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        selectitem = exerkcal[i];
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+
+                accountkcal.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        temp_kg = Integer.parseInt(edtkg.getText().toString());
+                        temp_min = Integer.parseInt(edtminute.getText().toString());
+                        temp_result = Math.round((float) temp_kg * (float) temp_min * selectitem);
+                        resultkcal.setText(temp_result + "kcal");
+                    }
+                });
+
+                dlg.setTitle("운동 기록 변경");
+
+                dlg.setView(dialog);
+
+                dlg.setPositiveButton("추가", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                dlg.setNegativeButton("취소", null);
+
+                dlg.show();
+            }
+        });
+
 
         init();
 
@@ -115,24 +194,52 @@ public class ExerciseActivity extends AppCompatActivity {
 //                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
                         dialog = (View) View.inflate(ExerciseActivity.this, R.layout.exercise_dialog, null);
 
-
-
-
-
                         AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
+                        spinner_exer = (Spinner) dialog.findViewById(R.id.exer_spinner);
+                        edtkg = (EditText) dialog.findViewById(R.id.edtkg);
+                        edtminute = (EditText) dialog.findViewById(R.id.edtminute);
+                        resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
+                        accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
 
-                        dlg.setTitle("목표 상세");
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
+
+                        spinner_exer.setAdapter(adapter);
+
+                        spinner_exer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                selectitem = exerkcal[i];
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+
+
+                        accountkcal.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                temp_kg = Integer.parseInt(edtkg.getText().toString());
+                                temp_min = Integer.parseInt(edtminute.getText().toString());
+                                temp_result = Math.round((float) temp_kg * (float) temp_min * selectitem);
+                                resultkcal.setText(temp_result + "kcal");
+                            }
+                        });
+
+                        dlg.setTitle("운동 기록 변경");
 
                         dlg.setView(dialog);
 
-                        dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        dlg.setPositiveButton("변경", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
                             }
                         });
 
-                        dlg.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                        dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 return;
