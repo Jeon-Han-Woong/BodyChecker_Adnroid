@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:background="#8343F4"
                 android:elevation="1dp"
-                android:id="@+id/toolbar" >
+                android:id="@+id/toolbar_goal" >
 
             </androidx.appcompat.widget.Toolbar>
 
