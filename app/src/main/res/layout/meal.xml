@@ -32,6 +32,7 @@
 
 <!--    아침-->
     <LinearLayout
+        android:id="@+id/bfll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -70,6 +71,7 @@
 
 <!--    점심-->
     <LinearLayout
+        android:id="@+id/lcll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -108,6 +110,7 @@
 
 <!--    저녁-->
     <LinearLayout
+        android:id="@+id/dnll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -146,6 +149,7 @@
 
 <!--    간식-->
     <LinearLayout
+        android:id="@+id/dsll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
