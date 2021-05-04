@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/noticeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="공지사항 제목"
+        android:textSize="40dp" />
+
+    <TextView
+        android:id="@+id/noticeWriteDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="작성일자"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/noticeContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n"
+        android:textSize="20dp"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>

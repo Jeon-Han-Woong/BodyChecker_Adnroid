@@ -1,6 +1,9 @@
 package org.ict.bodychecker;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -28,5 +31,16 @@ public class NoticeActivity extends AppCompatActivity {
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, nlist);
         noticeList.setAdapter(adapter);
+
+        noticeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), NoticeDetailActivity.class);
+                intent.putExtra("title", "공지사항 제목"+i);
+                intent.putExtra("writedate", "2021.05.04");
+                intent.putExtra("content", "공지사항 본문");
+                startActivity(intent);
+            }
+        });
     }
 }

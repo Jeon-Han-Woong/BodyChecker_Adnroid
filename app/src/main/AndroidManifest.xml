@@ -31,6 +31,7 @@
         <activity android:name=".ProfileActivity" android:label="프로필" />
         <activity android:name=".MealActivity" android:label="식단" />
         <activity android:name=".NoticeActivity" android:label="공지사항" />
+        <activity android:name=".NoticeDetailActivity" android:label="공지사항 상세" />
         <activity android:name=".FAQActivity" android:label="FAQ" />
         <activity android:name=".ModifyInfoActivity" android:label="내정보 수정" />
     </application>
