@@ -36,16 +36,16 @@ public class ExerciseActivity extends AppCompatActivity {
     String [] exeritems = {"걷기", "달리기", "계단 오르기", "스쿼트", "윗몸 일으키기", "훌라후프",};
 
     float [] exerkcal = {0.0067f, 0.0123f, 0.0123f, 0.0123f, 0.014f, 0.007f};
-
+    String selectexer;
     float selectitem;
 
     Button accountkcal;
 
     int temp_min, temp_kg;
-    int temp_result;
+    int temp_result, temp_result_kcal;
 
     EditText edtminute, edtkg;
-    TextView resultkcal;
+    TextView resultkcal, consumeKcal;
     LinearLayout newExerciseBtn;
 
 
@@ -53,11 +53,24 @@ public class ExerciseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
+
+        init();
+        getData();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_exer);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        consumeKcal = (TextView) findViewById(R.id.consumeKcal);
+
         newExerciseBtn = (LinearLayout) findViewById(R.id.newExerciseBtn);
+
+        recyclerView3 = findViewById(R.id.recyclerView3);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView3.setLayoutManager(linearLayoutManager);
+
+        adapter = new RecyclerAdapter();
+        recyclerView3.setAdapter(adapter);
 
         newExerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,14 +85,18 @@ public class ExerciseActivity extends AppCompatActivity {
                 resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
                 accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
+                ArrayAdapter<String> adapter1 = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
 
-                spinner_exer.setAdapter(adapter);
+                Data3 data = new Data3();
+
+
+                spinner_exer.setAdapter(adapter1);
 
                 spinner_exer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         selectitem = exerkcal[i];
+                        selectexer = exeritems[i];
                     }
 
                     @Override
@@ -99,14 +116,23 @@ public class ExerciseActivity extends AppCompatActivity {
                     }
                 });
 
-                dlg.setTitle("운동 기록 변경");
+                dlg.setTitle("운동 기록 추가");
 
                 dlg.setView(dialog);
 
                 dlg.setPositiveButton("추가", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        data.setExerciseTitle(selectexer);
+                        data.setExerciseKcal(temp_result + "kcal");
 
+                        adapter.addItem(data);
+
+                        temp_result_kcal += temp_result;
+
+                        consumeKcal.setText(temp_result_kcal + "kcal");
+
+                        adapter.notifyDataSetChanged();
                     }
                 });
 
@@ -115,11 +141,6 @@ public class ExerciseActivity extends AppCompatActivity {
                 dlg.show();
             }
         });
-
-
-        init();
-
-        getData();
     }
 
 
@@ -135,9 +156,9 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private void getData() {
-        List<String> listTitle = Arrays.asList("1", "2", "3", "1", "2", "3", "1", "2", "3");
+        List<String> listTitle = new ArrayList<>();
 
-        List<String> listContent = Arrays.asList("1a", "2b", "3c", "1a", "2b", "3c", "1a", "2b", "3c");
+        List<String> listContent = new ArrayList<>();
 
         for (int i = 0; i < listTitle.size(); i++) {
 
