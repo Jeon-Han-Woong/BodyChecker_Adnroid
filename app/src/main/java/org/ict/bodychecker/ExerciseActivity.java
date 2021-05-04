@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +33,10 @@ public class ExerciseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_exer);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         init();
 
@@ -107,7 +113,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 //                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
-                        dialog = (View) View.inflate(ExerciseActivity.this, R.layout.goal_doing_dialog, null);
+                        dialog = (View) View.inflate(ExerciseActivity.this, R.layout.exercise_dialog, null);
 
 
 
@@ -126,7 +132,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             }
                         });
 
-                        dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+                        dlg.setNegativeButton("취소", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 return;
@@ -143,5 +149,15 @@ public class ExerciseActivity extends AppCompatActivity {
                 exerciseKcal.setText(data.getExerciseKcal());
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
