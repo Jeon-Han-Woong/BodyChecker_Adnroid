@@ -24,12 +24,15 @@ public class GoalActivity extends AppCompatActivity {
         fragmentDoing = new DoingFragment();
         fragmentFinish = new FinishFragment();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_goal);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportFragmentManager().beginTransaction().add(R.id.frame, fragmentDoing).commit();
 
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+
+
 
         tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -56,5 +59,15 @@ public class GoalActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
