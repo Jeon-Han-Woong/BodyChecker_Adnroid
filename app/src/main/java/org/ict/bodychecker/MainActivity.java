@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     View drawerView;
     ListView listView;
     TextView hitext;
-    LinearLayout goExerciseBtn;
+    LinearLayout goExerciseBtn, goMealBtn;
 
 
     @Override
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         goExerciseBtn = (LinearLayout) findViewById(R.id.goExerciseBtn);
+        goMealBtn = (LinearLayout) findViewById(R.id.goMealBtn);
 
         goExerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,7 +49,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        goMealBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MealActivity.class);
+                startActivity(intent);
+            }
+        });
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
@@ -69,15 +79,18 @@ public class MainActivity extends AppCompatActivity {
                 String title = item.getTitle().toString();
 
                 if (id == R.id.myProfile) {
-                    Toast.makeText(getApplicationContext(), "프로필", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    startActivity(intent);
                 } else if (id == R.id.myGoal) {
                     Intent intent = new Intent(getApplicationContext(), GoalActivity.class);
 
                     startActivity(intent);
                 } else if (id == R.id.notice) {
-                    Toast.makeText(getApplicationContext(), "공지사항", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), NoticeActivity.class);
+                    startActivity(intent);
                 } else if (id == R.id.FAQ) {
-                    Toast.makeText(getApplicationContext(), "FAQ", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), FAQActivity.class);
+                    startActivity(intent);
                 }
                 return false;
             }
