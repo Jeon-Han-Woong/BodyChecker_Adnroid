@@ -23,8 +23,9 @@
             android:includeFontPadding="false"
             android:text="운동 이름"
             android:textSize="20dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             android:textStyle="bold"></TextView>
 
         <TextView
