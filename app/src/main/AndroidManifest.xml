@@ -24,10 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GoalActivity"></activity>
-        <activity android:name=".ExerciseActivity"></activity>
-
-
+        <activity android:name=".GoalActivity" android:label="목표 리스트"></activity>
+        <activity android:name=".ExerciseActivity" android:label="운동"></activity>
         <activity android:name=".ProfileActivity" android:label="프로필" />
         <activity android:name=".MealActivity" android:label="식단" />
         <activity android:name=".MealSelectActivity" android:label="식단 음식추가" />

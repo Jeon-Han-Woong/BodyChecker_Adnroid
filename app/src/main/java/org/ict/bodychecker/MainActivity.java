@@ -9,12 +9,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +32,11 @@ public class MainActivity extends AppCompatActivity {
     View drawerView;
     ListView listView;
     TextView hitext;
+    ProgressBar walkProgress, waterProgress;
     LinearLayout goExerciseBtn, goMealBtn;
+    TextView drinkWater, nowWater;
+    Button waterPlus, waterMinus;
+    int temp_water;
 
 
     @Override
@@ -39,6 +46,14 @@ public class MainActivity extends AppCompatActivity {
 
         goExerciseBtn = (LinearLayout) findViewById(R.id.goExerciseBtn);
         goMealBtn = (LinearLayout) findViewById(R.id.goMealBtn);
+        waterPlus = (Button) findViewById(R.id.waterPlus);
+        waterMinus = (Button) findViewById(R.id.waterMinus);
+        drinkWater = (TextView) findViewById(R.id.drinkWater);
+        nowWater = (TextView) findViewById(R.id.nowWater);
+        waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
+
+        nowWater.setTextColor(Color.RED);
+        temp_water = 0;
 
         goExerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +69,46 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        waterPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                temp_water += 1;
+                waterProgress.setProgress(temp_water * 10);
+                if (temp_water < 5) {
+                    nowWater.setTextColor(Color.RED);
+                } else if (temp_water >= 5 && temp_water < 10) {
+                    nowWater.setTextColor(Color.parseColor("#FF5E00"));
+                } else if (temp_water >= 10) {
+                    nowWater.setTextColor(Color.parseColor("#189186"));
+                }
+
+                nowWater.setText((temp_water * 200) + " ml");
+                drinkWater.setText(temp_water + "");
+            }
+        });
+
+        waterMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (temp_water > 0) {
+                    temp_water -= 1;
+                    waterProgress.setProgress(temp_water * 10);
+                    if (temp_water < 5) {
+                        nowWater.setTextColor(Color.RED);
+                    } else if (temp_water >= 5 && temp_water < 10) {
+                        nowWater.setTextColor(Color.parseColor("#FF5E00"));
+                    } else if (temp_water >= 10) {
+                        nowWater.setTextColor(Color.parseColor("#189186"));
+                    }
+                    nowWater.setText((temp_water * 200) + " ml");
+                } else {
+                    Toast.makeText(getApplicationContext(), "물 섭취량은 0보다 낮을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+                drinkWater.setText(temp_water + "");
             }
         });
 
