@@ -15,6 +15,10 @@ public class SplashActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
         finish();
     }
+
+
 }

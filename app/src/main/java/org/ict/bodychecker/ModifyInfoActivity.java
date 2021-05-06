@@ -1,6 +1,7 @@
 package org.ict.bodychecker;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -9,18 +10,23 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class ModifyInfoActivity extends AppCompatActivity {
 
     RadioGroup gendarRG;
     EditText edtName, edtHeight, edtWeight;
     DatePicker birthDP;
-    Button modifyBtn;
+    Button modifyBtn, modCancelBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.modify_info);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_exer);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         gendarRG = (RadioGroup) findViewById(R.id.gendarRG);
         edtName = (EditText) findViewById(R.id.edtName);
@@ -28,6 +34,7 @@ public class ModifyInfoActivity extends AppCompatActivity {
         edtWeight = (EditText) findViewById(R.id.edtWeight);
         birthDP = (DatePicker) findViewById(R.id.birthDP);
         modifyBtn = (Button) findViewById(R.id.modifyBtn);
+        modCancelBtn = (Button) findViewById(R.id.modCancelBtn);
 
         modifyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,5 +49,22 @@ public class ModifyInfoActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        modCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

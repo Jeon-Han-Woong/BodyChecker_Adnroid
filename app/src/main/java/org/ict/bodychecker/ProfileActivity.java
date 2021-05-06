@@ -2,10 +2,12 @@ package org.ict.bodychecker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -18,6 +20,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_exer);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         modifyInfoBtn = (Button) findViewById(R.id.modifyInfoBtn);
 
         modifyInfoBtn.setOnClickListener(new View.OnClickListener() {
@@ -27,5 +33,15 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
