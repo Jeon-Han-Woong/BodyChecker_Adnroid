@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical">
@@ -8,7 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,7 +70,7 @@
                 android:layout_marginLeft="10dp"
                 android:progress="20"
                 android:max="100"
-                android:id="@+id/warkProgress"
+                android:id="@+id/walkProgress"
                 style="?android:progressBarStyleHorizontal"></ProgressBar>
 
 
@@ -291,19 +292,40 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1잔당 200ml 기준"></TextView>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"></View>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="현재 약 : ">
+                </TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="0ml"
+                    android:id="@+id/nowWater">
+                </TextView>
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
 
                 <ProgressBar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
-                    android:progress="20"
                     android:max="100"
                     android:id="@+id/waterProgress"
                     style="?android:progressBarStyleHorizontal"></ProgressBar>

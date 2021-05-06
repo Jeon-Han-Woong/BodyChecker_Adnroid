@@ -35,16 +35,17 @@ public class ExerciseActivity extends AppCompatActivity {
 
     String [] exeritems = {"걷기", "달리기", "계단 오르기", "스쿼트", "윗몸 일으키기", "훌라후프",};
 
-    float [] exerkcal = {0.0067f, 0.0123f, 0.0123f, 0.0123f, 0.014f, 0.007f};
+    float [] exerkcal = {0.067f, 0.123f, 0.123f, 0.123f, 0.14f, 0.07f};
     String selectexer;
     float selectitem;
 
     Button accountkcal;
 
-    int temp_min, temp_kg;
+    int temp_min;
+    float temp_kg = 87.4f;
     int temp_result, temp_result_kcal;
 
-    EditText edtminute, edtkg;
+    EditText edtminute;
     TextView resultkcal, consumeKcal;
     LinearLayout newExerciseBtn;
 
@@ -64,13 +65,13 @@ public class ExerciseActivity extends AppCompatActivity {
 
         newExerciseBtn = (LinearLayout) findViewById(R.id.newExerciseBtn);
 
-        recyclerView3 = findViewById(R.id.recyclerView3);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView3.setLayoutManager(linearLayoutManager);
-
-        adapter = new RecyclerAdapter();
-        recyclerView3.setAdapter(adapter);
+//        recyclerView3 = findViewById(R.id.recyclerView3);
+//
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+//        recyclerView3.setLayoutManager(linearLayoutManager);
+//
+//        adapter = new RecyclerAdapter();
+//        recyclerView3.setAdapter(adapter);
 
         newExerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +81,6 @@ public class ExerciseActivity extends AppCompatActivity {
 
                 AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
                 spinner_exer = (Spinner) dialog.findViewById(R.id.exer_spinner);
-                edtkg = (EditText) dialog.findViewById(R.id.edtkg);
                 edtminute = (EditText) dialog.findViewById(R.id.edtminute);
                 resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
                 accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
@@ -109,9 +109,8 @@ public class ExerciseActivity extends AppCompatActivity {
                 accountkcal.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        temp_kg = Integer.parseInt(edtkg.getText().toString());
                         temp_min = Integer.parseInt(edtminute.getText().toString());
-                        temp_result = Math.round((float) temp_kg * (float) temp_min * selectitem);
+                        temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
                         resultkcal.setText(temp_result + "kcal");
                     }
                 });
@@ -217,7 +216,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
                         AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
                         spinner_exer = (Spinner) dialog.findViewById(R.id.exer_spinner);
-                        edtkg = (EditText) dialog.findViewById(R.id.edtkg);
+
                         edtminute = (EditText) dialog.findViewById(R.id.edtminute);
                         resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
                         accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
@@ -230,6 +229,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 selectitem = exerkcal[i];
+                                selectexer = exeritems[i];
                             }
 
                             @Override
@@ -238,13 +238,14 @@ public class ExerciseActivity extends AppCompatActivity {
                             }
                         });
 
+//                        edtminute.setText(exerciseTitle);
+
 
                         accountkcal.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                temp_kg = Integer.parseInt(edtkg.getText().toString());
                                 temp_min = Integer.parseInt(edtminute.getText().toString());
-                                temp_result = Math.round((float) temp_kg * (float) temp_min * selectitem);
+                                temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
                                 resultkcal.setText(temp_result + "kcal");
                             }
                         });

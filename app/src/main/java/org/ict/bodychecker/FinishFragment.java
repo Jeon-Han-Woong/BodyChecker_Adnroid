@@ -137,6 +137,8 @@ public class FinishFragment extends Fragment {
                         edtContent.setEnabled(false);
                         dPicker.setEnabled(false);
 
+                        edtTitle.setText(finishTitle.getText().toString());
+
 
 //                        edtContent.setText();
 
