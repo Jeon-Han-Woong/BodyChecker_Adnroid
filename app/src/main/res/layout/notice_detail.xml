@@ -3,29 +3,60 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/noticeTitle"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="공지사항 제목"
-        android:textSize="40dp" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/noticeWriteDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="작성일자"
-        android:textSize="15dp" />
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <TextView
-        android:id="@+id/noticeContent"
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#8343F4"
+                android:elevation="1dp"
+                android:id="@+id/toolbar_exer">
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n"
-        android:textSize="20dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+
+
+        <TextView
+            android:id="@+id/noticeTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="공지사항 제목"
+            android:textSize="40dp" />
+
+        <TextView
+            android:id="@+id/noticeWriteDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="작성일자"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/noticeContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n공지사항 내용\n"
+            android:textSize="20dp"
+            android:layout_marginTop="20dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>
