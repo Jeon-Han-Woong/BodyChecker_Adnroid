@@ -45,7 +45,7 @@ public class DoingFragment extends Fragment {
     private int dYear = 1, dMonth = 1, dDay = 1;
 
     private long d, t, r;
-
+    boolean tem;
     private int resultNumber = 0;
 
     @Nullable
@@ -59,6 +59,22 @@ public class DoingFragment extends Fragment {
         getData();
         newGoalBtn = (LinearLayout) rootview.findViewById(R.id.newGoalBtn);
 
+        Calendar calendar = Calendar.getInstance();
+        tYear = calendar.get(Calendar.YEAR);
+        tMonth = calendar.get(Calendar.MONTH);
+        tDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        Calendar dCalendar = Calendar.getInstance();
+        dCalendar.set(dYear, dMonth, dDay);
+
+        t = calendar.getTimeInMillis();
+        d = dCalendar.getTimeInMillis();
+        r = (d-t) / (24*60*60*1000);
+
+        tem = false;
+
+        resultNumber = (int) r + 1;
+
         newGoalBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -68,19 +84,6 @@ public class DoingFragment extends Fragment {
 
                 Data data = new Data();
 
-                Calendar calendar = Calendar.getInstance();
-                tYear = calendar.get(Calendar.YEAR);
-                tMonth = calendar.get(Calendar.MONTH);
-                tDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-                Calendar dCalendar = Calendar.getInstance();
-                dCalendar.set(dYear, dMonth, dDay);
-
-                t = calendar.getTimeInMillis();
-                d = dCalendar.getTimeInMillis();
-                r = (d-t) / (24*60*60*1000);
-
-                resultNumber = (int) r + 1;
 
                 edtTitle = (EditText) dialog.findViewById(R.id.edtGoalTitle);
                 edtContent = (EditText) dialog.findViewById(R.id.edtGoalContent);
@@ -93,6 +96,7 @@ public class DoingFragment extends Fragment {
                 dPicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
                     @Override
                     public void onDateChanged(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                        tem = true;
                         dYear = year;
                         dMonth = monthOfYear;
                         dDay = dayOfMonth;
@@ -114,15 +118,26 @@ public class DoingFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         data.setDoingTitle(edtTitle.getText().toString());
-                        if (resultNumber >= 0) {
-                            data.setDoingDday(String.format("D-%d",resultNumber));
+                        data.setDoingDday("D day");
+                        if (tem == true) {
+                            if (resultNumber > 0) {
+                                data.setDoingDday(String.format("D-%d",resultNumber));
+                            } else if (resultNumber == 0) {
+                                data.setDoingDday("D day");
+                            } else {
+                                int absR= Math.abs(resultNumber);
+                                data.setDoingDday(String.format("D+%d",absR));
+                                }
                         } else {
-                            int absR= Math.abs(resultNumber);
-                            data.setDoingDday(String.format("D+%d",absR));
+                            data.setDoingDday("D day");
                         }
+                        Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
+
                         adapter.addItem(data);
 
                         adapter.notifyDataSetChanged();
+
+                        tem = false;
 
                     }
                 });
@@ -211,10 +226,13 @@ public class DoingFragment extends Fragment {
             ItemViewHolder(View itemView) {
                 super(itemView);
 
+                Data data = new Data();
+
                 doingTitle = itemView.findViewById(R.id.doingTitle);
                 doingDday = itemView.findViewById(R.id.doingDday);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onClick(View view) {
 //                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
@@ -230,12 +248,49 @@ public class DoingFragment extends Fragment {
 
                         dlg.setTitle("목표 상세");
 
+                        dPicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+                            @Override
+                            public void onDateChanged(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                                tem = true;
+                                dYear = year;
+                                dMonth = monthOfYear;
+                                dDay = dayOfMonth;
+                                final Calendar dCalendar = Calendar.getInstance();
+                                dCalendar.set(dYear, dMonth, dDay);
+
+                                d = dCalendar.getTimeInMillis();
+                                r = (d-t) / (24 * 60 * 60 * 1000);
+
+                                resultNumber = (int) r;
+                            }
+                        });
+
                         dlg.setView(dialog);
 
                         dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                doingTitle.setText(edtTitle.getText().toString());
+                                data.setDoingTitle(edtTitle.getText().toString());
+                                if (tem == true) {
+                                    if (resultNumber > 0) {
+                                        data.setDoingDday(String.format("D-%d",resultNumber));
+                                    } else if (resultNumber == 0) {
+                                        data.setDoingDday("D day");
+                                    } else {
+                                        int absR= Math.abs(resultNumber);
+                                        data.setDoingDday(String.format("D+%d",absR));
+                                    }
+                                } else {
+                                    data.setDoingDday("D day");
+                                }
+                                Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
+
+                                listData.set(getAdapterPosition(), data);
+
+
+                                adapter.notifyDataSetChanged();
+
+                                tem = false;
                             }
                         });
 

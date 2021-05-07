@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -109,11 +110,17 @@ public class ExerciseActivity extends AppCompatActivity {
                 accountkcal.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        temp_min = Integer.parseInt(edtminute.getText().toString());
-                        temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
-                        resultkcal.setText(temp_result + "kcal");
+                        try {
+
+                            temp_min = Integer.parseInt(edtminute.getText().toString());
+                            temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
+                            resultkcal.setText(temp_result + "kcal");
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "시간을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
+
 
                 dlg.setTitle("운동 기록 추가");
 
@@ -204,7 +211,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
             ItemViewHolder(View itemView) {
                 super(itemView);
-
+                Data3 data = new Data3();
                 exerciseTitle = itemView.findViewById(R.id.exerciseTitle);
                 exerciseKcal = itemView.findViewById(R.id.exerciseKcal);
 
@@ -221,9 +228,9 @@ public class ExerciseActivity extends AppCompatActivity {
                         resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
                         accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
+                        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
 
-                        spinner_exer.setAdapter(adapter);
+                        spinner_exer.setAdapter(adapter1);
 
                         spinner_exer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -238,7 +245,18 @@ public class ExerciseActivity extends AppCompatActivity {
                             }
                         });
 
-//                        edtminute.setText(exerciseTitle);
+
+                        // 운동 내역을 변경했을 경우 현재 소모 칼로리를 함께 변경. start
+                        Data3 old_data = listData.get(getAdapterPosition());
+
+                        String old_kcal = old_data.getExerciseKcal();
+
+                        old_kcal = old_kcal.replace("kcal", "");
+
+                        int int_kcal = Integer.parseInt(old_kcal);
+
+//                        Toast.makeText(getApplicationContext(), int_kcal+ "", Toast.LENGTH_SHORT).show();
+                        // end
 
 
                         accountkcal.setOnClickListener(new View.OnClickListener() {
@@ -257,7 +275,16 @@ public class ExerciseActivity extends AppCompatActivity {
                         dlg.setPositiveButton("변경", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                data.setExerciseTitle(selectexer);
+                                data.setExerciseKcal(temp_result + "kcal");
 
+//                                Toast.makeText(ExerciseActivity.this, temp_result+"", Toast.LENGTH_SHORT).show();
+                                temp_result_kcal = temp_result_kcal - int_kcal + temp_result;
+
+                                consumeKcal.setText(temp_result_kcal + "kcal");
+
+                                listData.set(getAdapterPosition(), data);
+                                adapter.notifyDataSetChanged();
                             }
                         });
 
