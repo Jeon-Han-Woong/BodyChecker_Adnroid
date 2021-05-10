@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -127,6 +128,8 @@ public class FinishFragment extends Fragment {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Data2 sel_data = listData.get(getAdapterPosition());
+
                         dialog = (View) View.inflate(GoalActivity, R.layout.goal_doing_dialog, null);
 
                         edtTitle = (EditText) dialog.findViewById(R.id.edtGoalTitle);
@@ -138,6 +141,7 @@ public class FinishFragment extends Fragment {
                         dPicker.setEnabled(false);
 
                         edtTitle.setText(finishTitle.getText().toString());
+                        edtContent.setText(sel_data.getFinishContent());
 
 
 //                        edtContent.setText();
@@ -153,8 +157,13 @@ public class FinishFragment extends Fragment {
                         dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                return;
+                                Toast.makeText(getContext(), "목표 \"" + edtTitle.getText().toString() + "\" 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
+
+                                listData.remove(getAdapterPosition());
+
+                                adapter.notifyDataSetChanged();
                             }
+
                         });
 
                         dlg.show();

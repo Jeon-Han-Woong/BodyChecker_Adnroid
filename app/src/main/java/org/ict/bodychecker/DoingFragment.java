@@ -118,20 +118,28 @@ public class DoingFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         data.setDoingTitle(edtTitle.getText().toString());
+                        data.setDoingContent(edtContent.getText().toString());
                         data.setDoingDday("D day");
                         if (tem == true) {
                             if (resultNumber > 0) {
                                 data.setDoingDday(String.format("D-%d",resultNumber));
-                            } else if (resultNumber == 0) {
-                                data.setDoingDday("D day");
-                            } else {
-                                int absR= Math.abs(resultNumber);
-                                data.setDoingDday(String.format("D+%d",absR));
-                                }
+                            } else if (resultNumber <= 0) {
+                                Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+//                                data.setDoingDday("D day");
+//                            } else {
+//                                int absR= Math.abs(resultNumber);
+//                                data.setDoingDday(String.format("D+%d",absR));
+//                            }
                         } else {
-                            data.setDoingDday("D day");
+                            Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                            return;
+//                            data.setDoingDday("D day");
                         }
-                        Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
+                        // 날짜 미 선택시 DatePicker는 현재 날짜로 설정되어있는데 메인에선 계산된 날짜 값이 출력 되므로,
+                        // tem에 boolean값을 주어 날짜 미 선택시 반드시 D day가 나오도록 조건 설정
 
                         adapter.addItem(data);
 
@@ -222,11 +230,10 @@ public class DoingFragment extends Fragment {
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
             private TextView doingTitle, doingDday;
+            private EditText doingContent;
 
             ItemViewHolder(View itemView) {
                 super(itemView);
-
-                Data data = new Data();
 
                 doingTitle = itemView.findViewById(R.id.doingTitle);
                 doingDday = itemView.findViewById(R.id.doingDday);
@@ -236,12 +243,16 @@ public class DoingFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
 //                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
+
+                        Data sel_data = listData.get(getAdapterPosition());
+
                         dialog = (View) View.inflate(GoalActivity, R.layout.goal_doing_dialog, null);
 
                         edtTitle = (EditText) dialog.findViewById(R.id.edtGoalTitle);
                         edtContent = (EditText) dialog.findViewById(R.id.edtGoalContent);
                         dPicker = (DatePicker) dialog.findViewById(R.id.goalDatePicker);
                         edtTitle.setText(doingTitle.getText().toString());
+                        edtContent.setText(sel_data.getDoingContent());
 //                        edtContent.setText();
 
                         AlertDialog.Builder dlg = new AlertDialog.Builder(GoalActivity);
@@ -270,22 +281,26 @@ public class DoingFragment extends Fragment {
                         dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                data.setDoingTitle(edtTitle.getText().toString());
+                                sel_data.setDoingTitle(edtTitle.getText().toString());
                                 if (tem == true) {
                                     if (resultNumber > 0) {
-                                        data.setDoingDday(String.format("D-%d",resultNumber));
-                                    } else if (resultNumber == 0) {
-                                        data.setDoingDday("D day");
-                                    } else {
-                                        int absR= Math.abs(resultNumber);
-                                        data.setDoingDday(String.format("D+%d",absR));
+                                        sel_data.setDoingDday(String.format("D-%d",resultNumber));
+                                    } else if (resultNumber <= 0) {
+                                        Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                        return;
+//                                        sel_data.setDoingDday("D day");
+//                                    } else {
+//                                        int absR= Math.abs(resultNumber);
+//                                        sel_data.setDoingDday(String.format("D+%d",absR));
                                     }
                                 } else {
-                                    data.setDoingDday("D day");
+                                    Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                    return;
+//                                    sel_data.setDoingDday("D day");
                                 }
-                                Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
 
-                                listData.set(getAdapterPosition(), data);
+                                listData.set(getAdapterPosition(), sel_data);
 
 
                                 adapter.notifyDataSetChanged();
@@ -297,7 +312,10 @@ public class DoingFragment extends Fragment {
                         dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                return;
+
+                                listData.remove(getAdapterPosition());
+
+                                adapter.notifyDataSetChanged();
                             }
                         });
 

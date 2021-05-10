@@ -2,6 +2,7 @@ package org.ict.bodychecker;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -42,7 +43,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
     Button accountkcal;
 
-    int temp_min;
+    int temp_min, sel_spinner;
     float temp_kg = 87.4f;
     int temp_result, temp_result_kcal;
 
@@ -98,6 +99,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         selectitem = exerkcal[i];
                         selectexer = exeritems[i];
+                        sel_spinner = i;
                     }
 
                     @Override
@@ -130,7 +132,8 @@ public class ExerciseActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         data.setExerciseTitle(selectexer);
-                        data.setExerciseKcal(temp_result + "kcal");
+                        data.setExerciseMin(Integer.parseInt(edtminute.getText().toString()));
+                        data.setExerciseKcal(temp_result);
 
                         adapter.addItem(data);
 
@@ -164,7 +167,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private void getData() {
         List<String> listTitle = new ArrayList<>();
 
-        List<String> listContent = new ArrayList<>();
+        List<Integer> listContent = new ArrayList<>();
 
         for (int i = 0; i < listTitle.size(); i++) {
 
@@ -211,7 +214,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
             ItemViewHolder(View itemView) {
                 super(itemView);
-                Data3 data = new Data3();
+
                 exerciseTitle = itemView.findViewById(R.id.exerciseTitle);
                 exerciseKcal = itemView.findViewById(R.id.exerciseKcal);
 
@@ -219,6 +222,8 @@ public class ExerciseActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 //                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
+                        Data3 sel_data = listData.get(getAdapterPosition());
+
                         dialog = (View) View.inflate(ExerciseActivity.this, R.layout.exercise_dialog, null);
 
                         AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
@@ -227,6 +232,8 @@ public class ExerciseActivity extends AppCompatActivity {
                         edtminute = (EditText) dialog.findViewById(R.id.edtminute);
                         resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
                         accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
+
+                        edtminute.setText(sel_data.getExerciseMin()+"");
 
                         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
 
@@ -237,6 +244,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 selectitem = exerkcal[i];
                                 selectexer = exeritems[i];
+                                sel_spinner = i;
                             }
 
                             @Override
@@ -245,15 +253,11 @@ public class ExerciseActivity extends AppCompatActivity {
                             }
                         });
 
+                        spinner_exer.setSelection(sel_spinner);
 
                         // 운동 내역을 변경했을 경우 현재 소모 칼로리를 함께 변경. start
                         Data3 old_data = listData.get(getAdapterPosition());
-
-                        String old_kcal = old_data.getExerciseKcal();
-
-                        old_kcal = old_kcal.replace("kcal", "");
-
-                        int int_kcal = Integer.parseInt(old_kcal);
+                        int old_kcal = old_data.getExerciseKcal();
 
 //                        Toast.makeText(getApplicationContext(), int_kcal+ "", Toast.LENGTH_SHORT).show();
                         // end
@@ -275,15 +279,16 @@ public class ExerciseActivity extends AppCompatActivity {
                         dlg.setPositiveButton("변경", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                data.setExerciseTitle(selectexer);
-                                data.setExerciseKcal(temp_result + "kcal");
+                                sel_data.setExerciseTitle(selectexer);
+                                sel_data.setExerciseMin(Integer.parseInt(edtminute.getText().toString()));
+                                sel_data.setExerciseKcal(temp_result);
 
 //                                Toast.makeText(ExerciseActivity.this, temp_result+"", Toast.LENGTH_SHORT).show();
-                                temp_result_kcal = temp_result_kcal - int_kcal + temp_result;
+                                temp_result_kcal = temp_result_kcal - old_kcal + temp_result;
 
                                 consumeKcal.setText(temp_result_kcal + "kcal");
 
-                                listData.set(getAdapterPosition(), data);
+                                listData.set(getAdapterPosition(), sel_data);
                                 adapter.notifyDataSetChanged();
                             }
                         });
@@ -302,7 +307,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
             void onBind(Data3 data) {
                 exerciseTitle.setText(data.getExerciseTitle());
-                exerciseKcal.setText(data.getExerciseKcal());
+                exerciseKcal.setText(data.getExerciseKcal()+"");
             }
         }
     }

@@ -3,7 +3,8 @@ package org.ict.bodychecker;
 public class Data3 {
 
     private String exerciseTitle;
-    private String exerciseKcal;
+    private int exerciseMin;
+    private int exerciseKcal;
 
     public String getExerciseTitle() {
         return exerciseTitle;
@@ -13,11 +14,19 @@ public class Data3 {
         this.exerciseTitle = exerciseTitle;
     }
 
-    public String getExerciseKcal() {
+    public int getExerciseMin() {
+        return exerciseMin;
+    }
+
+    public void setExerciseMin(int exerciseMin) {
+        this.exerciseMin = exerciseMin;
+    }
+
+    public int getExerciseKcal() {
         return exerciseKcal;
     }
 
-    public void setExerciseKcal(String exerciseKcal) {
+    public void setExerciseKcal(int exerciseKcal) {
         this.exerciseKcal = exerciseKcal;
     }
 }
