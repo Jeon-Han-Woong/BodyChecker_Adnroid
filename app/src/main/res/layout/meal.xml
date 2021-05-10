@@ -345,6 +345,7 @@
                 android:text="100%" />
 
             <TextView
+                android:id="@+id/sixDaysAgoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
@@ -370,6 +371,7 @@
                 android:layout_marginLeft="1dp"/>
 
             <TextView
+                android:id="@+id/fiveDaysAgoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
@@ -395,6 +397,7 @@
                 android:layout_marginLeft="1dp"/>
 
             <TextView
+                android:id="@+id/fourDaysAgoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
@@ -420,6 +423,7 @@
                 android:layout_marginLeft="1dp"/>
 
             <TextView
+                android:id="@+id/threeDaysAgoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
@@ -445,6 +449,7 @@
                 android:layout_marginLeft="1dp"/>
 
             <TextView
+                android:id="@+id/twoDaysAgoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
@@ -470,6 +475,7 @@
                 android:layout_marginLeft="1dp"/>
 
             <TextView
+                android:id="@+id/oneDaysAgoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
@@ -495,6 +501,7 @@
                 android:layout_marginLeft="1dp"/>
 
             <TextView
+                android:id="@+id/todayTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
