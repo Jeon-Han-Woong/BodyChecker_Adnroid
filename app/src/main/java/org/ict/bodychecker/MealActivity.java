@@ -55,8 +55,6 @@ public class MealActivity extends AppCompatActivity {
         meal_calendar = (View) View.inflate(MealActivity.this, R.layout.meal_calendar, null);
 
         circlebar = (CircleProgressBar) findViewById(R.id.circlebar);
-        circlebar.setProgress(progress);
-        all.setText("일일 권장량 " + String.valueOf((int)rdi) + "kcal 중 " + String.valueOf(progress) + "kcal 섭취");
 
         bfll = (LinearLayout) findViewById(R.id.bfll);
         lcll = (LinearLayout) findViewById(R.id.lcll);
@@ -90,7 +88,6 @@ public class MealActivity extends AppCompatActivity {
         oneDaysAgoTV = (TextView) findViewById(R.id.oneDaysAgoTV);
         todayTV = (TextView) findViewById(R.id.todayTV);
 
-        cal.setTime(new Date());
         todayTV.setText(getDate(0, cal));
         oneDaysAgoTV.setText(getDate(-1, cal));
         twoDaysAgoTV.setText(getDate(-2, cal));
@@ -99,6 +96,8 @@ public class MealActivity extends AppCompatActivity {
         fiveDaysAgoTV.setText(getDate(-5, cal));
         sixDaysAgoTV.setText(getDate(-6, cal));
 
+        circlebar.setProgress(progress);
+        all.setText("일일 권장량 " + String.valueOf((int)rdi) + "kcal 중 " + String.valueOf(progress) + "kcal 섭취");
 //======================================== onclick 이벤트 =========================================
 
         bfll.setOnClickListener(new View.OnClickListener() {
@@ -235,6 +234,7 @@ public class MealActivity extends AppCompatActivity {
     }//onOptionsItemSelected
 
     public String getDate(int n, Calendar cal) {
+        cal.setTime(new Date());
         cal.add(Calendar.DATE, n);
 
         return sdf.format(cal.getTime());

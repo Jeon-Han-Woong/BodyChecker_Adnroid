@@ -55,7 +55,7 @@
             android:id="@+id/all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="총 ~~~kcal 중 ~~~kcal섭취"
             android:layout_marginTop="20dp"/>
 
     </LinearLayout>
