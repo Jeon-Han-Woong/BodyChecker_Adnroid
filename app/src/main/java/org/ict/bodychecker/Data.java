@@ -3,6 +3,8 @@ package org.ict.bodychecker;
 public class Data {
 
     private String doingTitle;
+    private String doingContent;
+
     private String doingDday;
 
     public String getDoingTitle() {
@@ -11,6 +13,14 @@ public class Data {
 
     public void setDoingTitle(String doingTitle) {
         this.doingTitle = doingTitle;
+    }
+
+    public String getDoingContent() {
+        return doingContent;
+    }
+
+    public void setDoingContent(String doingContent) {
+        this.doingContent = doingContent;
     }
 
     public String getDoingDday() {
