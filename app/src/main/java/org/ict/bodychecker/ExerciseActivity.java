@@ -1,8 +1,11 @@
 package org.ict.bodychecker;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -43,7 +46,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
     Button accountkcal;
 
-    int temp_min, sel_spinner;
+    int temp_min, sel_spinner, new_spinner;
     float temp_kg = 87.4f;
     int temp_result, temp_result_kcal;
 
@@ -99,7 +102,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         selectitem = exerkcal[i];
                         selectexer = exeritems[i];
-                        sel_spinner = i;
+                        new_spinner = i;
                     }
 
                     @Override
@@ -116,7 +119,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
                             temp_min = Integer.parseInt(edtminute.getText().toString());
                             temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
-                            resultkcal.setText(temp_result + "kcal");
+                            resultkcal.setText(temp_result + " kcal");
                         } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "시간을 입력해주세요.", Toast.LENGTH_SHORT).show();
                         }
@@ -139,7 +142,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
                         temp_result_kcal += temp_result;
 
-                        consumeKcal.setText(temp_result_kcal + "kcal");
+                        consumeKcal.setText(temp_result_kcal + " kcal");
 
                         adapter.notifyDataSetChanged();
                     }
@@ -253,7 +256,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             }
                         });
 
-                        spinner_exer.setSelection(sel_spinner);
+                        spinner_exer.setSelection(new_spinner);
 
                         // 운동 내역을 변경했을 경우 현재 소모 칼로리를 함께 변경. start
                         Data3 old_data = listData.get(getAdapterPosition());
@@ -268,7 +271,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 temp_min = Integer.parseInt(edtminute.getText().toString());
                                 temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
-                                resultkcal.setText(temp_result + "kcal");
+                                resultkcal.setText(temp_result + " kcal");
                             }
                         });
 
@@ -283,10 +286,12 @@ public class ExerciseActivity extends AppCompatActivity {
                                 sel_data.setExerciseMin(Integer.parseInt(edtminute.getText().toString()));
                                 sel_data.setExerciseKcal(temp_result);
 
+                                new_spinner = sel_spinner;
+
 //                                Toast.makeText(ExerciseActivity.this, temp_result+"", Toast.LENGTH_SHORT).show();
                                 temp_result_kcal = temp_result_kcal - old_kcal + temp_result;
 
-                                consumeKcal.setText(temp_result_kcal + "kcal");
+                                consumeKcal.setText(temp_result_kcal + " kcal");
 
                                 listData.set(getAdapterPosition(), sel_data);
                                 adapter.notifyDataSetChanged();
@@ -296,7 +301,15 @@ public class ExerciseActivity extends AppCompatActivity {
                         dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                return;
+                                int del_kcal = sel_data.getExerciseKcal();
+
+                                temp_result_kcal = temp_result_kcal - del_kcal;
+
+                                consumeKcal.setText(temp_result_kcal + " kcal");
+
+                                listData.remove(getAdapterPosition());
+
+                                adapter.notifyDataSetChanged();
                             }
                         });
 
@@ -321,4 +334,20 @@ public class ExerciseActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    public class MyDBHelper extends SQLiteOpenHelper {
+//        public MyDBHelper(Context context) {
+//            super(context, "bodychecker", null, 1);
+//        }//생성자
+//
+//        @Override
+//        public void onCreate(SQLiteDatabase db) {
+//            db.execSQL("CREATE TABLE exercise()");
+//        }//onCreate
+//
+//        @Override
+//        public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+//
+//        }
+//    }
 }
