@@ -37,7 +37,6 @@ public class MealActivity extends AppCompatActivity {
     TextView breakfastCal, lunchCal, dinnerCal, disertCal;
     MaterialButton moreDaysAgo, sixDaysAgo, fiveDaysAgo, fourDaysAgo, threeDaysAgo, twoDaysAgo, oneDaysAgo, today;
     TextView sixDaysAgoTV, fiveDaysAgoTV, fourDaysAgoTV, threeDaysAgoTV, twoDaysAgoTV, oneDaysAgoTV, todayTV;
-    TextView[] daysArr = {todayTV, oneDaysAgoTV, twoDaysAgoTV, threeDaysAgoTV, fourDaysAgoTV, fiveDaysAgoTV, sixDaysAgoTV};
     DatePicker mealDatePick;
 
     float rdi = ((168-100) * 0.9f * 30);
@@ -88,18 +87,18 @@ public class MealActivity extends AppCompatActivity {
         oneDaysAgoTV = (TextView) findViewById(R.id.oneDaysAgoTV);
         todayTV = (TextView) findViewById(R.id.todayTV);
 
-        todayTV.setText(getDate(0, cal));
-        oneDaysAgoTV.setText(getDate(-1, cal));
-        twoDaysAgoTV.setText(getDate(-2, cal));
-        threeDaysAgoTV.setText(getDate(-3, cal));
-        fourDaysAgoTV.setText(getDate(-4, cal));
-        fiveDaysAgoTV.setText(getDate(-5, cal));
-        sixDaysAgoTV.setText(getDate(-6, cal));
+        todayTV.setText(getDate(0));
+        oneDaysAgoTV.setText(getDate(-1));
+        twoDaysAgoTV.setText(getDate(-2));
+        threeDaysAgoTV.setText(getDate(-3));
+        fourDaysAgoTV.setText(getDate(-4));
+        fiveDaysAgoTV.setText(getDate(-5));
+        sixDaysAgoTV.setText(getDate(-6));
 
         circlebar.setProgress(progress);
         all.setText("일일 권장량 " + String.valueOf((int)rdi) + "kcal 중 " + String.valueOf(progress) + "kcal 섭취");
-//======================================== onclick 이벤트 =========================================
 
+//======================================== onclick 이벤트 =========================================
         bfll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,6 +134,20 @@ public class MealActivity extends AppCompatActivity {
                 startActivityForResult(intent, 200);
             }
         });//dsll.onclick
+
+        today.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), todayTV.getText().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });//today.onclick
+
+        oneDaysAgo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), oneDaysAgoTV.getText().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });//oneDayAgo.onclick
 
         moreDaysAgo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,7 +246,7 @@ public class MealActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }//onOptionsItemSelected
 
-    public String getDate(int n, Calendar cal) {
+    public String getDate(int n) {
         cal.setTime(new Date());
         cal.add(Calendar.DATE, n);
 
