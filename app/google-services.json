@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "757212703779",
+    "project_id": "bodychecker-5f00d",
+    "storage_bucket": "bodychecker-5f00d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757212703779:android:05c1d48bf3e6bdede71596",
+        "android_client_info": {
+          "package_name": "org.ict.bodychecker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757212703779-sajj3io81a20m00873ojhphul4s4c65q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.ict.bodychecker",
+            "certificate_hash": "47f94db93876950f9e72f6b71da9b028d2f2125b"
+          }
+        },
+        {
+          "client_id": "757212703779-vk4la8pavpic6v7ot8dgemlsrl40t1tr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcFLalBp8WFgCzXlctb0RL9-ElOEeJEh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757212703779-vk4la8pavpic6v7ot8dgemlsrl40t1tr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
