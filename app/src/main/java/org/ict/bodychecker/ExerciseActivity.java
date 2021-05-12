@@ -27,6 +27,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +40,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private RecyclerView recyclerView3;
     private Spinner spinner_exer;
 
-    String [] exeritems = {"걷기", "달리기", "계단 오르기", "스쿼트", "윗몸 일으키기", "훌라후프",};
+    String [] exeritems = {"걷기", "달리기", "계단 오르기", "스쿼트", "윗몸 일으키기", "훌라후프"};
 
     float [] exerkcal = {0.067f, 0.123f, 0.123f, 0.123f, 0.14f, 0.07f};
     String selectexer;
@@ -46,7 +48,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
     Button accountkcal;
 
-    int temp_min, sel_spinner, new_spinner;
+    int temp_min, sel_index;
     float temp_kg = 87.4f;
     int temp_result, temp_result_kcal;
 
@@ -54,11 +56,15 @@ public class ExerciseActivity extends AppCompatActivity {
     TextView resultkcal, consumeKcal;
     LinearLayout newExerciseBtn;
 
+    List<Integer> sel_spinner;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
+
+        sel_spinner = new ArrayList<>();
 
         init();
         getData();
@@ -102,7 +108,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         selectitem = exerkcal[i];
                         selectexer = exeritems[i];
-                        new_spinner = i;
+                        sel_index = i;
                     }
 
                     @Override
@@ -143,6 +149,7 @@ public class ExerciseActivity extends AppCompatActivity {
                         temp_result_kcal += temp_result;
 
                         consumeKcal.setText(temp_result_kcal + " kcal");
+                        sel_spinner.add(sel_index);
 
                         adapter.notifyDataSetChanged();
                     }
@@ -242,12 +249,14 @@ public class ExerciseActivity extends AppCompatActivity {
 
                         spinner_exer.setAdapter(adapter1);
 
+                        spinner_exer.setSelection(sel_spinner.get(getAdapterPosition()));
+
                         spinner_exer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 selectitem = exerkcal[i];
                                 selectexer = exeritems[i];
-                                sel_spinner = i;
+                                sel_index = i;
                             }
 
                             @Override
@@ -256,7 +265,6 @@ public class ExerciseActivity extends AppCompatActivity {
                             }
                         });
 
-                        spinner_exer.setSelection(new_spinner);
 
                         // 운동 내역을 변경했을 경우 현재 소모 칼로리를 함께 변경. start
                         Data3 old_data = listData.get(getAdapterPosition());
@@ -286,12 +294,12 @@ public class ExerciseActivity extends AppCompatActivity {
                                 sel_data.setExerciseMin(Integer.parseInt(edtminute.getText().toString()));
                                 sel_data.setExerciseKcal(temp_result);
 
-                                new_spinner = sel_spinner;
 
 //                                Toast.makeText(ExerciseActivity.this, temp_result+"", Toast.LENGTH_SHORT).show();
                                 temp_result_kcal = temp_result_kcal - old_kcal + temp_result;
 
                                 consumeKcal.setText(temp_result_kcal + " kcal");
+                                sel_spinner.set(getAdapterPosition(), sel_index);
 
                                 listData.set(getAdapterPosition(), sel_data);
                                 adapter.notifyDataSetChanged();
