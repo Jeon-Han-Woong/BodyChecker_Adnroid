@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.database.DatabaseReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MealActivity extends AppCompatActivity {
+
+    DatabaseReference ref;
 
     Calendar cal = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
