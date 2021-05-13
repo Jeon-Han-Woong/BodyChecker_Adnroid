@@ -15,8 +15,10 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.ict.bodychecker.ValueObject.MealVO;
 
@@ -24,10 +26,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 
 public class MealSelectActivity extends AppCompatActivity {
 
-    DatabaseReference ref;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     MealVO vo = new MealVO();
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -50,8 +53,6 @@ public class MealSelectActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_exer);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        ref = FirebaseDatabase.getInstance().getReference().child("member5").child("Meal");
 
         mealSelected = (ListView) findViewById(R.id.mealSelected);
         mealUnSelected = (ListView) findViewById(R.id.mealUnSelected);
@@ -141,14 +142,20 @@ public class MealSelectActivity extends AppCompatActivity {
                 sintent.putExtra("selected", selectList);
                 sintent.putExtra("kcal", kcal);
 
+                removeDB(date, meal);
+
                 switch(meal) {
                     case "bf"://아침
                         setResult(0, sintent);
 
                         for(int i=1; i<selectList.size(); i++) {
-                            vo.setFname(selectList.get(i));
-                            vo.setFkcal(skcallist.get(i-1));
-                            ref.child(date).child("breakfast").child("food"+i).setValue(vo);
+                            HashMap<String, Object> food = new HashMap<>();
+                            food.put("fname", selectList.get(i));
+                            food.put("fkcal", skcallist.get(i-1));
+                            db.collection("member5").document("Meal")
+                                    .collection(date).document("breakfast")
+                                    .collection("food").document(String.valueOf(i))
+                                    .set(food);
                         }
 
                         break;
@@ -188,7 +195,15 @@ public class MealSelectActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }//툴바
 
-    private void removeDB(String date) {
-        ref = FirebaseDatabase.getInstance().getReference().child("Meal");
+    private void removeDB(String date, String meal) {
+        switch(meal) {
+            case "bf":
+//                HttpsCallableReference deleteFn =
+//                        FirebaseFunctions.getInstance().getHttpsCallable("recursiveDelete");
+//                deleteFn.call(data);
+                db.collection("member5").document("Meal")
+                        .collection(date).document("breakfast").delete();
+                break;
+        }
     }
 }
