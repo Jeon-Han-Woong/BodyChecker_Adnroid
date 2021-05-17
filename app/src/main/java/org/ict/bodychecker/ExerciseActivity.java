@@ -3,6 +3,7 @@ package org.ict.bodychecker;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +24,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.ict.bodychecker.ValueObject.Example;
 import org.ict.bodychecker.ValueObject.ExerciseVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
@@ -90,26 +90,29 @@ public class ExerciseActivity extends AppCompatActivity {
 
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
-        retrofitInterface.getDailyExer(today).enqueue(new Callback<Example>() {
+        retrofitInterface.getDailyExer("2021-05-17").enqueue(new Callback<List<ExerciseVO>>() {
             @Override
-            public void onResponse(Call<Example> call, Response<Example> response) {
-                Example example = response.body();
+            public void onResponse(Call<List<ExerciseVO>> call, Response<List<ExerciseVO>> response) {
+//                if (response.isSuccessful()) {
 
-                List<ExerciseVO> exerList = example.getExerciseVO();
+                    List<ExerciseVO> data = response.body();
+                    Log.d("TEST", "성공");
 
-                adapter = new RecyclerAdapter(exerList);
+                    Log.d("샘플", data+"");
 
-                recyclerView3.setAdapter(adapter);
 
-                Toast.makeText(ExerciseActivity.this, exerList+ "", Toast.LENGTH_SHORT).show();
-
+//                } else {
+//                    Toast.makeText(ExerciseActivity.this, "통신 실패", Toast.LENGTH_SHORT).show();
+//                }
             }
 
             @Override
-            public void onFailure(Call<Example> call, Throwable t) {
-                Toast.makeText(ExerciseActivity.this, "로딩 실패", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<ExerciseVO>> call, Throwable t) {
+                Toast.makeText(ExerciseActivity.this, t+"", Toast.LENGTH_LONG).show();
             }
         });
+
+
 
 //        recyclerView3 = findViewById(R.id.recyclerView3);
 //
@@ -119,82 +122,82 @@ public class ExerciseActivity extends AppCompatActivity {
 //        adapter = new RecyclerAdapter();
 //        recyclerView3.setAdapter(adapter);
 
-        newExerciseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
-                dialog = (View) View.inflate(ExerciseActivity.this, R.layout.exercise_dialog, null);
-
-                AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
-                spinner_exer = (Spinner) dialog.findViewById(R.id.exer_spinner);
-                edtminute = (EditText) dialog.findViewById(R.id.edtminute);
-                resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
-                accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
-
-                ArrayAdapter<String> adapter1 = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
-
-                ExerciseVO data = new ExerciseVO();
-
-
-                spinner_exer.setAdapter(adapter1);
-
-                spinner_exer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        selectitem = exerkcal[i];
-                        selectexer = exeritems[i];
-                        sel_index = i;
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
-
-                accountkcal.setOnClickListener(new View.OnClickListener() {
+                newExerciseBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        try {
+//                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
+                        dialog = (View) View.inflate(ExerciseActivity.this, R.layout.exercise_dialog, null);
 
-                            temp_min = Integer.parseInt(edtminute.getText().toString());
-                            temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
-                            resultkcal.setText(temp_result + " kcal");
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), "시간을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                        }
+                        AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
+                        spinner_exer = (Spinner) dialog.findViewById(R.id.exer_spinner);
+                        edtminute = (EditText) dialog.findViewById(R.id.edtminute);
+                        resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
+                        accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
+
+                        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
+
+                        ExerciseVO data = new ExerciseVO();
+
+
+                        spinner_exer.setAdapter(adapter1);
+
+                        spinner_exer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                selectitem = exerkcal[i];
+                                selectexer = exeritems[i];
+                                sel_index = i;
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+
+
+                        accountkcal.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                try {
+
+                                    temp_min = Integer.parseInt(edtminute.getText().toString());
+                                    temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
+                                    resultkcal.setText(temp_result + " kcal");
+                                } catch (Exception e) {
+                                    Toast.makeText(getApplicationContext(), "시간을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+
+                        dlg.setTitle("운동 기록 추가");
+
+                        dlg.setView(dialog);
+
+                        dlg.setPositiveButton("추가", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                data.setEname(selectexer);
+                                data.setEtime(Integer.parseInt(edtminute.getText().toString()));
+                                data.setEkcal(temp_result);
+
+                                adapter.addItem(data);
+
+                                temp_result_kcal += temp_result;
+
+                                consumeKcal.setText(temp_result_kcal + " kcal");
+                                sel_spinner.add(sel_index);
+
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+
+                        dlg.setNegativeButton("취소", null);
+
+                        dlg.show();
                     }
                 });
-
-
-                dlg.setTitle("운동 기록 추가");
-
-                dlg.setView(dialog);
-
-                dlg.setPositiveButton("추가", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        data.setEname(selectexer);
-                        data.setEtime(Integer.parseInt(edtminute.getText().toString()));
-                        data.setEkcal(temp_result);
-
-                        adapter.addItem(data);
-
-                        temp_result_kcal += temp_result;
-
-                        consumeKcal.setText(temp_result_kcal + " kcal");
-                        sel_spinner.add(sel_index);
-
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-
-                dlg.setNegativeButton("취소", null);
-
-                dlg.show();
-            }
-        });
     }
 
 
