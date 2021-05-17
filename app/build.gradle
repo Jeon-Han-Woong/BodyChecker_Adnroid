@@ -58,4 +58,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     implementation 'com.google.firebase:firebase-database'
+
+    implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.6.0'
+    implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.6.0'
 }
