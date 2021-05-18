@@ -28,6 +28,7 @@ import org.ict.bodychecker.ValueObject.ExerciseVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +66,7 @@ public class ExerciseActivity extends AppCompatActivity {
     LinearLayout newExerciseBtn;
 
     List<Integer> sel_spinner;
+//    ArrayList<ExerciseVO> data;
 
 
     @Override
@@ -90,27 +92,50 @@ public class ExerciseActivity extends AppCompatActivity {
 
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
-        retrofitInterface.getDailyExer("2021-05-17").enqueue(new Callback<List<ExerciseVO>>() {
+        Call<List<ExerciseVO>> call = retrofitInterface.getDailyExer(today);
+        call.enqueue(new Callback<List<ExerciseVO>>() {
             @Override
             public void onResponse(Call<List<ExerciseVO>> call, Response<List<ExerciseVO>> response) {
-//                if (response.isSuccessful()) {
 
-                    List<ExerciseVO> data = response.body();
-                    Log.d("TEST", "성공");
+                List<ExerciseVO> data = response.body();
 
-                    Log.d("샘플", data+"");
-
-
-//                } else {
-//                    Toast.makeText(ExerciseActivity.this, "통신 실패", Toast.LENGTH_SHORT).show();
-//                }
+                Log.d("성공", response.toString());
+                Log.d("샘플", data.get(0).getEname() + "");
             }
 
             @Override
             public void onFailure(Call<List<ExerciseVO>> call, Throwable t) {
-                Toast.makeText(ExerciseActivity.this, t+"", Toast.LENGTH_LONG).show();
+                Log.d("실패", t + "");
             }
         });
+
+//        retrofitInterface.getDailyExer(today).enqueue(new Callback<List<ExerciseVO>>() {
+//            @Override
+//            public void onResponse(Call<List<ExerciseVO>> call, Response<List<ExerciseVO>> response) {
+////                if (response.isSuccessful()) {
+//
+//                List<ExerciseVO> data = response.body();
+//
+//
+//                Log.d("TEST", "성공");
+//
+//                Log.d("샘플", data+"");
+//
+//                Log.d("코드", response.toString()+"");
+//
+//
+////                } else {
+////                    Toast.makeText(ExerciseActivity.this, "통신 실패", Toast.LENGTH_SHORT).show();
+////                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<ExerciseVO>> call, Throwable t) {
+//                Log.d("에러", t + " : " + call);
+//
+//
+//            }
+//        });
 
 
 

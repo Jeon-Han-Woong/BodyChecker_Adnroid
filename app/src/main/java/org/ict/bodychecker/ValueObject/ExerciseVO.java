@@ -51,6 +51,9 @@ public class ExerciseVO {
     @SerializedName("edate")
     @Expose
     private String edate;
+    @SerializedName("mno")
+    @Expose
+    private Integer mno;
 
     public Integer getEno() {
         return eno;
@@ -90,6 +93,14 @@ public class ExerciseVO {
 
     public void setEdate(String edate) {
         this.edate = edate;
+    }
+
+    public Integer getMno() {
+        return mno;
+    }
+
+    public void setMno(Integer mno) {
+        this.mno = mno;
     }
 
 }
