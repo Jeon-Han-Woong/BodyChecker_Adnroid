@@ -15,22 +15,16 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import org.ict.bodychecker.ValueObject.MealVO;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MealSelectActivity extends AppCompatActivity {
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     MealVO vo = new MealVO();
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -149,13 +143,9 @@ public class MealSelectActivity extends AppCompatActivity {
                         setResult(0, sintent);
 
                         for(int i=1; i<selectList.size(); i++) {
-                            HashMap<String, Object> food = new HashMap<>();
-                            food.put("fname", selectList.get(i));
-                            food.put("fkcal", skcallist.get(i-1));
-                            db.collection("member5").document("Meal")
-                                    .collection(date).document("breakfast")
-                                    .collection("food").document(String.valueOf(i))
-                                    .set(food);
+                            Map<String, Object> foods = new HashMap<>();
+                            foods.put("fname", selectList.get(i));
+                            foods.put("fkcal", skcallist.get(i-1));
                         }
 
                         break;
@@ -198,11 +188,6 @@ public class MealSelectActivity extends AppCompatActivity {
     private void removeDB(String date, String meal) {
         switch(meal) {
             case "bf":
-//                HttpsCallableReference deleteFn =
-//                        FirebaseFunctions.getInstance().getHttpsCallable("recursiveDelete");
-//                deleteFn.call(data);
-                db.collection("member5").document("Meal")
-                        .collection(date).document("breakfast").delete();
                 break;
         }
     }
