@@ -26,8 +26,10 @@ import java.util.Date;
 
 public class MealActivity extends AppCompatActivity {
 
+    SimpleDateFormat dbsdf = new SimpleDateFormat("yyyy-MM-dd");
+
     Calendar cal = Calendar.getInstance();
-    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
+    SimpleDateFormat btnSdf = new SimpleDateFormat("MM/dd");
 
     View meal_calendar;
     CircleProgressBar circlebar;
@@ -249,6 +251,6 @@ public class MealActivity extends AppCompatActivity {
         cal.setTime(new Date());
         cal.add(Calendar.DATE, n);
 
-        return sdf.format(cal.getTime());
+        return btnSdf.format(cal.getTime());
     }//getDate
 }

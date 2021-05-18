@@ -15,7 +15,7 @@ public class FAQActivity extends AppCompatActivity {
 
     ListView faqList;
     String[] ask = {"BMI수치는 어떻게 계산되나요?", "칼로리 소모량은 어떻게 계산되나요?", "일일 권장 칼로리는 어떻게 계산되나요?"};
-    String[] answer = {"BMI수치의 계산식은 ( 체중 ÷ 키² )으로 계산됩니다.", "운동 종류에 따라 다르게 계산되며\n걷기의 경우 ( 60kg × 10분 ) = 약 40kcal입니다.",
+    String[] answer = {"BMI수치의 계산식은 ( 체중 ÷ 키²(m) )으로 계산됩니다.", "운동 종류에 따라 다르게 계산되며\n걷기의 경우 ( 60kg × 10분 ) = 약 40kcal입니다.",
                         "표준체중 × 30으로 계산됩니다.\n표준체중은 (키-100) × (남성:0.9 여성:0.85)입니다."};
     ArrayAdapter<String> adapter;
 
