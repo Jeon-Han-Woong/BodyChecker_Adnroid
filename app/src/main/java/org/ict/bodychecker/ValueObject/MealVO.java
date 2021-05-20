@@ -1,13 +1,35 @@
 package org.ict.bodychecker.ValueObject;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.sql.Date;
 
 public class MealVO {
+
+    @SerializedName("fno")
+    @Expose
     private int fno;
+
+    @SerializedName("fname")
+    @Expose
     private String fname;
+
+    @SerializedName("fkcal")
+    @Expose
     private int fkcal;
+
+    @SerializedName("ftime")
+    @Expose
     private String ftime;
+
+    @SerializedName("fdate")
+    @Expose
     private String fdate;
+
+    @SerializedName("mno")
+    @Expose
+    private int mno;
 
     public int getFno() {
         return fno;
@@ -42,5 +64,12 @@ public class MealVO {
     }
     public void setFdate(String fdate) {
         this.fdate = fdate;
+    }
+
+    public int getMno() {
+        return mno;
+    }
+    public void setMno(int mno) {
+        this.mno = mno;
     }
 }

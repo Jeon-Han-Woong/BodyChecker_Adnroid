@@ -3,6 +3,7 @@ package org.ict.bodychecker;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,23 +13,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.ict.bodychecker.ValueObject.MealVO;
+import org.ict.bodychecker.retrofit.RetrofitClient;
+import org.ict.bodychecker.retrofit.RetrofitInterface;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Retrofit;
+
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MealSelectActivity extends AppCompatActivity {
 
-    MealVO vo = new MealVO();
+    RetrofitClient retrofitClient;
+    RetrofitInterface retrofitInterface;
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String date = sdf.format(new Date());
+    LocalDateTime date = LocalDateTime.now();
+    DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     ListView mealSelected, mealUnSelected;
     Button cancelBtn, selectBtn;
@@ -47,6 +58,9 @@ public class MealSelectActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_exer);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        retrofitClient = RetrofitClient.getInstance();
+        retrofitInterface = RetrofitClient.getRetrofitInterface();
 
         mealSelected = (ListView) findViewById(R.id.mealSelected);
         mealUnSelected = (ListView) findViewById(R.id.mealUnSelected);
@@ -127,35 +141,40 @@ public class MealSelectActivity extends AppCompatActivity {
         });//mealSelctedOnItemClick
 
         selectBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
+                selectList.remove("직접 추가하기");
+
                 Intent gIntent = getIntent();
                 String meal = gIntent.getStringExtra("meal");
+                String date = gIntent.getStringExtra("date");
 
                 Intent sintent = new Intent();
                 sintent.putExtra("selected", selectList);
                 sintent.putExtra("kcal", kcal);
 
-                removeDB(date, meal);
-
                 switch(meal) {
-                    case "bf"://아침
+                    case "breakfast"://아침
                         setResult(0, sintent);
 
-                        for(int i=1; i<selectList.size(); i++) {
-                            Map<String, Object> foods = new HashMap<>();
-                            foods.put("fname", selectList.get(i));
-                            foods.put("fkcal", skcallist.get(i-1));
+                        for(int i=0; i<selectList.size(); i++) {
+                            MealVO vo = new MealVO();
+                            vo.setFdate(date);
+                            vo.setFname(selectList.get(i));
+                            vo.setFkcal(skcallist.get(i));
+                            vo.setFtime("breakfast");
+                            retrofitInterface.addFoods(vo);
                         }
 
                         break;
-                    case "lc"://점심
+                    case "lunch"://점심
                         setResult(1, sintent);
                         break;
-                    case "dn"://저녁
+                    case "dinner"://저녁
                         setResult(2, sintent);
                         break;
-                    case "ds"://간식
+                    case "disert"://간식
                         setResult(3, sintent);
                         break;
                 }//switch
@@ -185,9 +204,9 @@ public class MealSelectActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }//툴바
 
-    private void removeDB(String date, String meal) {
+    private void checkDB(String date, String meal) {
         switch(meal) {
-            case "bf":
+            case "breakfast":
                 break;
         }
     }

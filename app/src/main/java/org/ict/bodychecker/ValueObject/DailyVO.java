@@ -1,10 +1,28 @@
 package org.ict.bodychecker.ValueObject;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class DailyVO {
+
+    @SerializedName("dno")
+    @Expose
     private int dno;
+
+    @SerializedName("walk")
+    @Expose
     private int walk;
+
+    @SerializedName("water")
+    @Expose
     private int water;
+
+    @SerializedName("ddate")
+    @Expose
     private String ddate;
+
+    @SerializedName("mno")
+    @Expose
     private int mno;
 
     public int getDno() {

@@ -1,15 +1,48 @@
 package org.ict.bodychecker.ValueObject;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class MemberVO {
+
+    @SerializedName("mno")
+    @Expose
     private int mno;
+
+    @SerializedName("mid")
+    @Expose
     private String mid;
+
+    @SerializedName("pwd")
+    @Expose
     private String pwd;
+
+    @SerializedName("mname")
+    @Expose
     private String mname;
+
+    @SerializedName("gender")
+    @Expose
     private int gender;
+
+    @SerializedName("height")
+    @Expose
     private int height;
+
+    @SerializedName("weight")
+    @Expose
     private int weight;
+
+    @SerializedName("bmi")
+    @Expose
     private int bmi;
+
+    @SerializedName("birthday")
+    @Expose
     private String birthday;
+
+    @SerializedName("regdate")
+    @Expose
     private String regdate;
 
     public int getMno() {
