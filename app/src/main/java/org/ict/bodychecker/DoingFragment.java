@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,6 +105,8 @@ public class DoingFragment extends Fragment {
                         dCalendar.set(dYear, dMonth, dDay);
 
                         d = dCalendar.getTimeInMillis();
+                        String temp_date = dYear + "-" + (dMonth + 1) + "-" + dDay;
+                        Log.d("선택", temp_date+"");
                         r = (d-t) / (24 * 60 * 60 * 1000);
 
                         resultNumber = (int) r;

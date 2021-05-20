@@ -110,13 +110,13 @@ public class ExerciseActivity extends AppCompatActivity {
 
                     recyclerView3.setAdapter(adapter);
 
-                for (int i = 0; i < exerList.size(); i++) {
-                    temp_result_kcal = temp_result_kcal + exerList.get(i).getEkcal();
-                }
+                    for (int i = 0; i < exerList.size(); i++) {
+                        temp_result_kcal = temp_result_kcal + exerList.get(i).getEkcal();
+                    }
 
-                consumeKcal.setText(temp_result_kcal+" kcal");
+                    consumeKcal.setText(temp_result_kcal+" kcal");
 
-                adapter.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
 
 
                 } else {

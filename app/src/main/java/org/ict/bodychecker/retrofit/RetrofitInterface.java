@@ -21,16 +21,16 @@ import retrofit2.http.Query;
 public interface RetrofitInterface {
 
     /*================== Exercise ====================*/
-    @GET("exer/{edate}.json")
+    @GET("exer/{edate}")
     Call<List<ExerciseVO>> getDailyExer(@Path("edate") String edate);
 
-    @GET("exer/neweno.json")
+    @GET("exer/neweno")
     Call<Integer> getNewEno();
 
     @POST("exer/new")
     Call<ExerciseVO> registerExer(@Body ExerciseVO exer);
 
-    @PUT("exer/modify/{eno}.json")
+    @PUT("exer/modify/{eno}")
     Call<ExerciseVO> modifyExer(@Path("eno") int eno, @Body ExerciseVO exer);
 
     @DELETE("exer/remove/{eno}")
