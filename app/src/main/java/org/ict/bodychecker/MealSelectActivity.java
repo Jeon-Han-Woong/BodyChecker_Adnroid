@@ -219,14 +219,11 @@ public class MealSelectActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }//툴바
 
-    private void removeDB(String date, String meal) {
-        MealVO vo = new MealVO();
-        vo.setFdate(date);
-        vo.setFtime(meal);
+    private void removeDB(String date, String time) {
 
-        switch(meal) {
+        switch(time) {
             case "breakfast":
-                retrofitInterface.removeFoods(vo);
+                retrofitInterface.removeFoods(date, time);
                 break;
         }
     }

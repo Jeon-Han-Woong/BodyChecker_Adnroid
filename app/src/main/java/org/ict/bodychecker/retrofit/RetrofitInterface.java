@@ -43,6 +43,6 @@ public interface RetrofitInterface {
     @POST("meal/addFoods")
     Call<MealVO> addFoods(@Body MealVO mealVo);
 
-    @DELETE("meal/remove/{vo}")
-    Call<Void> removeFoods(@Path("vo") MealVO mealVo);
+    @DELETE("meal/remove/{fdate}/{ftime}")
+    Call<Void> removeFoods(@Path("fdate") String fdate, @Path("ftime") String ftime);
 }
