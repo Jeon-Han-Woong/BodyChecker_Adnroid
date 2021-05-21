@@ -60,7 +60,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
     Button accountkcal;
 
-    int temp_min, sel_index;
+    int temp_min, sel_index, temp_Eno;
     float temp_kg = 87.4f;
     int temp_result, temp_result_kcal = 0;
 
@@ -156,6 +156,20 @@ public class ExerciseActivity extends AppCompatActivity {
                         resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
                         accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
 
+                        retrofitInterface.getNewEno().enqueue(new Callback<Integer>() {
+                            @Override
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                temp_Eno = response.body() + 1;
+                                Toast.makeText(ExerciseActivity.this, temp_Eno+"", Toast.LENGTH_SHORT).show();
+                                Log.d("ENO = ", temp_Eno + "");
+                            }
+
+                            @Override
+                            public void onFailure(Call<Integer> call, Throwable t) {
+
+                            }
+                        });
+
                         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
 
                         ExerciseVO newExerData = new ExerciseVO();
@@ -218,29 +232,14 @@ public class ExerciseActivity extends AppCompatActivity {
                                     @Override
                                     public void onResponse(Call<ExerciseVO> call, Response<ExerciseVO> response) {
                                         Toast.makeText(ExerciseActivity.this, "새 운동 입력", Toast.LENGTH_SHORT).show();
-                                        Log.d("번호", newExerData.getEno()+ "");
-
                                     }
-
                                     @Override
                                     public void onFailure(Call<ExerciseVO> call, Throwable t) {
-                                        Toast.makeText(ExerciseActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                                        Log.d("오류", t+"");
                                     }
                                 });
 
-                                retrofitInterface.getNewEno().enqueue(new Callback<Integer>() {
-                                    @Override
-                                    public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                        newExerData.setEno(response.body()+1);
-                                        Log.d("ENO = ", response.body() + "");
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Integer> call, Throwable t) {
-
-                                    }
-                                });
-
+                                newExerData.setEno(temp_Eno);
                                 adapter.addItem(newExerData);
                                 adapter.notifyDataSetChanged();
                             }

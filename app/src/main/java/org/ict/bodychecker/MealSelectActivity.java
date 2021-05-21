@@ -161,7 +161,7 @@ public class MealSelectActivity extends AppCompatActivity {
                 switch(time) {
                     case "breakfast"://아침
                         setResult(0, sintent);
-                        removeDB(date, time);
+//                        removeDB(date, time);
 
                         for(int i=0; i<selectList.size(); i++) {
                             MealVO vo = new MealVO();

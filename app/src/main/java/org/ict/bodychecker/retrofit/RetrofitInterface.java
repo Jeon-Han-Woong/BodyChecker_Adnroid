@@ -21,7 +21,7 @@ import retrofit2.http.Query;
 public interface RetrofitInterface {
 
     /*================== Exercise ====================*/
-    @GET("exer/{edate}")
+    @GET("exer/{edate}.json")
     Call<List<ExerciseVO>> getDailyExer(@Path("edate") String edate);
 
     @GET("exer/neweno")
