@@ -217,21 +217,18 @@ public class ExerciseActivity extends AppCompatActivity {
                                 retrofitInterface.registerExer(newExerData).enqueue(new Callback<ExerciseVO>() {
                                     @Override
                                     public void onResponse(Call<ExerciseVO> call, Response<ExerciseVO> response) {
-                                        Toast.makeText(ExerciseActivity.this, "새 운동 입력", Toast.LENGTH_SHORT).show();
-                                        Log.d("번호", newExerData.getEno()+ "");
 
                                     }
-
                                     @Override
                                     public void onFailure(Call<ExerciseVO> call, Throwable t) {
-                                        Toast.makeText(ExerciseActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                                        Log.d("오류", t+"");
                                     }
                                 });
 
                                 retrofitInterface.getNewEno().enqueue(new Callback<Integer>() {
                                     @Override
                                     public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                        newExerData.setEno(response.body()+1);
+                                        newExerData.setEno(response.body());
                                         Log.d("ENO = ", response.body() + "");
                                     }
 
@@ -240,6 +237,9 @@ public class ExerciseActivity extends AppCompatActivity {
 
                                     }
                                 });
+                                Toast.makeText(ExerciseActivity.this, "새 운동 입력", Toast.LENGTH_SHORT).show();
+
+
 
                                 adapter.addItem(newExerData);
                                 adapter.notifyDataSetChanged();
