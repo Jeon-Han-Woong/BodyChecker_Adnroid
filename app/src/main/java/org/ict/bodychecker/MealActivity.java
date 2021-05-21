@@ -137,6 +137,7 @@ public class MealActivity extends AppCompatActivity {
             }
         });//dsll.onclick
 
+// 하단 날짜 버튼
         todayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
