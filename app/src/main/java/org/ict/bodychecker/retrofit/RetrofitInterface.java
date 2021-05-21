@@ -40,8 +40,9 @@ public interface RetrofitInterface {
     @GET("meal/getList/{fdate}.json")
     Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate);
 
-    @POST("meal/addFoods.json")
+    @POST("meal/addFoods")
     Call<MealVO> addFoods(@Body MealVO mealVo);
 
-
+    @DELETE("meal/remove/{vo}")
+    Call<Void> removeFoods(@Path("vo") MealVO mealVo);
 }
