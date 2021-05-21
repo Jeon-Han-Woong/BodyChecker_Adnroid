@@ -101,7 +101,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
-                intent.putExtra("meal", "breakfast");
+                intent.putExtra("time", "breakfast");
                 intent.putExtra("date", dbFormat.format(date));
                 startActivityForResult(intent, 200);
             }
@@ -111,7 +111,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
-                intent.putExtra("meal", "lunch");
+                intent.putExtra("time", "lunch");
                 intent.putExtra("date", dbFormat.format(date));
                 startActivityForResult(intent, 200);
             }
@@ -121,7 +121,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
-                intent.putExtra("meal", "dinner");
+                intent.putExtra("time", "dinner");
                 intent.putExtra("date", dbFormat.format(date));
                 startActivityForResult(intent, 200);
             }
@@ -131,7 +131,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
-                intent.putExtra("meal", "disert");
+                intent.putExtra("time", "disert");
                 intent.putExtra("date", dbFormat.format(date));
                 startActivityForResult(intent, 200);
             }

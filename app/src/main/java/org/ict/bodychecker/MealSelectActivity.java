@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,20 +26,23 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class MealSelectActivity extends AppCompatActivity {
 
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
 
-    LocalDateTime date = LocalDateTime.now();
+    String date;
     DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     ListView mealSelected, mealUnSelected;
@@ -147,16 +151,17 @@ public class MealSelectActivity extends AppCompatActivity {
                 selectList.remove("직접 추가하기");
 
                 Intent gIntent = getIntent();
-                String meal = gIntent.getStringExtra("meal");
-                String date = gIntent.getStringExtra("date");
+                String time = gIntent.getStringExtra("time");
+                date = gIntent.getStringExtra("date");
 
                 Intent sintent = new Intent();
                 sintent.putExtra("selected", selectList);
                 sintent.putExtra("kcal", kcal);
 
-                switch(meal) {
+                switch(time) {
                     case "breakfast"://아침
                         setResult(0, sintent);
+                        removeDB(date, time);
 
                         for(int i=0; i<selectList.size(); i++) {
                             MealVO vo = new MealVO();
@@ -164,7 +169,17 @@ public class MealSelectActivity extends AppCompatActivity {
                             vo.setFname(selectList.get(i));
                             vo.setFkcal(skcallist.get(i));
                             vo.setFtime("breakfast");
-                            retrofitInterface.addFoods(vo);
+                            retrofitInterface.addFoods(vo).enqueue(new Callback<MealVO>() {
+                                @Override
+                                public void onResponse(Call<MealVO> call, Response<MealVO> response) {
+                                    Log.d("fname", vo.getFname());
+                                }
+
+                                @Override
+                                public void onFailure(Call<MealVO> call, Throwable t) {
+                                    Log.d("fail", "fail");
+                                }
+                            });
                         }
 
                         break;
@@ -204,9 +219,14 @@ public class MealSelectActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }//툴바
 
-    private void checkDB(String date, String meal) {
+    private void removeDB(String date, String meal) {
+        MealVO vo = new MealVO();
+        vo.setFdate(date);
+        vo.setFtime(meal);
+
         switch(meal) {
             case "breakfast":
+                retrofitInterface.removeFoods(vo);
                 break;
         }
     }
