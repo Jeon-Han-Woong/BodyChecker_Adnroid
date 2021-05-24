@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class ModifyInfoActivity extends AppCompatActivity {
 
-    RadioGroup gendarRG;
+    RadioGroup genderRG;
     EditText edtName, edtHeight, edtWeight;
     DatePicker birthDP;
     Button modifyBtn, modCancelBtn;
@@ -28,7 +28,7 @@ public class ModifyInfoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        gendarRG = (RadioGroup) findViewById(R.id.gendarRG);
+        genderRG = (RadioGroup) findViewById(R.id.genderRG);
         edtName = (EditText) findViewById(R.id.edtName);
         edtHeight = (EditText) findViewById(R.id.edtHeight);
         edtWeight = (EditText) findViewById(R.id.edtWeight);
@@ -40,10 +40,10 @@ public class ModifyInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String str = "";
-                if(gendarRG.getCheckedRadioButtonId() == R.id.male) str += "남자";
-                else if(gendarRG.getCheckedRadioButtonId() == R.id.female) str += "여자";
+                if(genderRG.getCheckedRadioButtonId() == R.id.male) str += "남자";
+                else if(genderRG.getCheckedRadioButtonId() == R.id.female) str += "여자";
                 str += edtName.getText().toString() + edtHeight.getText().toString() + edtWeight.getText().toString();
-                str += String.valueOf(birthDP.getYear()) + "0" + String.valueOf(birthDP.getMonth()+1) + String.valueOf(birthDP.getDayOfMonth());
+                str += birthDP.getYear() + String.format("%02d", birthDP.getMonth()+1) + String.format("%02d", birthDP.getDayOfMonth());
 
                 Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
                 finish();

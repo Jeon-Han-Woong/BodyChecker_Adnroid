@@ -22,28 +22,24 @@ import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class MealSelectActivity extends AppCompatActivity {
 
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
 
-    String date;
-    DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    ArrayList<String> selectList = new ArrayList<>();
+    ArrayList<String> unselectList = new ArrayList<>();
+    ArrayList<Integer> selectKcalList = new ArrayList<>();
+    ArrayList<Integer> unselectKcalList = new ArrayList<>();
+
+    String date, time;
 
     ListView mealSelected, mealUnSelected;
     Button cancelBtn, selectBtn;
@@ -54,6 +50,7 @@ public class MealSelectActivity extends AppCompatActivity {
     int[] kcals = {313, 670, 1939, 60, 105, 163, 633, 57};
     int kcal = 0;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,16 +69,12 @@ public class MealSelectActivity extends AppCompatActivity {
         selectBtn = (Button) findViewById(R.id.selectBtn);
         dlgView = (View) View.inflate(MealSelectActivity.this, R.layout.ms_dialog, null);
 
-        ArrayList<String> selectList = new ArrayList<>();
-        ArrayList<String> unselectList = new ArrayList<>();
-        ArrayList<Integer> skcallist = new ArrayList<>();
-        ArrayList<Integer> uskcallist = new ArrayList<>();
 
         selectList.add("직접 추가하기");
 
         for(int i=0; i<str.length; i++) {
             unselectList.add(str[i]);
-            uskcallist.add(kcals[i]);
+            unselectKcalList.add(kcals[i]);
         }//for
 
         ArrayAdapter<String> sAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectList);
@@ -96,9 +89,9 @@ public class MealSelectActivity extends AppCompatActivity {
                 String food = unselectList.get(i);
                 selectList.add(food);
                 unselectList.remove(food);
-                kcal += uskcallist.get(i);
-                skcallist.add(uskcallist.get(i));
-                uskcallist.remove(uskcallist.get(i));
+                kcal += unselectKcalList.get(i);
+                selectKcalList.add(unselectKcalList.get(i));
+                unselectKcalList.remove(unselectKcalList.get(i));
 
                 sAdapter.notifyDataSetChanged();
                 usAdapter.notifyDataSetChanged();
@@ -112,9 +105,9 @@ public class MealSelectActivity extends AppCompatActivity {
                     String food = selectList.get(i);
                     unselectList.add(food);
                     selectList.remove(food);
-                    kcal -= skcallist.get(i-1);
-                    uskcallist.add(skcallist.get(i-1));
-                    skcallist.remove(skcallist.get(i-1));
+                    kcal -= selectKcalList.get(i-1);
+                    unselectKcalList.add(selectKcalList.get(i-1));
+                    selectKcalList.remove(selectKcalList.get(i-1));
                 } else if(i == 0) {
                     AlertDialog.Builder dlg = new AlertDialog.Builder(MealSelectActivity.this);
                     dlg.setTitle("음식 정보 입력");
@@ -130,7 +123,7 @@ public class MealSelectActivity extends AppCompatActivity {
                             int Cal = Integer.parseInt(msCalInsert.getText().toString());
                             selectList.add(food);
                             kcal += Cal;
-                            skcallist.add(Cal);
+                            selectKcalList.add(Cal);
                         }
                     });//setPositiveButton
 
@@ -150,49 +143,19 @@ public class MealSelectActivity extends AppCompatActivity {
             public void onClick(View view) {
                 selectList.remove("직접 추가하기");
 
-                Intent gIntent = getIntent();
-                String time = gIntent.getStringExtra("time");
-                date = gIntent.getStringExtra("date");
+                Intent getIntent = getIntent();
+                time = getIntent.getStringExtra("time");
+                date = getIntent.getStringExtra("date");
 
-                Intent sintent = new Intent();
-                sintent.putExtra("selected", selectList);
-                sintent.putExtra("kcal", kcal);
+                Intent setIntent = new Intent(getApplicationContext(), MealActivity.class);
+                setIntent.putExtra("date", date);
 
-                switch(time) {
-                    case "breakfast"://아침
-                        setResult(0, sintent);
-//                        removeDB(date, time);
+                removeDB(date, time);
+                //removeDB가 addDB와 순서가 뒤바뀌는 경우가 발생하여 멀티쓰레드의 영향으로 추정되기 때문에 딜레이를 주기위한 코드
+                try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
 
-                        for(int i=0; i<selectList.size(); i++) {
-                            MealVO vo = new MealVO();
-                            vo.setFdate(date);
-                            vo.setFname(selectList.get(i));
-                            vo.setFkcal(skcallist.get(i));
-                            vo.setFtime("breakfast");
-                            retrofitInterface.addFoods(vo).enqueue(new Callback<MealVO>() {
-                                @Override
-                                public void onResponse(Call<MealVO> call, Response<MealVO> response) {
-                                    Log.d("fname", vo.getFname());
-                                }
-
-                                @Override
-                                public void onFailure(Call<MealVO> call, Throwable t) {
-                                    Log.d("fail", "fail");
-                                }
-                            });
-                        }
-
-                        break;
-                    case "lunch"://점심
-                        setResult(1, sintent);
-                        break;
-                    case "dinner"://저녁
-                        setResult(2, sintent);
-                        break;
-                    case "disert"://간식
-                        setResult(3, sintent);
-                        break;
-                }//switch
+                addDB(date, time);
+                try { TimeUnit.MILLISECONDS.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
 
                 finish();
             }
@@ -201,8 +164,8 @@ public class MealSelectActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                setResult(-1);
+                Intent setIntent = new Intent(getApplicationContext(), MealActivity.class);
+                setIntent.putExtra("date", date);
 
                 finish();
             }
@@ -219,12 +182,30 @@ public class MealSelectActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }//툴바
 
-    private void removeDB(String date, String time) {
+    private void addDB(String date, String time) {
+        for(int i=0; i<selectList.size(); i++) {
+            MealVO vo = new MealVO();
+            vo.setFdate(date);
+            vo.setFname(selectList.get(i));
+            vo.setFkcal(selectKcalList.get(i));
+            vo.setFtime(time);
+            retrofitInterface.addFoods(vo).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) { Log.d("addSuccess", vo.getFname()); }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) { t.printStackTrace(); }
+            });
+        }//for
+    }//addDB
 
-        switch(time) {
-            case "breakfast":
-                retrofitInterface.removeFoods(date, time);
-                break;
-        }
-    }
-}
+    private void removeDB(String date, String time) {
+        retrofitInterface.removeFoods(date, time).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) { Log.d("removeSuccess", "삭제성공"); }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) { t.printStackTrace(); }
+        });
+    }//removeDB
+
+}//class

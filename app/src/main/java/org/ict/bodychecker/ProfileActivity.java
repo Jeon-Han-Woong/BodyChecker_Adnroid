@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    Button modifyInfoBtn;
+    Button modifyInfoBtn, join;
 
     Intent intent;
 
@@ -25,6 +25,15 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         modifyInfoBtn = (Button) findViewById(R.id.modifyInfoBtn);
+        join = (Button) findViewById(R.id.join);
+
+        join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent joinIntent = new Intent(getApplicationContext(), JoinActivity.class);
+                startActivity(joinIntent);
+            }
+        });
 
         modifyInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override

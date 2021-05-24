@@ -1,10 +1,9 @@
 package org.ict.bodychecker.retrofit;
 
-import org.ict.bodychecker.ValueObject.ExerciseData;
 import org.ict.bodychecker.ValueObject.ExerciseVO;
 import org.ict.bodychecker.ValueObject.MealVO;
+import org.ict.bodychecker.ValueObject.MemberVO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -15,8 +14,6 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
-
 
 public interface RetrofitInterface {
 
@@ -37,12 +34,28 @@ public interface RetrofitInterface {
     Call<Void> removeExer(@Path("eno") int eno);
 
     /*================== Meal ====================*/
-    @GET("meal/getList/{fdate}.json")
+    @GET("meal/getList/{fdate}")
     Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate);
 
     @POST("meal/addFoods")
-    Call<MealVO> addFoods(@Body MealVO mealVo);
+    Call<String> addFoods(@Body MealVO mealVO);
 
     @DELETE("meal/remove/{fdate}/{ftime}")
-    Call<Void> removeFoods(@Path("fdate") String fdate, @Path("ftime") String ftime);
+    Call<String> removeFoods(@Path("fdate") String fdate, @Path("ftime") String ftime);
+
+    /*================== Member ====================*/
+    @POST("member/check/{mid}")
+    Call<Integer> check(@Path("mid") String mid);
+
+    @POST("member/join")
+    Call<String> join(@Body MemberVO memberVO);
+
+    @POST("member/login")
+    Call<MemberVO> login(@Body MemberVO memberVO);
+
+    @PUT("member/modify")
+    Call<String> modify(@Body MemberVO memberVO);
+
+    @DELETE("member/remove/{mno}")
+    Call<String> remove(@Path("mno") int mno);
 }

@@ -85,6 +85,7 @@
                 android:id="@+id/breakfast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text=""
                 android:hint="음식을 선택해주세요."
                 android:textSize="20dp"/>
@@ -144,6 +145,7 @@
                 android:id="@+id/lunch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text=""
                 android:hint="음식을 선택해주세요."
                 android:textSize="20dp"/>
@@ -203,6 +205,7 @@
                 android:id="@+id/dinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text=""
                 android:hint="음식을 선택해주세요."
                 android:textSize="20dp"/>
@@ -262,6 +265,7 @@
                 android:id="@+id/disert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text=""
                 android:hint="음식을 선택해주세요."
                 android:textSize="20dp"/>
