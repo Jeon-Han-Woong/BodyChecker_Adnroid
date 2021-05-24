@@ -24,17 +24,28 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.ict.bodychecker.ValueObject.GoalVO;
+import org.ict.bodychecker.retrofit.RetrofitClient;
+import org.ict.bodychecker.retrofit.RetrofitInterface;
+
 import java.lang.reflect.Array;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DoingFragment extends Fragment {
 
     private Activity GoalActivity;
     private RecyclerAdapter adapter;
     private RecyclerView recyclerView;
+    private RetrofitClient retrofitClient;
+    private RetrofitInterface retrofitInterface;
 
     View dialog;
 
@@ -42,22 +53,55 @@ public class DoingFragment extends Fragment {
     DatePicker dPicker;
     LinearLayout newGoalBtn;
 
+    String today, temp_date;
+
     private int tYear, tMonth, tDay;
     private int dYear = 1, dMonth = 1, dDay = 1;
+
+    private int temp_gno;
 
     private long d, t, r;
     boolean tem;
     private int resultNumber = 0;
 
+    List<GoalVO> doingList;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_doing, container, false);
-
         recyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerView);
         init();
+        today = String.valueOf(LocalDate.now());
 
-        getData();
+//        getData();
+
+        retrofitClient = retrofitClient.getInstance();
+
+        retrofitInterface = RetrofitClient.getRetrofitInterface();
+
+        retrofitInterface.getDoing(today).enqueue(new Callback<List<GoalVO>>() {
+            @Override
+            public void onResponse(Call<List<GoalVO>> call, Response<List<GoalVO>> response) {
+                doingList = response.body();
+
+                Log.d("샘플", doingList+"");
+
+                adapter = new RecyclerAdapter(doingList);
+
+                recyclerView.setAdapter(adapter);
+
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<GoalVO>> call, Throwable t) {
+
+            }
+        });
+
+
         newGoalBtn = (LinearLayout) rootview.findViewById(R.id.newGoalBtn);
 
         Calendar calendar = Calendar.getInstance();
@@ -83,7 +127,20 @@ public class DoingFragment extends Fragment {
 //                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
                 dialog = (View) View.inflate(GoalActivity, R.layout.goal_doing_dialog, null);
 
-                Data data = new Data();
+                GoalVO newGoalData = new GoalVO();
+
+                retrofitInterface.getNewGno().enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        temp_gno = response.body() + 1;
+                        Toast.makeText(GoalActivity, temp_gno+"", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable t) {
+
+                    }
+                });
 
 
                 edtTitle = (EditText) dialog.findViewById(R.id.edtGoalTitle);
@@ -97,6 +154,7 @@ public class DoingFragment extends Fragment {
                 dPicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
                     @Override
                     public void onDateChanged(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+
                         tem = true;
                         dYear = year;
                         dMonth = monthOfYear;
@@ -104,12 +162,15 @@ public class DoingFragment extends Fragment {
                         final Calendar dCalendar = Calendar.getInstance();
                         dCalendar.set(dYear, dMonth, dDay);
 
+
                         d = dCalendar.getTimeInMillis();
-                        String temp_date = dYear + "-" + (dMonth + 1) + "-" + dDay;
-                        Log.d("선택", temp_date+"");
                         r = (d-t) / (24 * 60 * 60 * 1000);
 
                         resultNumber = (int) r;
+
+                        temp_date = year + "-" + String.format("%02d", monthOfYear + 1) + "-" + String.format("%02d", dayOfMonth);
+
+                        Log.d("선택 : ", temp_date.toString());
                     }
                 });
                 dlg.setView(dialog);
@@ -120,31 +181,60 @@ public class DoingFragment extends Fragment {
                 dlg.setPositiveButton("추가", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        data.setDoingTitle(edtTitle.getText().toString());
-                        data.setDoingContent(edtContent.getText().toString());
-                        data.setDoingDday("D day");
+                        newGoalData.setGno(temp_gno);
+                        newGoalData.setGtitle(edtTitle.getText().toString());
+                        newGoalData.setGcontent(edtContent.getText().toString());
                         if (tem == true) {
                             if (resultNumber > 0) {
-                                data.setDoingDday(String.format("D-%d",resultNumber));
+                                newGoalData.setFinDate(temp_date);
                             } else if (resultNumber <= 0) {
-                                Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-//                                data.setDoingDday("D day");
-//                            } else {
-//                                int absR= Math.abs(resultNumber);
-//                                data.setDoingDday(String.format("D+%d",absR));
-//                            }
                         } else {
-                            Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
                             return;
-//                            data.setDoingDday("D day");
                         }
+                        newGoalData.setSetDate(today);
+                        newGoalData.setMno(1);
+
+                        Toast.makeText(GoalActivity, temp_date+"", Toast.LENGTH_SHORT).show();
+
+//                        if (tem == true) {
+//                            if (resultNumber > 0) {
+//                                data.setDoingDday(String.format("D-%d",resultNumber));
+//                            } else if (resultNumber <= 0) {
+//                                Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+//                                return;
+//                            }
+////                                data.setDoingDday("D day");
+////                            } else {
+////                                int absR= Math.abs(resultNumber);
+////                                data.setDoingDday(String.format("D+%d",absR));
+////                            }
+//                        } else {
+//                            Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+//                            return;
+////                            data.setDoingDday("D day");
+//                        }
 //                        Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
                         // 날짜 미 선택시 DatePicker는 현재 날짜로 설정되어있는데 메인에선 계산된 날짜 값이 출력 되므로,
                         // tem에 boolean값을 주어 날짜 미 선택시 반드시 D day가 나오도록 조건 설정
 
-                        adapter.addItem(data);
+                        retrofitInterface.registerGoal(newGoalData).enqueue(new Callback<GoalVO>() {
+                            @Override
+                            public void onResponse(Call<GoalVO> call, Response<GoalVO> response) {
+                                Toast.makeText(GoalActivity, "새 목표 입력", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<GoalVO> call, Throwable t) {
+                                Log.d("오류", t+"");
+
+                            }
+                        });
+
+                        adapter.addItem(newGoalData);
 
                         adapter.notifyDataSetChanged();
 
@@ -172,8 +262,6 @@ public class DoingFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new RecyclerAdapter();
-        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -188,26 +276,30 @@ public class DoingFragment extends Fragment {
 
 
 
-    private void getData() {
-        List<String> listTitle = new ArrayList<>();
-
-        List<String> listContent = new ArrayList<>();
-
-        for (int i = 0; i < listTitle.size(); i++) {
-
-            Data data = new Data();
-            data.setDoingTitle(listTitle.get(i));
-            data.setDoingDday(listContent.get(i));
-
-            adapter.addItem(data);
-        }
-
-        adapter.notifyDataSetChanged();
-    }
+//    private void getData() {
+//        List<String> listTitle = new ArrayList<>();
+//
+//        List<String> listContent = new ArrayList<>();
+//
+//        for (int i = 0; i < listTitle.size(); i++) {
+//
+//            Data data = new Data();
+//            data.setDoingTitle(listTitle.get(i));
+//            data.setDoingDday(listContent.get(i));
+//
+//            adapter.addItem(data);
+//        }
+//
+//        adapter.notifyDataSetChanged();
+//    }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
-        private ArrayList<Data> listData = new ArrayList<Data>();
+        private List<GoalVO> listData;
+
+        private RecyclerAdapter(List<GoalVO> listData) {
+            this.listData = listData;
+        }
 
         @NonNull
         @Override
@@ -226,7 +318,7 @@ public class DoingFragment extends Fragment {
             return listData.size();
         }
 
-        void addItem(Data data) {
+        void addItem(GoalVO data) {
             listData.add(data);
         }
 
@@ -247,7 +339,7 @@ public class DoingFragment extends Fragment {
                     public void onClick(View view) {
 //                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
 
-                        Data sel_data = listData.get(getAdapterPosition());
+                        GoalVO sel_data = listData.get(getAdapterPosition());
 
                         dialog = (View) View.inflate(GoalActivity, R.layout.goal_doing_dialog, null);
 
@@ -255,7 +347,7 @@ public class DoingFragment extends Fragment {
                         edtContent = (EditText) dialog.findViewById(R.id.edtGoalContent);
                         dPicker = (DatePicker) dialog.findViewById(R.id.goalDatePicker);
                         edtTitle.setText(doingTitle.getText().toString());
-                        edtContent.setText(sel_data.getDoingContent());
+                        edtContent.setText(sel_data.getGcontent());
 //                        edtContent.setText();
 
                         AlertDialog.Builder dlg = new AlertDialog.Builder(GoalActivity);
@@ -284,27 +376,21 @@ public class DoingFragment extends Fragment {
                         dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                sel_data.setDoingTitle(edtTitle.getText().toString());
+                                sel_data.setGcontent(edtTitle.getText().toString());
                                 if (tem == true) {
                                     if (resultNumber > 0) {
-                                        sel_data.setDoingDday(String.format("D-%d",resultNumber));
+                                        sel_data.setFinDate(temp_date);
                                     } else if (resultNumber <= 0) {
-                                        Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
                                         return;
-//                                        sel_data.setDoingDday("D day");
-//                                    } else {
-//                                        int absR= Math.abs(resultNumber);
-//                                        sel_data.setDoingDday(String.format("D+%d",absR));
+                                    } else {
+                                        Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                        return;
                                     }
-                                } else {
-                                    Toast.makeText(getContext(), "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
-                                    return;
-//                                    sel_data.setDoingDday("D day");
                                 }
 //                                Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
 
                                 listData.set(getAdapterPosition(), sel_data);
-
 
                                 adapter.notifyDataSetChanged();
 
@@ -327,9 +413,9 @@ public class DoingFragment extends Fragment {
                 });
             }
 
-            void onBind(Data data) {
-                doingTitle.setText(data.getDoingTitle());
-                doingDday.setText(data.getDoingDday());
+            void onBind(GoalVO data) {
+                doingTitle.setText(data.getGtitle());
+                doingDday.setText("종료 : " + data.getFinDate());
             }
         }
     }
