@@ -169,6 +169,8 @@ public class ExerciseActivity extends AppCompatActivity {
 
                             }
                         });
+                        
+
 
                         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
 
@@ -218,10 +220,7 @@ public class ExerciseActivity extends AppCompatActivity {
                                 newExerData.setEkcal(temp_result);
                                 newExerData.setEdate(today);
                                 newExerData.setMno(1);
-
-
-
-
+                                newExerData.setEno(temp_Eno);
 
                                 temp_result_kcal += temp_result;
 
@@ -238,8 +237,6 @@ public class ExerciseActivity extends AppCompatActivity {
                                         Log.d("오류", t+"");
                                     }
                                 });
-
-                                newExerData.setEno(temp_Eno);
                                 adapter.addItem(newExerData);
                                 adapter.notifyDataSetChanged();
                             }

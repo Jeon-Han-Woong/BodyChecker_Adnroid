@@ -1,6 +1,7 @@
 package org.ict.bodychecker.retrofit;
 
 import org.ict.bodychecker.ValueObject.ExerciseVO;
+import org.ict.bodychecker.ValueObject.GoalVO;
 import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.ValueObject.MemberVO;
 
@@ -32,6 +33,16 @@ public interface RetrofitInterface {
 
     @DELETE("exer/remove/{eno}")
     Call<Void> removeExer(@Path("eno") int eno);
+
+    /*================== Goal ====================*/
+    @GET("goal/doing/{fin_date}.json")
+    Call<List<GoalVO>> getDoing(@Path("fin_date") String fin_date);
+
+    @GET("goal/newgno.json")
+    Call<Integer> getNewGno();
+
+    @POST("goal/new")
+    Call<GoalVO> registerGoal(@Body GoalVO goal);
 
     /*================== Meal ====================*/
     @GET("meal/getList/{fdate}")
