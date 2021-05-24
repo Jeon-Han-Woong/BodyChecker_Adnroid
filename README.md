@@ -6,15 +6,13 @@
 ### 진행내용 2021/05/21 - Merge & Collaborator
 #### 전한웅
 
-- 레트로핏 연동 학습 완료
-- 운동 Rest 서버 구현 완료
-- Rest 서버와 Retrofit을 통한 DB연동 완료
+- 목표 Rest 구현 완료
+- 목표 Retrofit 적용 진행 중 (조회 ,추가 까지 완료)
 
 ------
 
 #### 민규태
 
-- 파이어베이스 -> 레트로핏 변경
-- Meal addFoods 메서드 완성
-- Meal removeFoods메서드 오류
+- 식단 Retrofit 적용 완료
+- 회원 가입 기능 구현 시작
 
