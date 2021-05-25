@@ -44,6 +44,12 @@ public interface RetrofitInterface {
     @POST("goal/new")
     Call<GoalVO> registerGoal(@Body GoalVO goal);
 
+    @PUT("goal/modify/{gno}")
+    Call<GoalVO> modifyGoal(@Path("gno") int gno, @Body GoalVO goal);
+
+    @DELETE("goal/remove/{gno}")
+    Call<Void> removeGoal(@Path("gno") int gno);
+
     /*================== Meal ====================*/
     @GET("meal/getlist/{fdate}")
     Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate);

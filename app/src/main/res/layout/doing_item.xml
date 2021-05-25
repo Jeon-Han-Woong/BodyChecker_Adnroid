@@ -16,6 +16,12 @@
         android:background="@drawable/border">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:id="@+id/myGno"></TextView>
+
+        <TextView
             android:id="@+id/doingTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +38,7 @@
             android:layout_weight="1"></View>
 
         <TextView
-            android:id="@+id/doingDday"
+            android:id="@+id/doingDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"

@@ -7,13 +7,21 @@
     android:layout_marginBottom="8dp"
     android:background="@android:color/white">
 
+
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_weight="1"
         android:layout_margin="5dp"
-        android:gravity="center"
-        android:background="@drawable/border_success">
+        android:orientation="horizontal"
+        android:background="@drawable/border_choice">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:id="@+id/myFinGno"></TextView>
 
         <TextView
             android:id="@+id/finishTitle"
@@ -24,9 +32,24 @@
             android:text="목표이름"
             android:textColor="@color/white"
             android:textSize="25dp"
+            android:layout_marginLeft="40dp"
             android:textStyle="bold"></TextView>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"></View>
 
+        <TextView
+            android:id="@+id/finishDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:layout_gravity="center|right"
+            android:textColor="@color/white"
+            android:text="목표"
+            android:layout_marginRight="30dp"
+            android:textSize="20dp" />
     </LinearLayout>
 
 </LinearLayout>
