@@ -41,13 +41,13 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/male"
+                android:id="@+id/modi_male"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="남자" />
 
             <RadioButton
-                android:id="@+id/female"
+                android:id="@+id/modi_female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="여자" />
@@ -61,6 +61,20 @@
             android:hint="이름"
             android:textSize="20dp" />
 
+        <EditText
+            android:id="@+id/modi_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="비밀번호"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/modi_pwdChk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="비밀번호확인"
+            android:textSize="20dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,6 +85,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:maxLength="3"
                 android:hint="키"
                 android:textSize="20dp" />
 
@@ -79,6 +94,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:maxLength="3"
                 android:hint="체중"
                 android:textSize="20dp" />
 

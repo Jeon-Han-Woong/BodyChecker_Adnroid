@@ -49,13 +49,14 @@
                 android:textColor="@color/black" />
 
             <RadioButton
-                android:id="@+id/male"
+                android:id="@+id/join_male"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="남자" />
 
             <RadioButton
-                android:id="@+id/female"
+                android:id="@+id/join_female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="여자" />
@@ -121,7 +122,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="키"
+                android:maxLength="3"
+                android:hint="키(cm)"
                 android:textSize="20dp" />
 
             <EditText
@@ -129,7 +131,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="체중"
+                android:maxLength="3"
+                android:hint="체중(kg)"
                 android:textSize="20dp" />
 
         </LinearLayout>

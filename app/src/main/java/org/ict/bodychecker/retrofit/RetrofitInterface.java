@@ -45,7 +45,7 @@ public interface RetrofitInterface {
     Call<GoalVO> registerGoal(@Body GoalVO goal);
 
     /*================== Meal ====================*/
-    @GET("meal/getList/{fdate}")
+    @GET("meal/getlist/{fdate}")
     Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate);
 
     @POST("meal/addFoods")
@@ -55,8 +55,11 @@ public interface RetrofitInterface {
     Call<String> removeFoods(@Path("fdate") String fdate, @Path("ftime") String ftime);
 
     /*================== Member ====================*/
-    @POST("member/check/{mid}")
-    Call<Integer> check(@Path("mid") String mid);
+    @GET("member/getinfo/{mno}")
+    Call<MemberVO> getInfo(@Path("mno") int mno);
+
+    @POST("member/check")
+    Call<String> check(@Body String mid);
 
     @POST("member/join")
     Call<String> join(@Body MemberVO memberVO);
@@ -65,7 +68,7 @@ public interface RetrofitInterface {
     Call<MemberVO> login(@Body MemberVO memberVO);
 
     @PUT("member/modify")
-    Call<String> modify(@Body MemberVO memberVO);
+    Call<String> modifyInfo(@Body MemberVO memberVO);
 
     @DELETE("member/remove/{mno}")
     Call<String> remove(@Path("mno") int mno);
