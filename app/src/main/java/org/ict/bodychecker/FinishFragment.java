@@ -118,12 +118,14 @@ public class FinishFragment extends Fragment {
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView finishTitle;
+            private TextView finishTitle, finishDate, myFinGno;
 
             ItemViewHolder(View itemView) {
                 super(itemView);
 
                 finishTitle = itemView.findViewById(R.id.finishTitle);
+                finishDate = itemView.findViewById(R.id.finishDate);
+                myFinGno = itemView.findViewById(R.id.myFinGno);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -172,8 +174,7 @@ public class FinishFragment extends Fragment {
             }
 
             void onBind(Data2 data) {
-                finishTitle.setText(data.getFinishTitle());
-            }
+                finishTitle.setText(data.getFinishTitle()); }
         }
     }
 }

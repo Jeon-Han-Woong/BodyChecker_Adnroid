@@ -53,7 +53,7 @@ public class DoingFragment extends Fragment {
     DatePicker dPicker;
     LinearLayout newGoalBtn;
 
-    String today, temp_date;
+    String today, temp_date, temp_date2;
 
     private int tYear, tMonth, tDay;
     private int dYear = 1, dMonth = 1, dDay = 1;
@@ -61,7 +61,7 @@ public class DoingFragment extends Fragment {
     private int temp_gno;
 
     private long d, t, r;
-    boolean tem;
+    boolean tem, exitOk = false;
     private int resultNumber = 0;
 
     List<GoalVO> doingList;
@@ -165,7 +165,7 @@ public class DoingFragment extends Fragment {
 
                         d = dCalendar.getTimeInMillis();
                         r = (d-t) / (24 * 60 * 60 * 1000);
-
+                        exitOk = true;
                         resultNumber = (int) r;
 
                         temp_date = year + "-" + String.format("%02d", monthOfYear + 1) + "-" + String.format("%02d", dayOfMonth);
@@ -175,31 +175,29 @@ public class DoingFragment extends Fragment {
                 });
                 dlg.setView(dialog);
 
-
-
-
                 dlg.setPositiveButton("추가", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        newGoalData.setGno(temp_gno);
-                        newGoalData.setGtitle(edtTitle.getText().toString());
-                        newGoalData.setGcontent(edtContent.getText().toString());
-                        if (tem == true) {
-                            if (resultNumber > 0) {
-                                newGoalData.setFinDate(temp_date);
-                            } else if (resultNumber <= 0) {
-                                Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        } else {
-                            Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        newGoalData.setSetDate(today);
-                        newGoalData.setMno(1);
-
-                        Toast.makeText(GoalActivity, temp_date+"", Toast.LENGTH_SHORT).show();
-
+//                        newGoalData.setGno(temp_gno);
+//                        newGoalData.setGtitle(edtTitle.getText().toString());
+//                        newGoalData.setGcontent(edtContent.getText().toString());
+//                        if (tem == true) {
+//                            if (resultNumber > 0) {
+//                                newGoalData.setFinDate(temp_date);
+//                                exitOk = true;
+//                            } else if (resultNumber <= 0) {
+//                                Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+//                                return;
+//                            }
+//                        } else {
+//                            Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//                        newGoalData.setSetDate(today);
+//                        newGoalData.setMno(1);
+//
+//                        Toast.makeText(GoalActivity, temp_date+"", Toast.LENGTH_SHORT).show();
+//=============================================================
 //                        if (tem == true) {
 //                            if (resultNumber > 0) {
 //                                data.setDoingDday(String.format("D-%d",resultNumber));
@@ -221,31 +219,82 @@ public class DoingFragment extends Fragment {
                         // 날짜 미 선택시 DatePicker는 현재 날짜로 설정되어있는데 메인에선 계산된 날짜 값이 출력 되므로,
                         // tem에 boolean값을 주어 날짜 미 선택시 반드시 D day가 나오도록 조건 설정
 
-                        retrofitInterface.registerGoal(newGoalData).enqueue(new Callback<GoalVO>() {
-                            @Override
-                            public void onResponse(Call<GoalVO> call, Response<GoalVO> response) {
-                                Toast.makeText(GoalActivity, "새 목표 입력", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onFailure(Call<GoalVO> call, Throwable t) {
-                                Log.d("오류", t+"");
-
-                            }
-                        });
-
-                        adapter.addItem(newGoalData);
-
-                        adapter.notifyDataSetChanged();
-
-                        tem = false;
+//                        retrofitInterface.registerGoal(newGoalData).enqueue(new Callback<GoalVO>() {
+//                            @Override
+//                            public void onResponse(Call<GoalVO> call, Response<GoalVO> response) {
+//                                Toast.makeText(GoalActivity, "새 목표 입력", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<GoalVO> call, Throwable t) {
+//                                Log.d("오류", t+"");
+//
+//                            }
+//                        });
+//
+//                        adapter.addItem(newGoalData);
+//
+//                        adapter.notifyDataSetChanged();
+//
+//                        tem = false;
 
                     }
                 });
 
                 dlg.setNegativeButton("취소", null);
 
-                dlg.show();
+                final AlertDialog dia = dlg.create();
+
+                dia.show();
+
+                dia.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (exitOk) {
+                            newGoalData.setGno(temp_gno);
+                            newGoalData.setGtitle(edtTitle.getText().toString());
+                            newGoalData.setGcontent(edtContent.getText().toString());
+                            if (tem == true) {
+                                if (resultNumber > 0) {
+                                    newGoalData.setFinDate(temp_date);
+                                    exitOk = true;
+                                } else if (resultNumber <= 0) {
+                                    Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            } else {
+                                Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            newGoalData.setSetDate(today);
+                            newGoalData.setMno(1);
+
+                            Toast.makeText(GoalActivity, temp_date+"", Toast.LENGTH_SHORT).show();
+                            retrofitInterface.registerGoal(newGoalData).enqueue(new Callback<GoalVO>() {
+                                @Override
+                                public void onResponse(Call<GoalVO> call, Response<GoalVO> response) {
+                                    Toast.makeText(GoalActivity, "새 목표 입력", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailure(Call<GoalVO> call, Throwable t) {
+                                    Log.d("오류", t+"");
+
+                                }
+                            });
+
+                            adapter.addItem(newGoalData);
+
+                            adapter.notifyDataSetChanged();
+
+                            tem = false;
+
+                            dia.dismiss();
+                        } else {
+                            Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
@@ -324,14 +373,15 @@ public class DoingFragment extends Fragment {
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView doingTitle, doingDday;
+            private TextView doingTitle, doingDday, myGno;
             private EditText doingContent;
 
             ItemViewHolder(View itemView) {
                 super(itemView);
 
                 doingTitle = itemView.findViewById(R.id.doingTitle);
-                doingDday = itemView.findViewById(R.id.doingDday);
+                doingDday = itemView.findViewById(R.id.doingDate);
+                myGno = itemView.findViewById(R.id.myGno);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -340,7 +390,7 @@ public class DoingFragment extends Fragment {
 //                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
 
                         GoalVO sel_data = listData.get(getAdapterPosition());
-
+                        Toast.makeText(getActivity().getApplicationContext(), myGno.getText().toString(), Toast.LENGTH_SHORT).show();
                         dialog = (View) View.inflate(GoalActivity, R.layout.goal_doing_dialog, null);
 
                         edtTitle = (EditText) dialog.findViewById(R.id.edtGoalTitle);
@@ -367,34 +417,37 @@ public class DoingFragment extends Fragment {
                                 d = dCalendar.getTimeInMillis();
                                 r = (d-t) / (24 * 60 * 60 * 1000);
 
+                                temp_date2 = year + "-" + String.format("%02d", monthOfYear + 1) + "-" + String.format("%02d", dayOfMonth);
+
                                 resultNumber = (int) r;
+                                exitOk = true;
                             }
                         });
 
                         dlg.setView(dialog);
 
-                        dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        dlg.setPositiveButton("변경", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                sel_data.setGcontent(edtTitle.getText().toString());
-                                if (tem == true) {
-                                    if (resultNumber > 0) {
-                                        sel_data.setFinDate(temp_date);
-                                    } else if (resultNumber <= 0) {
-                                        Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    } else {
-                                        Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                }
-//                                Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
-
-                                listData.set(getAdapterPosition(), sel_data);
-
-                                adapter.notifyDataSetChanged();
-
-                                tem = false;
+//                                sel_data.setGcontent(edtTitle.getText().toString());
+//                                if (tem == true) {
+//                                    if (resultNumber > 0) {
+//                                        sel_data.setFinDate(temp_date);
+//                                    } else if (resultNumber <= 0) {
+//                                        Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+//                                        return;
+//                                    } else {
+//                                        Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+//                                        return;
+//                                    }
+//                                }
+////                                Toast.makeText(GoalActivity, tem + "" ,Toast.LENGTH_SHORT).show();
+//
+//                                listData.set(getAdapterPosition(), sel_data);
+//
+//                                adapter.notifyDataSetChanged();
+//
+//                                tem = false;
                             }
                         });
 
@@ -402,13 +455,70 @@ public class DoingFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
+                                retrofitInterface.removeGoal(Integer.parseInt(myGno.getText().toString())).enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                    }
+                                });
+
                                 listData.remove(getAdapterPosition());
 
                                 adapter.notifyDataSetChanged();
                             }
                         });
 
-                        dlg.show();
+                        final AlertDialog dia = dlg.create();
+
+                        dia.show();
+
+                        dia.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (exitOk) {
+                                    sel_data.setGtitle(edtTitle.getText().toString());
+                                    sel_data.setGcontent(edtContent.getText().toString());
+                                    if (tem == true) {
+                                        if (resultNumber > 0) {
+                                            sel_data.setFinDate(temp_date2);
+                                            exitOk = true;
+                                        } else if (resultNumber <= 0) {
+                                            Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    } else {
+                                        Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    Toast.makeText(GoalActivity, temp_date2+"", Toast.LENGTH_SHORT).show();
+                                    retrofitInterface.modifyGoal(Integer.parseInt(myGno.getText().toString()), sel_data).enqueue(new Callback<GoalVO>() {
+                                        @Override
+                                        public void onResponse(Call<GoalVO> call, Response<GoalVO> response) {
+                                            Toast.makeText(GoalActivity, "목표 수정", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<GoalVO> call, Throwable t) {
+                                            Log.d("오류", t+"");
+
+                                        }
+                                    });
+
+                                    listData.set(getAdapterPosition(), sel_data);
+
+                                    adapter.notifyDataSetChanged();
+
+                                    tem = false;
+                                    dia.dismiss();
+                                } else {
+                                    Toast.makeText(GoalActivity, "현재 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
                 });
             }
@@ -416,6 +526,7 @@ public class DoingFragment extends Fragment {
             void onBind(GoalVO data) {
                 doingTitle.setText(data.getGtitle());
                 doingDday.setText("종료 : " + data.getFinDate());
+                myGno.setText(data.getGno()+"");
             }
         }
     }
