@@ -85,22 +85,27 @@ public class ModifyInfoActivity extends AppCompatActivity {
                 if(pwd.isEmpty() || pwd == null || pwdChk.isEmpty() || pwdChk == null) {
                     Toast.makeText(getApplicationContext(), "비밀번호 또는 비밀번호확인을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                if(!pwd.equals(pwdChk)) {
+                } else if(!pwd.equals(pwdChk)) {
                     Toast.makeText(getApplicationContext(), "비밀번호와 비밀번호 확인이 다릅니다.", Toast.LENGTH_SHORT).show();
                     return;
+                } else {
                 }
                 String birthday = birthDP.getYear() + "-" + String.format("%02d", birthDP.getMonth()+1) + "-" + String.format("%02d", birthDP.getDayOfMonth());
                 int height = Math.round(Float.parseFloat(edtHeight.getText().toString().trim()));
                 int weight = Math.round(Float.parseFloat(edtWeight.getText().toString().trim()));
                 int bmi = 0;
                 try {
-                    bmi = (int) Math.round( weight / Math.sqrt(height) );
+                    bmi = (int)(weight/((height*0.01)*(height*0.01)));
                 } catch(ArithmeticException e) {
                     Toast.makeText(getApplicationContext(), "키는 0이하가 될 수 없습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                if(genderRG.getCheckedRadioButtonId() == R.id.modi_male) {
+                    info.setGender(1);
+                } else if(genderRG.getCheckedRadioButtonId() == R.id.modi_female) {
+                    info.setGender(2);
+                }
                 if(name!=null && !name.equals("")) info.setMname(name);
                 else {
                     Toast.makeText(getApplicationContext(), "이름을 입력해주세요.", Toast.LENGTH_SHORT).show();
@@ -122,9 +127,20 @@ public class ModifyInfoActivity extends AppCompatActivity {
                 else {
                     return;
                 }
+                info.setPwd(pwd);
                 info.setMno(2);
 
-                retrofitInterface.modifyInfo(info);
+                retrofitInterface.modifyInfo(info).enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Toast.makeText(getApplicationContext(), "회원정보가 수정되었습니다.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
 
                 finish();
             }

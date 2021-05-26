@@ -65,6 +65,7 @@
             android:id="@+id/modi_pwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:password="true"
             android:hint="비밀번호"
             android:textSize="20dp" />
 
@@ -72,6 +73,7 @@
             android:id="@+id/modi_pwdChk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:password="true"
             android:hint="비밀번호확인"
             android:textSize="20dp" />
 

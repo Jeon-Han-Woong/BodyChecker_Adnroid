@@ -23,6 +23,7 @@ import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.android.material.button.MaterialButton;
 
 import org.ict.bodychecker.ValueObject.MealVO;
+import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 
@@ -57,7 +58,7 @@ public class MealActivity extends AppCompatActivity {
     MaterialButton moreDaysAgoBtn, sixDaysAgoBtn, fiveDaysAgoBtn, fourDaysAgoBtn, threeDaysAgoBtn, twoDaysAgoBtn, oneDaysAgoBtn, todayBtn;
     DatePicker mealDatePick;
 
-    float rdi = ((168-100) * 0.9f * 30);
+    float rdi = 0;
     int progress = 0;
 
     @Override
@@ -108,9 +109,7 @@ public class MealActivity extends AppCompatActivity {
         fiveDaysAgoBtn.setText(setBtnDate(-5));
         sixDaysAgoBtn.setText(setBtnDate(-6));
 
-        circlebar.setProgress(progress);
-        all.setText("일일 권장량 " + String.valueOf((int)rdi) + "kcal 중 " + String.valueOf(progress) + "kcal 섭취");
-
+        getRDI(2);
         getDBList(date);
 
 //======================================== onclick 이벤트 =========================================
@@ -167,8 +166,7 @@ public class MealActivity extends AppCompatActivity {
         oneDaysAgoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = today.plusDays(-1);
-                date = dbFormat.format(today);
+                date = dbFormat.format(today.plusDays(-1));
                 getDBList(date);
             }
         });//oneDayAgo.onclick
@@ -176,8 +174,7 @@ public class MealActivity extends AppCompatActivity {
         twoDaysAgoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = today.plusDays(-2);
-                date = dbFormat.format(today);
+                date = dbFormat.format(today.plusDays(-2));
                 getDBList(date);
             }
         });//oneDayAgo.onclick
@@ -185,8 +182,7 @@ public class MealActivity extends AppCompatActivity {
         threeDaysAgoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = today.plusDays(-3);
-                date = dbFormat.format(today);
+                date = dbFormat.format(today.plusDays(-3));
                 getDBList(date);
             }
         });//oneDayAgo.onclick
@@ -194,8 +190,7 @@ public class MealActivity extends AppCompatActivity {
         fourDaysAgoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = today.plusDays(-4);
-                date = dbFormat.format(today);
+                date = dbFormat.format(today.plusDays(-4));
                 getDBList(date);
             }
         });//oneDayAgo.onclick
@@ -203,8 +198,7 @@ public class MealActivity extends AppCompatActivity {
         fiveDaysAgoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = today.plusDays(-5);
-                date = dbFormat.format(today);
+                date = dbFormat.format(today.plusDays(-5));
                 getDBList(date);
             }
         });//oneDayAgo.onclick
@@ -212,8 +206,7 @@ public class MealActivity extends AppCompatActivity {
         sixDaysAgoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = today.plusDays(-6);
-                date = dbFormat.format(today);
+                date = dbFormat.format(today.plusDays(-6));
                 getDBList(date);
             }
         });//oneDayAgo.onclick
@@ -234,8 +227,6 @@ public class MealActivity extends AppCompatActivity {
                         mealDatePick = (DatePicker) meal_calendar.findViewById(R.id.mealDatePick);
 
                         date = mealDatePick.getYear()+"-"+String.format("%02d", mealDatePick.getMonth()+1)+"-"+String.format("%02d", mealDatePick.getDayOfMonth())+TIME;
-                        today = LocalDateTime.parse(date);
-                        date = dbFormat.format(today);
                         getDBList(date);
                     }
                 });//dlg.positive
@@ -256,8 +247,8 @@ public class MealActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
         }//else
 
-//        circlebar.setProgress((int)(progress/rdi*100));
-//        all.setText("일일 권장량 " + (int)rdi + "kcal 중 " + progress + "kcal 섭취");
+        circlebar.setProgress((int)(progress/rdi*100));
+        all.setText("일일 권장량 " + (int)rdi + "kcal 중 " + progress + "kcal 섭취");
 
         super.onActivityResult(requestCode, resultCode, data);
     }//onActivityResult
@@ -300,6 +291,7 @@ public class MealActivity extends AppCompatActivity {
                     progress += mealVO.getFkcal();
                 });//forEach
 
+                getRDI(2);
                 circlebar.setProgress((int)(progress/rdi*100));
                 all.setText("일일 권장량 " + String.valueOf((int)rdi) + "kcal 중 " + String.valueOf(progress) + "kcal 섭취");
 
@@ -324,6 +316,21 @@ public class MealActivity extends AppCompatActivity {
             }//onFailure
         });
     }//getDBList
+
+    private void getRDI(int mno) {
+        retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
+            @Override
+            public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
+                MemberVO info = response.body();
+                rdi = (int)((info.getHeight()-100) * (info.getGender() == 1 ? 0.9f : 0.85f) * 30);
+            }
+
+            @Override
+            public void onFailure(Call<MemberVO> call, Throwable t) {
+
+            }
+        });
+    }//getRDI
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

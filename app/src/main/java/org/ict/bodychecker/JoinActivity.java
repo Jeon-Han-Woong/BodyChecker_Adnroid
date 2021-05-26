@@ -130,7 +130,7 @@ public class JoinActivity extends AppCompatActivity {
                     height = Math.round(Float.parseFloat(join_height.getText().toString().trim()));
                     weight = Math.round(Float.parseFloat(join_weight.getText().toString().trim()));
                     try {
-                        bmi = (int) Math.round( weight / Math.sqrt(height) );
+                        bmi = (int)(weight/((height*0.01)*(height*0.01)));
                     } catch(ArithmeticException e) {
                         Toast.makeText(getApplicationContext(), "키는 0이하가 될 수 없습니다.", Toast.LENGTH_SHORT).show();
                         return;

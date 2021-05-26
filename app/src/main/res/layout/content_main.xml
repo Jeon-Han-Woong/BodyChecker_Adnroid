@@ -98,21 +98,21 @@
                 android:layout_weight="1"></View>
 
             <TextView
+                android:id="@+id/main_dayKcal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|right"
                 android:layout_margin="10dp"
                 android:text="0"
-                android:id="@+id/dayKcal"
                 android:textSize="30dp"></TextView>
 
             <TextView
+                android:id="@+id/main_maxKcal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:layout_gravity="center|right"
                 android:text="/2318kcal"
-                android:id="@+id/allDayKcal"
                 android:textSize="30dp"></TextView>
 
         </LinearLayout>
