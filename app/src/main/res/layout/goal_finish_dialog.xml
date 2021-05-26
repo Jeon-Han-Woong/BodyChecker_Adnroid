@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        android:text="목표이다"
+        android:textStyle="bold"
+        android:id="@+id/edtFinishTitle">
+    </TextView>
+
+    <TextView
+        android:id="@+id/finishContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="목표내용"
+        android:lines="4"
+        android:textSize="25sp"></TextView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/goalTerm"
+        android:text="기간"
+        android:gravity="center"
+        android:layout_marginBottom="30dp"
+        android:textSize="20sp"></TextView>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioSelect"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="15dp"
+        android:visibility="invisible">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="성공"
+            android:layout_marginRight="20dp"
+            android:id="@+id/btnSuccess"
+            android:visibility="invisible"></RadioButton>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="실패"
+            android:id="@+id/btnFail"
+            android:visibility="invisible"></RadioButton>
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="성공 여부 선택"
+        android:id="@+id/selectComplete"
+        android:visibility="invisible"></Button>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/goalState"
+        android:text="도전 상태"
+        android:visibility="invisible"
+        android:textSize="30sp"></TextView>
+</LinearLayout>

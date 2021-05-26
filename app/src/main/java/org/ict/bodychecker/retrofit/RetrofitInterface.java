@@ -50,6 +50,12 @@ public interface RetrofitInterface {
     @DELETE("goal/remove/{gno}")
     Call<Void> removeGoal(@Path("gno") int gno);
 
+    @GET("goal/finish/{fin_date}.json")
+    Call<List<GoalVO>> getFinish(@Path("fin_date") String fin_date);
+
+    @PUT("goal/finish/success/{gno}")
+    Call<GoalVO> selectSuccess(@Path("gno") int gno, @Body GoalVO goal);
+
     /*================== Meal ====================*/
     @GET("meal/getlist/{fdate}")
     Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate);
