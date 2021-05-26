@@ -1,6 +1,7 @@
 package org.ict.bodychecker;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,7 +11,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,9 +26,30 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.ict.bodychecker.ValueObject.MealVO;
+import org.ict.bodychecker.ValueObject.MemberVO;
+import org.ict.bodychecker.retrofit.RetrofitClient;
+import org.ict.bodychecker.retrofit.RetrofitInterface;
 import org.w3c.dom.Text;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
+
+    LocalDateTime today = LocalDateTime.now();
+    DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String date = dbFormat.format(today);
+
+    RetrofitClient retrofitClient;
+    RetrofitInterface retrofitInterface;
 
     DrawerLayout drawerLayout;
     Context context = this;
@@ -36,13 +60,18 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout goExerciseBtn, goMealBtn;
     TextView drinkWater, nowWater;
     Button waterPlus, waterMinus;
-    int temp_water;
+    int temp_water = 0, rdi = 0;
 
+    TextView profileName, profileAge, profileHeight, profileWeight, profileBMI, profileBMIName;
+    TextView main_dayKcal, main_maxKcal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        retrofitClient = RetrofitClient.getInstance();
+        retrofitInterface = RetrofitClient.getRetrofitInterface();
 
         goExerciseBtn = (LinearLayout) findViewById(R.id.goExerciseBtn);
         goMealBtn = (LinearLayout) findViewById(R.id.goMealBtn);
@@ -121,10 +150,13 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.menubar);
         hitext = (TextView) findViewById(R.id.hitext);
 
-
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        getMealInfo();
+        getProfileInfo(2);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -147,13 +179,97 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), FAQActivity.class);
                     startActivity(intent);
                 }
+
                 return false;
             }
         });
 
-    }
+    }//onCreate
 
+    private void getProfileInfo(int mno) {
+        retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
+            @Override
+            public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
+                profileName = (TextView) findViewById(R.id.profileName);
+                profileAge = (TextView) findViewById(R.id.profileAge);
+                profileHeight = (TextView) findViewById(R.id.profileHeight);
+                profileWeight = (TextView) findViewById(R.id.profileWeight);
+                profileBMI = (TextView) findViewById(R.id.profileBMI);
+                profileBMIName = (TextView) findViewById(R.id.profileBMIName);
 
+                MemberVO info = response.body();
+                String name = info.getMname();
+                String birthday = info.getBirthday();
+                String height = String.valueOf(info.getHeight()).concat("cm");
+                String weight = String.valueOf(info.getWeight()).concat("kg");
+                int bmi = info.getBmi();
+
+                profileName.setText(name);
+                profileAge.setText(birthday);
+                profileHeight.setText(height);
+                profileWeight.setText(weight);
+                profileBMI.setText(String.valueOf(bmi));
+                if(bmi < 18.5) {
+                    profileBMIName.setText("확찌자");
+                    profileBMIName.setTextColor(Color.rgb(51, 102, 153));
+                } else if(18.5 < bmi && bmi < 23) {
+                    profileBMIName.setText("안찐자");
+                    profileBMIName.setTextColor(Color.rgb(121, 210, 121));
+                } else if(23 <= bmi && bmi < 25) {
+                    profileBMIName.setText("좀찐자");
+                    profileBMIName.setTextColor(Color.rgb(233, 105, 0));
+                } else if(25 <= bmi && bmi < 28) {
+                    profileBMIName.setText("확찐자");
+                    profileBMIName.setTextColor(Color.rgb(192, 39, 34));
+                } else if(28 <= bmi) {
+                    profileBMIName.setText("확!찐자");
+                    profileBMIName.setTextColor(Color.rgb(209, 0, 0));
+                }//else if
+
+            }//onResponse
+
+            @Override
+            public void onFailure(Call<MemberVO> call, Throwable t) {
+                t.printStackTrace();
+            }//onFailure
+        });
+    }//getProfileInfo
+
+    private void getMealInfo() {
+        retrofitInterface.getDailyMeal(date).enqueue(new Callback<List<MealVO>>() {
+            @Override
+            public void onResponse(Call<List<MealVO>> call, Response<List<MealVO>> response) {
+                main_dayKcal = (TextView) findViewById(R.id.main_dayKcal);
+                main_maxKcal = (TextView) findViewById(R.id.main_maxKcal);
+
+                int kcal = response.body().stream().mapToInt(MealVO::getFkcal).sum();
+                getRDI(2);
+                main_dayKcal.setText(String.valueOf(kcal));
+                main_maxKcal.setText("/".concat(String.valueOf(rdi)).concat("kcal"));
+            }
+
+            @Override
+            public void onFailure(Call<List<MealVO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }//getMealInfo
+
+    private void getRDI(int mno) {
+        retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
+            @Override
+            public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
+                MemberVO info = response.body();
+                Float gen = info.getGender() == 1 ? 0.9f : 0.85f;
+                rdi = (int)((info.getHeight()-100) * gen * 30);
+            }
+
+            @Override
+            public void onFailure(Call<MemberVO> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }//getRDI
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

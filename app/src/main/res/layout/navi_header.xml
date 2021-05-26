@@ -41,52 +41,58 @@
             android:gravity="center">
 
             <TextView
+                android:id="@+id/profileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="사용자"
                 android:textSize="25dp"
-                android:layout_margin="3dp"
-                android:id="@+id/profileName"></TextView>
+                android:layout_margin="3dp" />
 
             <TextView
+                android:id="@+id/profileAge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1996-05-06"
+                android:textStyle="bold"
+                android:text=""
                 android:textSize="15dp"
-                android:layout_margin="3dp"
-                android:id="@+id/profileAge"></TextView>
+                android:layout_margin="3dp" />
 
             <TextView
+                android:id="@+id/profileHeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="186cm"
+                android:textStyle="bold"
+                android:text=""
                 android:textSize="15dp"
-                android:layout_margin="3dp"
-                android:id="@+id/profileHeight"></TextView>
+                android:layout_margin="3dp" />
 
             <TextView
+                android:id="@+id/profileWeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="88kg"
+                android:textStyle="bold"
+                android:text=""
                 android:textSize="15dp"
-                android:layout_margin="3dp"
-                android:id="@+id/profileWeight"></TextView>
+                android:layout_margin="3dp" />
 
             <TextView
+                android:id="@+id/profileBMI"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="25.61"
-                android:layout_margin="3dp"
-                android:id="@+id/profileBMI"></TextView>
+                android:textStyle="bold"
+                android:text=""
+                android:layout_margin="3dp" />
 
             <TextView
+                android:id="@+id/profileBMIName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="확찐자"
                 android:textSize="20dp"
-                android:textColor="#ff0000"
-                android:layout_margin="5dp"
-                android:id="@+id/profileBMIName"></TextView>
+                android:textColor="#D30000"
+                android:layout_margin="5dp" />
 
         </LinearLayout>
 
