@@ -145,11 +145,11 @@ public class ExerciseActivity extends AppCompatActivity {
 
                     recyclerView3.setAdapter(adapter);
 
-                    for (int i = 0; i < exerList.size(); i++) {
-                        temp_result_kcal = temp_result_kcal + exerList.get(i).getEkcal();
-                    }
-
-                    consumeKcal.setText(temp_result_kcal+" kcal");
+//                    for (int i = 0; i < exerList.size(); i++) {
+//                        temp_result_kcal = temp_result_kcal + exerList.get(i).getEkcal();
+//                    }
+//
+//                    consumeKcal.setText(temp_result_kcal+" kcal");
 
                     adapter.notifyDataSetChanged();
 
@@ -167,12 +167,15 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         });
 
+        getDailySum(date);
+
         eTodayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 today = LocalDateTime.now();
                 date = dbFormat.format(today);
                 getDBList(date);
+                getDailySum(date);
             }
         });//today.onclick
 
@@ -181,6 +184,7 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-1));
                 getDBList(date);
+                getDailySum(date);
             }
         });//oneDayAgo.onclick
 
@@ -189,6 +193,7 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-2));
                 getDBList(date);
+                getDailySum(date);
             }
         });//oneDayAgo.onclick
 
@@ -197,6 +202,7 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-3));
                 getDBList(date);
+                getDailySum(date);
             }
         });//oneDayAgo.onclick
 
@@ -205,6 +211,7 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-4));
                 getDBList(date);
+                getDailySum(date);
             }
         });//oneDayAgo.onclick
 
@@ -213,6 +220,7 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-5));
                 getDBList(date);
+                getDailySum(date);
             }
         });//oneDayAgo.onclick
 
@@ -221,6 +229,7 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-6));
                 getDBList(date);
+                getDailySum(date);
             }
         });//oneDayAgo.onclick
 
@@ -239,8 +248,9 @@ public class ExerciseActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         exerDatePick = (DatePicker) exer_calendar.findViewById(R.id.exerDatePick);
 
-                        date = exerDatePick.getYear()+"-"+String.format("%02d", exerDatePick.getMonth()+1)+"-"+String.format("%02d", exerDatePick.getDayOfMonth())+TIME;
+                        date = exerDatePick.getYear()+"-"+String.format("%02d", exerDatePick.getMonth()+1)+"-"+String.format("%02d", exerDatePick.getDayOfMonth());
                         getDBList(date);
+                        getDailySum(date);
                     }
                 });//dlg.positive
 
@@ -374,6 +384,49 @@ public class ExerciseActivity extends AppCompatActivity {
 
     private void getDBList(String date) {
 
+        retrofitInterface.getDailyExer(date).enqueue(new Callback<List<ExerciseVO>>() {
+            @Override
+            public void onResponse(Call<List<ExerciseVO>> call, Response<List<ExerciseVO>> response) {
+                if (response.isSuccessful()) {
+
+                    exerList = response.body();
+
+                    Log.d("샘플", exerList+"");
+
+                    adapter = new RecyclerAdapter(exerList);
+
+                    recyclerView3.setAdapter(adapter);
+
+
+                    adapter.notifyDataSetChanged();
+
+
+                } else {
+                    Toast.makeText(ExerciseActivity.this, "통신 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ExerciseVO>> call, Throwable t) {
+                Log.d("에러", t + " : " + call);
+            }
+        });
+    }
+
+    private void getDailySum(String date) {
+        consumeKcal.setText(0+ " kcal");
+        retrofitInterface.getSumKcal(date).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                consumeKcal.setText(response.body() + " kcal");
+                Toast.makeText(ExerciseActivity.this, response.body() + "", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
     }
 
 

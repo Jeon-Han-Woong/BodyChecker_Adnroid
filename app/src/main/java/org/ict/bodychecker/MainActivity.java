@@ -81,8 +81,22 @@ public class MainActivity extends AppCompatActivity {
         nowWater = (TextView) findViewById(R.id.nowWater);
         waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
 
-        nowWater.setTextColor(Color.RED);
-        temp_water = 0;
+
+        retrofitInterface.getDailyWater(date, 1).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                Toast.makeText(MainActivity.this, "물" + response.body(), Toast.LENGTH_SHORT).show();
+
+                temp_water = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
+        waterState(temp_water);
 
         goExerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,9 +115,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         waterPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                retrofitInterface.plusWater(date,1).enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable t) {
+
+                    }
+                });
+
                 temp_water += 1;
                 waterProgress.setProgress(temp_water * 10);
                 if (temp_water < 5) {
@@ -185,6 +213,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }//onCreate
+
+    private void waterState(int water) {
+        waterProgress.setProgress(water * 10);
+        if (water < 5) {
+            nowWater.setTextColor(Color.RED);
+        } else if (water >= 5 && water < 10) {
+            nowWater.setTextColor(Color.parseColor("#FF5E00"));
+        } else if (water >= 10) {
+            nowWater.setTextColor(Color.parseColor("#189186"));
+        }
+
+        nowWater.setText((water * 200) + " ml");
+        drinkWater.setText(water + "");
+    }
 
     private void getProfileInfo(int mno) {
         retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {

@@ -18,9 +18,20 @@ import retrofit2.http.Path;
 
 public interface RetrofitInterface {
 
+    /*================== Daily ====================*/
+    @GET("daily/water/get/{ddate}/{mno}")
+    Call<Integer> getDailyWater(@Path("ddate") String ddate, @Path("mno") int mno);
+
+    @GET("daily/water/plus/{ddate}/{mno}")
+    Call<Integer> plusWater(@Path("ddate") String ddate, @Path("mno") int mno);
+
+
     /*================== Exercise ====================*/
     @GET("exer/{edate}.json")
     Call<List<ExerciseVO>> getDailyExer(@Path("edate") String edate);
+
+    @GET("exer/kcal/{edate}")
+    Call<Integer> getSumKcal(@Path("edate") String edate);
 
     @GET("exer/neweno")
     Call<Integer> getNewEno();
