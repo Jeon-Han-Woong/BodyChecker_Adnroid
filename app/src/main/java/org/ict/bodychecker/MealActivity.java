@@ -317,7 +317,7 @@ public class MealActivity extends AppCompatActivity {
                 t.printStackTrace();
             }//onFailure
         });
-    }//getDBList
+    }//getMealList
 
     private void getRDI(int mno) {
         retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {

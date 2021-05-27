@@ -90,11 +90,12 @@ public class MainActivity extends AppCompatActivity {
         reduceKcal = (TextView) findViewById(R.id.reduceKcal);
         waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
         // 오늘 물 가져오깅
-        retrofitInterface.getDailyWater(date, 1).enqueue(new Callback<Integer>() {
+        retrofitInterface.getDailyWater(date, 2).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 Toast.makeText(MainActivity.this, "물" + response.body(), Toast.LENGTH_SHORT).show();
 
+                Log.d("water", response.body()+"");
                 temp_water = response.body();
                 waterState(temp_water);
             }
