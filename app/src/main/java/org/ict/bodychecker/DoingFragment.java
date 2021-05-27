@@ -373,14 +373,14 @@ public class DoingFragment extends Fragment {
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView doingTitle, doingDday, myGno;
+            private TextView doingTitle, doingDate, myGno;
             private EditText doingContent;
 
             ItemViewHolder(View itemView) {
                 super(itemView);
 
                 doingTitle = itemView.findViewById(R.id.doingTitle);
-                doingDday = itemView.findViewById(R.id.doingDate);
+                doingDate = itemView.findViewById(R.id.doingDate);
                 myGno = itemView.findViewById(R.id.myGno);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
@@ -525,7 +525,7 @@ public class DoingFragment extends Fragment {
 
             void onBind(GoalVO data) {
                 doingTitle.setText(data.getGtitle());
-                doingDday.setText("종료 : " + data.getFinDate());
+                doingDate.setText("종료 : " + data.getFinDate());
                 myGno.setText(data.getGno()+"");
             }
         }
