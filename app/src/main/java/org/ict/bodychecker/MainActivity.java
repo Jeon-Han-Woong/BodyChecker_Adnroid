@@ -1,6 +1,7 @@
 package org.ict.bodychecker;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 200);
             }
         });
 
@@ -295,6 +296,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 200) {
+            getMealInfo();
+        } else {
+            Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {

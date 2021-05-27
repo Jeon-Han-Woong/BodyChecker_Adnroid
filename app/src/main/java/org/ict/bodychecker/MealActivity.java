@@ -29,7 +29,6 @@ import org.ict.bodychecker.retrofit.RetrofitInterface;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -110,7 +109,8 @@ public class MealActivity extends AppCompatActivity {
         sixDaysAgoBtn.setText(setBtnDate(-6));
 
         getRDI(2);
-        getDBList(date);
+        try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+        getMealList(date);
 
 //======================================== onclick 이벤트 =========================================
         bfll.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +159,7 @@ public class MealActivity extends AppCompatActivity {
             public void onClick(View view) {
                 today = LocalDateTime.now();
                 date = dbFormat.format(today);
-                getDBList(date);
+                getMealList(date);
             }
         });//today.onclick
 
@@ -167,7 +167,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-1));
-                getDBList(date);
+                getMealList(date);
             }
         });//oneDayAgo.onclick
 
@@ -175,7 +175,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-2));
-                getDBList(date);
+                getMealList(date);
             }
         });//oneDayAgo.onclick
 
@@ -183,7 +183,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-3));
-                getDBList(date);
+                getMealList(date);
             }
         });//oneDayAgo.onclick
 
@@ -191,7 +191,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-4));
-                getDBList(date);
+                getMealList(date);
             }
         });//oneDayAgo.onclick
 
@@ -199,7 +199,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-5));
-                getDBList(date);
+                getMealList(date);
             }
         });//oneDayAgo.onclick
 
@@ -207,7 +207,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 date = dbFormat.format(today.plusDays(-6));
-                getDBList(date);
+                getMealList(date);
             }
         });//oneDayAgo.onclick
 
@@ -227,7 +227,7 @@ public class MealActivity extends AppCompatActivity {
                         mealDatePick = (DatePicker) meal_calendar.findViewById(R.id.mealDatePick);
 
                         date = mealDatePick.getYear()+"-"+String.format("%02d", mealDatePick.getMonth()+1)+"-"+String.format("%02d", mealDatePick.getDayOfMonth())+TIME;
-                        getDBList(date);
+                        getMealList(date);
                     }
                 });//dlg.positive
 
@@ -242,7 +242,7 @@ public class MealActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode==200) {
-            getDBList(date);
+            getMealList(date);
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
         }//else
@@ -257,7 +257,7 @@ public class MealActivity extends AppCompatActivity {
         return btnFormat.format(today.plusDays(n));
     }//getDate
 
-    private void getDBList(String date) {
+    private void getMealList(String date) {
         try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
         retrofitInterface.getDailyMeal(date).enqueue(new Callback<List<MealVO>>() {
             String breakfast = null, lunch = null, dinner = null, disert = null;
@@ -293,6 +293,7 @@ public class MealActivity extends AppCompatActivity {
                 });//forEach
 
                 getRDI(2);
+                try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
                 circlebar.setProgress((int)(progress/rdi*100));
                 all.setText("일일 권장량 " + String.valueOf((int)rdi) + "kcal 중 " + String.valueOf(progress) + "kcal 섭취");
 
@@ -328,10 +329,16 @@ public class MealActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MemberVO> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }//getRDI
+
+    @Override
+    public void onBackPressed() {
+        setResult(200);
+        super.onBackPressed();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
