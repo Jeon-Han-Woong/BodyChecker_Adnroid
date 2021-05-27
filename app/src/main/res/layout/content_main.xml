@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:layout_gravity="center|right"
-                android:text="/2318kcal"
+                android:text="/0kcal"
                 android:textSize="30dp"></TextView>
 
         </LinearLayout>
@@ -177,11 +177,11 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/myWeight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="88kg"
-                    android:textSize="50dp"
-                    android:id="@+id/myWeight"></TextView>
+                    android:text="0kg"
+                    android:textSize="50dp" />
 
             </LinearLayout>
 
@@ -193,11 +193,11 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/myBMI"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="확찐자"
-                    android:textSize="50dp"
-                    android:id="@+id/myBMI"></TextView>
+                    android:textSize="50dp" />
 
             </LinearLayout>
         </LinearLayout>

@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     TextView hitext;
     ProgressBar walkProgress, waterProgress;
     LinearLayout goExerciseBtn, goMealBtn;
-    TextView drinkWater, nowWater;
+    TextView drinkWater, nowWater, myWeight, myBMI;
     Button waterPlus, waterMinus;
     int temp_water = 0, rdi = 0;
 
@@ -70,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LayoutInflater inflater = getLayoutInflater();
+        View navi_header = inflater.inflate(R.layout.navi_header, null);
+
         retrofitClient = RetrofitClient.getInstance();
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
@@ -79,7 +83,16 @@ public class MainActivity extends AppCompatActivity {
         waterMinus = (Button) findViewById(R.id.waterMinus);
         drinkWater = (TextView) findViewById(R.id.drinkWater);
         nowWater = (TextView) findViewById(R.id.nowWater);
+        myWeight = (TextView) findViewById(R.id.myWeight);
+        myBMI = (TextView) findViewById(R.id.myBMI);
         waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
+
+        profileName = (TextView) navi_header.findViewById(R.id.profileName);
+        profileAge = (TextView) navi_header.findViewById(R.id.profileAge);
+        profileHeight = (TextView) navi_header.findViewById(R.id.profileHeight);
+        profileWeight = (TextView) navi_header.findViewById(R.id.profileWeight);
+        profileBMI = (TextView) navi_header.findViewById(R.id.profileBMI);
+        profileBMIName = (TextView) navi_header.findViewById(R.id.profileBMIName);
 
         nowWater.setTextColor(Color.RED);
         temp_water = 0;
@@ -154,9 +167,6 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        getMealInfo();
-        getProfileInfo(2);
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -182,7 +192,13 @@ public class MainActivity extends AppCompatActivity {
 
                 return false;
             }
-        });
+        });//setNavigationItemSelectedListener
+        navigationView.addHeaderView(navi_header);
+
+        getRDI(2);
+        try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+        getMealInfo();
+        getProfileInfo(2);
 
     }//onCreate
 
@@ -190,12 +206,6 @@ public class MainActivity extends AppCompatActivity {
         retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
             @Override
             public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
-                profileName = (TextView) findViewById(R.id.profileName);
-                profileAge = (TextView) findViewById(R.id.profileAge);
-                profileHeight = (TextView) findViewById(R.id.profileHeight);
-                profileWeight = (TextView) findViewById(R.id.profileWeight);
-                profileBMI = (TextView) findViewById(R.id.profileBMI);
-                profileBMIName = (TextView) findViewById(R.id.profileBMIName);
 
                 MemberVO info = response.body();
                 String name = info.getMname();
@@ -208,20 +218,26 @@ public class MainActivity extends AppCompatActivity {
                 profileAge.setText(birthday);
                 profileHeight.setText(height);
                 profileWeight.setText(weight);
+                myWeight.setText(weight);
                 profileBMI.setText(String.valueOf(bmi));
                 if(bmi < 18.5) {
+                    myBMI.setText("확찌자");
                     profileBMIName.setText("확찌자");
                     profileBMIName.setTextColor(Color.rgb(51, 102, 153));
                 } else if(18.5 < bmi && bmi < 23) {
+                    myBMI.setText("안찐자");
                     profileBMIName.setText("안찐자");
                     profileBMIName.setTextColor(Color.rgb(121, 210, 121));
                 } else if(23 <= bmi && bmi < 25) {
+                    myBMI.setText("좀찐자");
                     profileBMIName.setText("좀찐자");
                     profileBMIName.setTextColor(Color.rgb(233, 105, 0));
                 } else if(25 <= bmi && bmi < 28) {
+                    myBMI.setText("확찐자");
                     profileBMIName.setText("확찐자");
                     profileBMIName.setTextColor(Color.rgb(192, 39, 34));
                 } else if(28 <= bmi) {
+                    myBMI.setText("확!찐자");
                     profileBMIName.setText("확!찐자");
                     profileBMIName.setTextColor(Color.rgb(209, 0, 0));
                 }//else if
@@ -243,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 main_maxKcal = (TextView) findViewById(R.id.main_maxKcal);
 
                 int kcal = response.body().stream().mapToInt(MealVO::getFkcal).sum();
-                getRDI(2);
                 main_dayKcal.setText(String.valueOf(kcal));
                 main_maxKcal.setText("/".concat(String.valueOf(rdi)).concat("kcal"));
             }
