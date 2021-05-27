@@ -106,17 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        retrofitInterface.getSumKcal(date).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                reduceKcal.setText(response.body()+"");
-            }
-
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-
-            }
-        });
+        dailySumKcal();
 
 
         profileName = (TextView) navi_header.findViewById(R.id.profileName);
@@ -131,8 +121,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ExerciseActivity.class);
-
-                startActivity(intent);
+                startActivityForResult(intent, 200);
             }
         });
 
@@ -164,18 +153,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-//                temp_water += 1;
-//                waterProgress.setProgress(temp_water * 10);
-//                if (temp_water < 5) {
-//                    nowWater.setTextColor(Color.RED);
-//                } else if (temp_water >= 5 && temp_water < 10) {
-//                    nowWater.setTextColor(Color.parseColor("#FF5E00"));
-//                } else if (temp_water >= 10) {
-//                    nowWater.setTextColor(Color.parseColor("#189186"));
-//                }
-//
-//                nowWater.setText((temp_water * 200) + " ml");
-//                drinkWater.setText(temp_water + "");
             }
         });
 
@@ -261,6 +238,22 @@ public class MainActivity extends AppCompatActivity {
 
         nowWater.setText((water * 200) + " ml");
         drinkWater.setText(water + "");
+    }
+
+    private void dailySumKcal(){
+
+        retrofitInterface.getSumKcal(date).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                Log.d("check", response.body()+"");
+                reduceKcal.setText(response.body()+"");
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void getProfileInfo(int mno) {
@@ -362,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
             getMealInfo();
+            dailySumKcal();
             getProfileInfo(2);
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
