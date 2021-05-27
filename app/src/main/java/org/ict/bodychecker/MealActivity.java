@@ -335,12 +335,6 @@ public class MealActivity extends AppCompatActivity {
     }//getRDI
 
     @Override
-    public void onBackPressed() {
-        setResult(200);
-        super.onBackPressed();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:

@@ -355,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == 200) {
             getMealInfo();
             dailySumKcal();
+            getProfileInfo(2);
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
         }
