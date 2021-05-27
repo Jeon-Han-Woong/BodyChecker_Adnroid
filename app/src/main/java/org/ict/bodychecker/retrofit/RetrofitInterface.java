@@ -30,7 +30,7 @@ public interface RetrofitInterface {
 
 
     /*================== Exercise ====================*/
-    @GET("exer/{edate}.json")
+    @GET("exer/{edate}")
     Call<List<ExerciseVO>> getDailyExer(@Path("edate") String edate);
 
     @GET("exer/kcal/{edate}")
@@ -40,10 +40,10 @@ public interface RetrofitInterface {
     Call<Integer> getNewEno();
 
     @POST("exer/new")
-    Call<ExerciseVO> registerExer(@Body ExerciseVO exer);
+    Call<String> registerExer(@Body ExerciseVO exer);
 
     @PUT("exer/modify/{eno}")
-    Call<ExerciseVO> modifyExer(@Path("eno") int eno, @Body ExerciseVO exer);
+    Call<String> modifyExer(@Path("eno") int eno, @Body ExerciseVO exer);
 
     @DELETE("exer/remove/{eno}")
     Call<Void> removeExer(@Path("eno") int eno);
