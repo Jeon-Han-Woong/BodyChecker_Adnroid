@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar walkProgress, waterProgress;
     LinearLayout goExerciseBtn, goMealBtn;
     TextView drinkWater, nowWater, myWeight, myBMI;
+    TextView reduceKcal;
     Button waterPlus, waterMinus;
     int temp_water = 0, rdi = 0;
 
@@ -86,13 +87,16 @@ public class MainActivity extends AppCompatActivity {
         nowWater = (TextView) findViewById(R.id.nowWater);
         myWeight = (TextView) findViewById(R.id.myWeight);
         myBMI = (TextView) findViewById(R.id.myBMI);
+        reduceKcal = (TextView) findViewById(R.id.reduceKcal);
         waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
+        // 오늘 물 가져오깅
         retrofitInterface.getDailyWater(date, 1).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 Toast.makeText(MainActivity.this, "물" + response.body(), Toast.LENGTH_SHORT).show();
 
                 temp_water = response.body();
+                waterState(temp_water);
             }
 
             @Override
@@ -101,7 +105,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        waterState(temp_water);
+        retrofitInterface.getSumKcal(date).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                reduceKcal.setText(response.body()+"");
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
 
         profileName = (TextView) navi_header.findViewById(R.id.profileName);
         profileAge = (TextView) navi_header.findViewById(R.id.profileAge);
@@ -137,6 +152,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
+                        temp_water = response.body();
+
+                        waterState(temp_water);
                     }
 
                     @Override
@@ -145,18 +163,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                temp_water += 1;
-                waterProgress.setProgress(temp_water * 10);
-                if (temp_water < 5) {
-                    nowWater.setTextColor(Color.RED);
-                } else if (temp_water >= 5 && temp_water < 10) {
-                    nowWater.setTextColor(Color.parseColor("#FF5E00"));
-                } else if (temp_water >= 10) {
-                    nowWater.setTextColor(Color.parseColor("#189186"));
-                }
-
-                nowWater.setText((temp_water * 200) + " ml");
-                drinkWater.setText(temp_water + "");
+//                temp_water += 1;
+//                waterProgress.setProgress(temp_water * 10);
+//                if (temp_water < 5) {
+//                    nowWater.setTextColor(Color.RED);
+//                } else if (temp_water >= 5 && temp_water < 10) {
+//                    nowWater.setTextColor(Color.parseColor("#FF5E00"));
+//                } else if (temp_water >= 10) {
+//                    nowWater.setTextColor(Color.parseColor("#189186"));
+//                }
+//
+//                nowWater.setText((temp_water * 200) + " ml");
+//                drinkWater.setText(temp_water + "");
             }
         });
 
@@ -164,21 +182,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (temp_water > 0) {
-                    temp_water -= 1;
-                    waterProgress.setProgress(temp_water * 10);
-                    if (temp_water < 5) {
-                        nowWater.setTextColor(Color.RED);
-                    } else if (temp_water >= 5 && temp_water < 10) {
-                        nowWater.setTextColor(Color.parseColor("#FF5E00"));
-                    } else if (temp_water >= 10) {
-                        nowWater.setTextColor(Color.parseColor("#189186"));
-                    }
-                    nowWater.setText((temp_water * 200) + " ml");
+                    retrofitInterface.minusWater(date, 1).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            temp_water = response.body();
+                            waterState(temp_water);
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable t) {
+
+                        }
+                    });
                 } else {
                     Toast.makeText(getApplicationContext(), "물 섭취량은 0보다 낮을 수 없습니다.", Toast.LENGTH_SHORT).show();
                 }
-
-                drinkWater.setText(temp_water + "");
             }
         });
 
@@ -372,4 +390,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+    
+
 }
