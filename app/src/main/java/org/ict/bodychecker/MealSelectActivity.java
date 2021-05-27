@@ -48,7 +48,6 @@ public class MealSelectActivity extends AppCompatActivity {
 
     String[] str = {"밥", "삼겹살", "레드콤보", "배추김치", "계란후라이", "갈비찜", "카레라이스", "김치찌개"};
     int[] kcals = {313, 670, 1939, 60, 105, 163, 633, 57};
-    int kcal = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -89,7 +88,6 @@ public class MealSelectActivity extends AppCompatActivity {
                 String food = unselectList.get(i);
                 selectList.add(food);
                 unselectList.remove(food);
-                kcal += unselectKcalList.get(i);
                 selectKcalList.add(unselectKcalList.get(i));
                 unselectKcalList.remove(unselectKcalList.get(i));
 
@@ -105,7 +103,6 @@ public class MealSelectActivity extends AppCompatActivity {
                     String food = selectList.get(i);
                     unselectList.add(food);
                     selectList.remove(food);
-                    kcal -= selectKcalList.get(i-1);
                     unselectKcalList.add(selectKcalList.get(i-1));
                     selectKcalList.remove(selectKcalList.get(i-1));
                 } else if(i == 0) {
@@ -122,7 +119,6 @@ public class MealSelectActivity extends AppCompatActivity {
                             String food = msNameInsert.getText().toString();
                             int Cal = Integer.parseInt(msCalInsert.getText().toString());
                             selectList.add(food);
-                            kcal += Cal;
                             selectKcalList.add(Cal);
                         }
                     });//setPositiveButton
@@ -151,11 +147,11 @@ public class MealSelectActivity extends AppCompatActivity {
                 setIntent.putExtra("date", date);
 
                 removeDB(date, time);
-                //removeDB가 addDB와 순서가 뒤바뀌는 경우가 발생하여 멀티쓰레드의 영향으로 추정되기 때문에 딜레이를 주기위한 코드
-                try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+                //removeDB가 addDB와 순서가 뒤바뀌는 경우가 발생, 멀티쓰레드의 영향으로 추정되기 때문에 딜레이를 주기위한 코드
+                try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
 
                 addDB(date, time);
-                try { TimeUnit.MILLISECONDS.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
+                try { TimeUnit.MILLISECONDS.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
 
                 finish();
             }

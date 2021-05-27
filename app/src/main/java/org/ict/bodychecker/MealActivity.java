@@ -265,6 +265,7 @@ public class MealActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<MealVO>> call, Response<List<MealVO>> response) {
                 progress = 0;
+                Log.d("load", "불러오는중");
                 response.body().forEach(mealVO -> {
                     switch(mealVO.getFtime()) {
                         case "breakfast":

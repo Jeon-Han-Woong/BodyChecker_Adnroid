@@ -109,7 +109,10 @@ public class JoinActivity extends AppCompatActivity {
         joinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(checked != 0 || !memberVO.getMid().equals(mid)) {
+                if(join_name.getText().toString().trim() == null || join_name.getText().toString().trim().equals("")) {
+                    Toast.makeText(getApplicationContext(), "이름을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if(checked != 0 || !memberVO.getMid().equals(mid)) {
                     Toast.makeText(getApplicationContext(), "아이디 중복체크를 진행해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 } else if(!join_pwd.getText().toString().equals(join_pwdChk.getText().toString())) {
@@ -131,6 +134,10 @@ public class JoinActivity extends AppCompatActivity {
                     weight = Math.round(Float.parseFloat(join_weight.getText().toString().trim()));
                     try {
                         bmi = (int)(weight/((height*0.01)*(height*0.01)));
+                        if(bmi < 0) {
+                            Toast.makeText(getApplicationContext(), "키는 0이하가 될 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                     } catch(ArithmeticException e) {
                         Toast.makeText(getApplicationContext(), "키는 0이하가 될 수 없습니다.", Toast.LENGTH_SHORT).show();
                         return;
