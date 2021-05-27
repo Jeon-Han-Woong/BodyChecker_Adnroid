@@ -25,6 +25,9 @@ public interface RetrofitInterface {
     @GET("daily/water/plus/{ddate}/{mno}")
     Call<Integer> plusWater(@Path("ddate") String ddate, @Path("mno") int mno);
 
+    @GET("daily/water/minus/{ddate}/{mno}")
+    Call<Integer> minusWater(@Path("ddate") String ddate, @Path("mno") int mno);
+
 
     /*================== Exercise ====================*/
     @GET("exer/{edate}.json")
