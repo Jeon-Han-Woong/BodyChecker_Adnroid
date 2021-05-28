@@ -23,21 +23,21 @@ public interface RetrofitInterface {
     @GET("daily/water/get/{ddate}/{mno}")
     Call<Integer> getDailyWater(@Path("ddate") String ddate, @Path("mno") int mno);
 
-    @GET("daily/water/plus/{ddate}/{mno}")
-    Call<Integer> plusWater(@Path("ddate") String ddate, @Path("mno") int mno);
+    @PUT("daily/water/plus/{ddate}/{mno}")
+    Call<String> plusWater(@Path("ddate") String ddate, @Path("mno") int mno);
 
-    @GET("daily/water/minus/{ddate}/{mno}")
-    Call<Integer> minusWater(@Path("ddate") String ddate, @Path("mno") int mno);
+    @PUT("daily/water/minus/{ddate}/{mno}")
+    Call<String> minusWater(@Path("ddate") String ddate, @Path("mno") int mno);
 
     @POST("daily/addDaily")
     Call<String> addDaily(@Body DailyVO vo);
 
     /*================== Exercise ====================*/
-    @GET("exer/{edate}")
-    Call<List<ExerciseVO>> getDailyExer(@Path("edate") String edate);
+    @GET("exer/{edate}/{mno}")
+    Call<List<ExerciseVO>> getDailyExer(@Path("edate") String edate, @Path("mno") int mno);
 
-    @GET("exer/kcal/{edate}")
-    Call<Integer> getSumKcal(@Path("edate") String edate);
+    @GET("exer/kcal/{edate}/{mno}")
+    Call<Integer> getSumKcal(@Path("edate") String edate, @Path("mno") int mno);
 
     @GET("exer/neweno")
     Call<Integer> getNewEno();

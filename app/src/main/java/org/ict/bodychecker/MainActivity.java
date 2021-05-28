@@ -78,11 +78,6 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View navi_header = inflater.inflate(R.layout.navi_header, null);
 
-        if (mno == 0) {
-
-            goLoginPage();
-        }
-
         retrofitClient = RetrofitClient.getInstance();
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
@@ -123,20 +118,19 @@ public class MainActivity extends AppCompatActivity {
         waterPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                retrofitInterface.plusWater(date, mno).enqueue(new Callback<Integer>() {
+                retrofitInterface.plusWater(date, mno).enqueue(new Callback<String>() {
                     @Override
-                    public void onResponse(Call<Integer> call, Response<Integer> response) {
-                        Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
-                        temp_water = response.body();
+                    public void onResponse(Call<String> call, Response<String> response) {
 
-                        setWaterState(temp_water);
                     }
 
                     @Override
-                    public void onFailure(Call<Integer> call, Throwable t) {
-
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("에러", t+"");
                     }
                 });
+
+
             }
         });
 
@@ -146,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 if (temp_water > 0) {
                     retrofitInterface.minusWater(date, mno).enqueue(new Callback<Integer>() {
                         @Override
-                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        public void onResponse(Call<Integer> call, Response<String> response) {
                             temp_water = response.body();
                             setWaterState(temp_water);
                         }
@@ -244,7 +238,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.d("addDaily", "daily 테이블 생성 완료");
-                getDailyWater(mno);
             }
 
             @Override
@@ -260,15 +253,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
 //                Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
-                temp_water = response.body();
 
-                setWaterState(temp_water);
             }
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
 
             }
+
         });
     }//waterPlus
 
@@ -287,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
     }//waterState
 
     private void dailySumKcal(){
-        retrofitInterface.getSumKcal(date).enqueue(new Callback<Integer>() {
+        retrofitInterface.getSumKcal(date, mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 reduceKcal.setText(String.valueOf(response.body()));

@@ -66,6 +66,8 @@ public class ExerciseActivity extends AppCompatActivity {
     String selectexer;
     float selectitem;
 
+    int mno = 1;
+
     Button accountkcal;
 
     LocalDateTime today = LocalDateTime.now();
@@ -134,7 +136,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
-        retrofitInterface.getDailyExer(date).enqueue(new Callback<List<ExerciseVO>>() {
+        retrofitInterface.getDailyExer(date, mno).enqueue(new Callback<List<ExerciseVO>>() {
             @Override
             public void onResponse(Call<List<ExerciseVO>> call, Response<List<ExerciseVO>> response) {
                 if (response.isSuccessful()) {
@@ -382,7 +384,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
     private void getDBList(String date) {
 
-        retrofitInterface.getDailyExer(date).enqueue(new Callback<List<ExerciseVO>>() {
+        retrofitInterface.getDailyExer(date, mno).enqueue(new Callback<List<ExerciseVO>>() {
             @Override
             public void onResponse(Call<List<ExerciseVO>> call, Response<List<ExerciseVO>> response) {
                 if (response.isSuccessful()) {
@@ -413,7 +415,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
     private void getDailySum(String date) {
         consumeKcal.setText(0+ " kcal");
-        retrofitInterface.getSumKcal(date).enqueue(new Callback<Integer>() {
+        retrofitInterface.getSumKcal(date, mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 consumeKcal.setText(response.body() + " kcal");
