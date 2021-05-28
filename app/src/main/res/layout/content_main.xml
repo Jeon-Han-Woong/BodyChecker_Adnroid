@@ -143,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|right"
                 android:layout_margin="10dp"
-                android:text="16"
+                android:text="0"
                 android:id="@+id/reduceKcal"
                 android:textSize="30dp"></TextView>
 

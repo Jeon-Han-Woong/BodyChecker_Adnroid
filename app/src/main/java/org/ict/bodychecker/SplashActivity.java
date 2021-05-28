@@ -11,6 +11,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         startActivity(new Intent(this, MainActivity.class));
+//        startActivity(new Intent(this, LoginActivity.class));
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

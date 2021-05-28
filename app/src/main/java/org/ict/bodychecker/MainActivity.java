@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     Button waterPlus, waterMinus;
     int temp_water = 0, rdi = 0;
 
+    int userMno;
+
     TextView profileName, profileAge, profileHeight, profileWeight, profileBMI, profileBMIName;
     TextView main_dayKcal, main_maxKcal;
 
@@ -72,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        userMno = intent.getIntExtra("userMno", -1);
 
         LayoutInflater inflater = getLayoutInflater();
         View navi_header = inflater.inflate(R.layout.navi_header, null);
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         reduceKcal = (TextView) findViewById(R.id.reduceKcal);
         waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
         // 오늘 물 가져오깅
-        retrofitInterface.getDailyWater(date, 1).enqueue(new Callback<Integer>() {
+        retrofitInterface.getDailyWater(date, userMno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 Toast.makeText(MainActivity.this, "물" + response.body(), Toast.LENGTH_SHORT).show();
@@ -137,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         waterPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                retrofitInterface.plusWater(date,1).enqueue(new Callback<Integer>() {
+                retrofitInterface.plusWater(date,userMno).enqueue(new Callback<Integer>() {
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
@@ -159,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (temp_water > 0) {
-                    retrofitInterface.minusWater(date, 1).enqueue(new Callback<Integer>() {
+                    retrofitInterface.minusWater(date, userMno).enqueue(new Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             temp_water = response.body();
