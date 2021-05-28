@@ -1,5 +1,6 @@
 package org.ict.bodychecker.retrofit;
 
+import org.ict.bodychecker.ValueObject.DailyVO;
 import org.ict.bodychecker.ValueObject.ExerciseVO;
 import org.ict.bodychecker.ValueObject.GoalVO;
 import org.ict.bodychecker.ValueObject.MealVO;
@@ -28,6 +29,8 @@ public interface RetrofitInterface {
     @GET("daily/water/minus/{ddate}/{mno}")
     Call<Integer> minusWater(@Path("ddate") String ddate, @Path("mno") int mno);
 
+    @POST("daily/addDaily")
+    Call<String> addDaily(@Body DailyVO vo);
 
     /*================== Exercise ====================*/
     @GET("exer/{edate}")
@@ -71,14 +74,14 @@ public interface RetrofitInterface {
     Call<GoalVO> selectSuccess(@Path("gno") int gno, @Body GoalVO goal);
 
     /*================== Meal ====================*/
-    @GET("meal/getlist/{fdate}")
-    Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate);
+    @GET("meal/getlist/{fdate}/{mno}")
+    Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate, @Path("mno") int mno);
 
     @POST("meal/addFoods")
     Call<String> addFoods(@Body MealVO mealVO);
 
-    @DELETE("meal/remove/{fdate}/{ftime}")
-    Call<String> removeFoods(@Path("fdate") String fdate, @Path("ftime") String ftime);
+    @DELETE("meal/remove/{fdate}/{ftime}/{mno}")
+    Call<String> removeFoods(@Path("fdate") String fdate, @Path("ftime") String ftime, @Path("mno") int mno);
 
     /*================== Member ====================*/
     @GET("member/getinfo/{mno}")

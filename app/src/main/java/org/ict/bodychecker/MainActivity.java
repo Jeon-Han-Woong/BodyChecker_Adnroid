@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.ict.bodychecker.ValueObject.DailyVO;
 import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
@@ -45,6 +46,7 @@ import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
+    int mno = 1;
 
     LocalDateTime today = LocalDateTime.now();
     DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -94,24 +96,6 @@ public class MainActivity extends AppCompatActivity {
         myBMI = (TextView) findViewById(R.id.myBMI);
         reduceKcal = (TextView) findViewById(R.id.reduceKcal);
         waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
-        // 오늘 물 가져오깅
-        retrofitInterface.getDailyWater(date, userMno).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Toast.makeText(MainActivity.this, "물" + response.body(), Toast.LENGTH_SHORT).show();
-
-                temp_water = response.body();
-                waterState(temp_water);
-            }
-
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-
-            }
-        });
-
-        dailySumKcal();
-
 
         profileName = (TextView) navi_header.findViewById(R.id.profileName);
         profileAge = (TextView) navi_header.findViewById(R.id.profileAge);
@@ -119,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
         profileWeight = (TextView) navi_header.findViewById(R.id.profileWeight);
         profileBMI = (TextView) navi_header.findViewById(R.id.profileBMI);
         profileBMIName = (TextView) navi_header.findViewById(R.id.profileBMIName);
-
 
         goExerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,8 +120,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         waterPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
                         temp_water = response.body();
 
-                        waterState(temp_water);
+                        setWaterState(temp_water);
                     }
 
                     @Override
@@ -156,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
             }
         });
 
@@ -164,16 +144,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (temp_water > 0) {
-                    retrofitInterface.minusWater(date, userMno).enqueue(new Callback<Integer>() {
+                    retrofitInterface.minusWater(date, mno).enqueue(new Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
                             temp_water = response.body();
-                            waterState(temp_water);
+                            setWaterState(temp_water);
                         }
 
                         @Override
                         public void onFailure(Call<Integer> call, Throwable t) {
-
+                            t.printStackTrace();
                         }
                     });
                 } else {
@@ -223,14 +203,76 @@ public class MainActivity extends AppCompatActivity {
         });//setNavigationItemSelectedListener
         navigationView.addHeaderView(navi_header);
 
-        getRDI(2);
+        /*=================== DB통신 ===================*/
+        getProfileInfo(mno);
+        getRDI(mno);
         try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
-        getMealInfo();
-        getProfileInfo(2);
+        getMealInfo(mno);
+        dailySumKcal();
+        getDailyWater(mno);
+        /*=================== DB통신 ===================*/
 
     }//onCreate
 
-    private void waterState(int water) {
+    private void getDailyWater(int mno) {
+        retrofitInterface.getDailyWater(date, mno).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+//                Toast.makeText(MainActivity.this, "물" + response.body(), Toast.LENGTH_SHORT).show();
+
+                Log.d("water", String.valueOf(response.body()));
+                temp_water = response.body();
+                setWaterState(temp_water);
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.d("getDailyWater", "getDailyWater Fail");
+                Log.d("getDailyWater", "Daily 테이블에 정보가 없어 발생할 가능성 높음");
+                addDaily(mno);
+//                t.printStackTrace();
+            }
+        });
+    }//getDailyWater
+
+    private void addDaily(int mno) {
+        DailyVO dailyVO = new DailyVO();
+        dailyVO.setMno(mno);
+        dailyVO.setDdate(date);
+
+        retrofitInterface.addDaily(dailyVO).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d("addDaily", "daily 테이블 생성 완료");
+                getDailyWater(mno);
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d("addDaily", "addDaily Fail");
+//                t.printStackTrace();
+            }
+        });
+    }//addDaily
+
+    private void waterPlus() {
+        retrofitInterface.plusWater(date,1).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
+                temp_water = response.body();
+
+                setWaterState(temp_water);
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+    }//waterPlus
+
+    private void setWaterState(int water) {
         waterProgress.setProgress(water * 10);
         if (water < 5) {
             nowWater.setTextColor(Color.RED);
@@ -242,23 +284,23 @@ public class MainActivity extends AppCompatActivity {
 
         nowWater.setText((water * 200) + " ml");
         drinkWater.setText(water + "");
-    }
+    }//waterState
 
     private void dailySumKcal(){
-
         retrofitInterface.getSumKcal(date).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Log.d("check", response.body()+"");
-                reduceKcal.setText(response.body()+"");
+                reduceKcal.setText(String.valueOf(response.body()));
             }
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-                t.printStackTrace();
+                Log.d("dailySumKcal", "dailySumKcal Fail");
+                Log.d("dailySumKcal", "Exercise 테이블에 정보가 없어서 발생할 가능성 높음");
+//                t.printStackTrace();
             }
         });
-    }
+    }//dailySumKcal
 
     private void getProfileInfo(int mno) {
         retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
@@ -304,13 +346,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MemberVO> call, Throwable t) {
-                t.printStackTrace();
+                Log.d("getProfileInfo", "getProfileInfo Fail");
+                Log.d("getProfileInfo", "Member 테이블에 정보가 없거나");
+                Log.d("getProfileInfo", "로그인이 안돼있어 발생할 가능성 높음");
+//                t.printStackTrace();
+                
+                /*================ 로그인페이지로 이동시키는 메서드 ================*/
             }//onFailure
         });
     }//getProfileInfo
 
-    private void getMealInfo() {
-        retrofitInterface.getDailyMeal(date).enqueue(new Callback<List<MealVO>>() {
+    private void getMealInfo(int mno) {
+        retrofitInterface.getDailyMeal(date, mno).enqueue(new Callback<List<MealVO>>() {
             @Override
             public void onResponse(Call<List<MealVO>> call, Response<List<MealVO>> response) {
                 main_dayKcal = (TextView) findViewById(R.id.main_dayKcal);
@@ -323,7 +370,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<MealVO>> call, Throwable t) {
-                t.printStackTrace();
+                Log.d("getMealInfo", "getMealInfo Fail");
+                Log.d("getMealInfo", "Meal 테이블에 정보가 없어서 나오는 에러일 가능성 높음.");
+//                t.printStackTrace();
             }
         });
     }//getMealInfo
@@ -339,10 +388,26 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MemberVO> call, Throwable t) {
-                t.printStackTrace();
+                Log.d("getRDI", "getRDI Fail");
+                Log.d("getRDI", "Member 테이블에 정보가 없거나");
+                Log.d("getRDI", "로그인이 안돼있어 발생할 가능성 높음");
+//                t.printStackTrace();
             }
         });
     }//getRDI
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 200) {
+            getMealInfo(mno);
+            dailySumKcal();
+            getProfileInfo(2);
+        } else {
+            Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }//onActivityResult
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -353,20 +418,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 200) {
-            getMealInfo();
-            dailySumKcal();
-            getProfileInfo(2);
-        } else {
-            Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+    }//onOptionsItemSelected
 
     DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
         @Override
@@ -385,10 +437,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onDrawerStateChanged(int newState) {
-
-        }
-    };
-    
-
-}
+        public void onDrawerStateChanged(int newState) { }
+    };//listener
+}//class

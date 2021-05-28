@@ -30,6 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MealSelectActivity extends AppCompatActivity {
+    int mno = 1;
 
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
@@ -146,11 +147,11 @@ public class MealSelectActivity extends AppCompatActivity {
                 Intent setIntent = new Intent(getApplicationContext(), MealActivity.class);
                 setIntent.putExtra("date", date);
 
-                removeDB(date, time);
-                //removeDB가 addDB와 순서가 뒤바뀌는 경우가 발생, 멀티쓰레드의 영향으로 추정되기 때문에 딜레이를 주기위한 코드
+                removeDB(date, time, mno);
+                addDB(date, time, mno);
+                if(selectList.isEmpty())
                 try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
-
-                addDB(date, time);
+                else
                 try { TimeUnit.MILLISECONDS.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
 
                 finish();
@@ -178,9 +179,10 @@ public class MealSelectActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }//툴바
 
-    private void addDB(String date, String time) {
+    private void addDB(String date, String time, int mno) {
         for(int i=0; i<selectList.size(); i++) {
             MealVO vo = new MealVO();
+            vo.setMno(mno);
             vo.setFdate(date);
             vo.setFname(selectList.get(i));
             vo.setFkcal(selectKcalList.get(i));
@@ -194,8 +196,8 @@ public class MealSelectActivity extends AppCompatActivity {
         }//for
     }//addDB
 
-    private void removeDB(String date, String time) {
-        retrofitInterface.removeFoods(date, time).enqueue(new Callback<String>() {
+    private void removeDB(String date, String time, int mno) {
+        retrofitInterface.removeFoods(date, time, mno).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) { Log.d("removeSuccess", "삭제성공"); }
 
