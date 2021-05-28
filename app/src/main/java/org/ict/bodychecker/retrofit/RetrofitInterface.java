@@ -13,6 +13,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -23,11 +24,11 @@ public interface RetrofitInterface {
     @GET("daily/water/get/{ddate}/{mno}")
     Call<Integer> getDailyWater(@Path("ddate") String ddate, @Path("mno") int mno);
 
-    @PUT("daily/water/plus/{ddate}/{mno}")
-    Call<String> plusWater(@Path("ddate") String ddate, @Path("mno") int mno);
+    @PATCH("daily/water/plus/{ddate}/{mno}")
+    Call<Integer> plusWater(@Path("ddate") String ddate, @Path("mno") int mno);
 
-    @PUT("daily/water/minus/{ddate}/{mno}")
-    Call<String> minusWater(@Path("ddate") String ddate, @Path("mno") int mno);
+    @PATCH("daily/water/minus/{ddate}/{mno}")
+    Call<Integer> minusWater(@Path("ddate") String ddate, @Path("mno") int mno);
 
     @POST("daily/addDaily")
     Call<String> addDaily(@Body DailyVO vo);

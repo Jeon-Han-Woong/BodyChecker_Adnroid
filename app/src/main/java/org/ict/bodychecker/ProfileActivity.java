@@ -7,13 +7,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
+
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,11 +28,12 @@ public class ProfileActivity extends AppCompatActivity {
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
 
-    Button modifyInfoBtn, join;
+    Button modifyInfoBtn;
     ImageView genderImg;
     TextView username, genderTV, heightTV, weightTV, birthTV, joindateTV;
 
     Intent intent;
+    int mno = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +48,6 @@ public class ProfileActivity extends AppCompatActivity {
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
         modifyInfoBtn = (Button) findViewById(R.id.modifyInfoBtn);
-        join = (Button) findViewById(R.id.join);
         username = (TextView) findViewById(R.id.username);
 
         genderImg = (ImageView) findViewById(R.id.genderImg);
@@ -53,20 +57,17 @@ public class ProfileActivity extends AppCompatActivity {
         birthTV = (TextView) findViewById(R.id.birthTV);
         joindateTV = (TextView) findViewById(R.id.joindateTV);
 
-        getInfo(1);
+        intent = getIntent();
+        mno = intent.getIntExtra("mno", 0);
+        getInfo(mno);
 
-        join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
         modifyInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 intent = new Intent(getApplicationContext(), ModifyInfoActivity.class);
-                startActivity(intent);
+                intent.putExtra("mno", mno);
+                startActivityForResult(intent, 200);
             }
         });
     }//onCreate
@@ -96,6 +97,18 @@ public class ProfileActivity extends AppCompatActivity {
             }//onFailure
         });
     }//getInfo
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 200) {
+            try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+            getInfo(mno);
+        } else {
+            Toast.makeText(getApplicationContext(), "에러발생", Toast.LENGTH_SHORT).show();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

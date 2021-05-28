@@ -150,7 +150,7 @@ public class MealSelectActivity extends AppCompatActivity {
                 removeDB(date, time, mno);
                 addDB(date, time, mno);
                 if(selectList.isEmpty())
-                try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+                try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
                 else
                 try { TimeUnit.MILLISECONDS.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
 

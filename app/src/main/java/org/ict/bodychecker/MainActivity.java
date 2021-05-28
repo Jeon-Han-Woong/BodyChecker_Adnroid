@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (id == R.id.myProfile) {
                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    intent.putExtra("mno", mno);
                     startActivity(intent);
                 } else if (id == R.id.myGoal) {
                     Intent intent = new Intent(getApplicationContext(), GoalActivity.class);
@@ -197,18 +198,18 @@ public class MainActivity extends AppCompatActivity {
         });//setNavigationItemSelectedListener
         navigationView.addHeaderView(navi_header);
 
-        /*=================== DB통신 ===================*/
+        /*=================== DB정보 불러오기 ===================*/
         getProfileInfo(mno);
-        getRDI(mno);
-        try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
-        getMealInfo(mno);
-        dailySumKcal();
-        getDailyWater(mno);
-        /*=================== DB통신 ===================*/
+//        getRDI(mno);
+//        try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+//        getMealInfo(mno);
+//        dailySumKcal();
+//        getDailyWater(mno);
 
     }//onCreate
 
-    private void getDailyWater(int mno) {
+    /*======================= 호출 메서드 =======================*/
+    private void getDailyWater(String date, int mno) {
         retrofitInterface.getDailyWater(date, mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -237,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
         retrofitInterface.addDaily(dailyVO).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                getDailyWater(date, mno);
                 Log.d("addDaily", "daily 테이블 생성 완료");
             }
 
@@ -295,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
     }//dailySumKcal
 
     private void getProfileInfo(int mno) {
+        Log.d("getProfileInfoStart", String.valueOf(mno));
         retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
             @Override
             public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
@@ -344,9 +347,7 @@ public class MainActivity extends AppCompatActivity {
 //                t.printStackTrace();
 
                 /*================ 로그인페이지로 이동시키는 메서드 ================*/
-
                 goLoginPage();
-
             }//onFailure
         });
     }//getProfileInfo
@@ -355,15 +356,15 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(new Intent(this, LoginActivity.class), 200);
     }//goLoginPage
 
-    private void getMealInfo(int mno) {
+    private void getMealInfo(String date, int mno) {
         retrofitInterface.getDailyMeal(date, mno).enqueue(new Callback<List<MealVO>>() {
             @Override
             public void onResponse(Call<List<MealVO>> call, Response<List<MealVO>> response) {
                 main_dayKcal = (TextView) findViewById(R.id.main_dayKcal);
                 main_maxKcal = (TextView) findViewById(R.id.main_maxKcal);
 
-                //int kcal = response.body().stream().mapToInt(MealVO::getFkcal).sum();
-//                main_dayKcal.setText(String.valueOf(kcal));
+                int kcal = response.body().stream().mapToInt(MealVO::getFkcal).sum();
+                main_dayKcal.setText(String.valueOf(kcal));
                 main_maxKcal.setText("/".concat(String.valueOf(rdi)).concat("kcal"));
             }
 
@@ -398,9 +399,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
-            if(resultCode != 0) mno = resultCode;
-            getMealInfo(mno);
+            if(resultCode != 0) {
+                mno = resultCode;
+            }
+            getRDI(mno);
+            getMealInfo(date, mno);
             dailySumKcal();
+            getDailyWater(date, mno);
             getProfileInfo(mno);
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
