@@ -53,13 +53,12 @@ public class ProfileActivity extends AppCompatActivity {
         birthTV = (TextView) findViewById(R.id.birthTV);
         joindateTV = (TextView) findViewById(R.id.joindateTV);
 
-        getInfo(2);
+        getInfo(1);
 
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent joinIntent = new Intent(getApplicationContext(), JoinActivity.class);
-                startActivity(joinIntent);
+
             }
         });
 

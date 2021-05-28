@@ -53,8 +53,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         userMno = response.body();
                         Toast.makeText(LoginActivity.this, userMno+"", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("userMno", userMno);
+
+                        setResult(userMno);
+
                         finish();
                     }
                     @Override
@@ -63,6 +64,14 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+            }
+        });
+
+        btnJoin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent joinIntent = new Intent(getApplicationContext(), JoinActivity.class);
+                startActivity(joinIntent);
             }
         });
     }

@@ -46,7 +46,7 @@ import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
-    int mno = 1;
+    int mno = 0;
 
     LocalDateTime today = LocalDateTime.now();
     DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -67,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
     Button waterPlus, waterMinus;
     int temp_water = 0, rdi = 0;
 
-    int userMno;
-
     TextView profileName, profileAge, profileHeight, profileWeight, profileBMI, profileBMIName;
     TextView main_dayKcal, main_maxKcal;
 
@@ -76,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Intent intent = getIntent();
-        userMno = intent.getIntExtra("userMno", -1);
 
         LayoutInflater inflater = getLayoutInflater();
         View navi_header = inflater.inflate(R.layout.navi_header, null);
@@ -123,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         waterPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                retrofitInterface.plusWater(date,userMno).enqueue(new Callback<Integer>() {
+                retrofitInterface.plusWater(date,mno).enqueue(new Callback<Integer>() {
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
@@ -255,11 +250,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }//addDaily
 
-    private void waterPlus() {
-        retrofitInterface.plusWater(date,1).enqueue(new Callback<Integer>() {
+    private void waterPlus(String date, int mno) {
+        retrofitInterface.plusWater(date,mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
                 temp_water = response.body();
 
                 setWaterState(temp_water);
@@ -352,9 +347,14 @@ public class MainActivity extends AppCompatActivity {
 //                t.printStackTrace();
                 
                 /*================ 로그인페이지로 이동시키는 메서드 ================*/
+                goLoginPage();
             }//onFailure
         });
     }//getProfileInfo
+
+    private void goLoginPage() {
+        startActivityForResult(new Intent(this, LoginActivity.class), 200);
+    }//goLoginPage
 
     private void getMealInfo(int mno) {
         retrofitInterface.getDailyMeal(date, mno).enqueue(new Callback<List<MealVO>>() {
@@ -399,9 +399,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
+            if(resultCode != 0) mno = resultCode;
             getMealInfo(mno);
             dailySumKcal();
-            getProfileInfo(2);
+            getProfileInfo(mno);
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
         }
