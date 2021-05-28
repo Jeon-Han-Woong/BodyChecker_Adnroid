@@ -118,14 +118,14 @@ public class MainActivity extends AppCompatActivity {
         waterPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                retrofitInterface.plusWater(date, mno).enqueue(new Callback<String>() {
+                retrofitInterface.plusWater(date, mno).enqueue(new Callback<Integer>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        getDailyWater(date, mno);
                     }
 
                     @Override
-                    public void onFailure(Call<String> call, Throwable t) {
+                    public void onFailure(Call<Integer> call, Throwable t) {
                         Log.d("에러", t+"");
                     }
                 });
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 if (temp_water > 0) {
                     retrofitInterface.minusWater(date, mno).enqueue(new Callback<Integer>() {
                         @Override
-                        public void onResponse(Call<Integer> call, Response<String> response) {
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
                             temp_water = response.body();
                             setWaterState(temp_water);
                         }
