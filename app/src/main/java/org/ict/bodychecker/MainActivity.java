@@ -255,11 +255,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }//addDaily
 
-    private void waterPlus() {
-        retrofitInterface.plusWater(date,1).enqueue(new Callback<Integer>() {
+    private void waterPlus(String date, int mno) {
+        retrofitInterface.plusWater(date,mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
                 temp_water = response.body();
 
                 setWaterState(temp_water);
@@ -352,18 +352,16 @@ public class MainActivity extends AppCompatActivity {
 //                t.printStackTrace();
 
                 /*================ 로그인페이지로 이동시키는 메서드 ================*/
-//                goLoginPage();
+
+                goLoginPage();
 
             }//onFailure
         });
     }//getProfileInfo
-    private void goLoginPage(){
 
-        Intent loginPage = new Intent(this, LoginActivity.class);
-        startActivityForResult(loginPage, 200);
-
-
-    }
+    private void goLoginPage() {
+        startActivityForResult(new Intent(this, LoginActivity.class), 200);
+    }//goLoginPage
 
     private void getMealInfo(int mno) {
         retrofitInterface.getDailyMeal(date, mno).enqueue(new Callback<List<MealVO>>() {
@@ -408,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
-            if (resultCode != 0) mno = resultCode;
+            if(resultCode != 0) mno = resultCode;
             getMealInfo(mno);
             dailySumKcal();
             getProfileInfo(mno);
