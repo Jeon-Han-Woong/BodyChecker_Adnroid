@@ -46,7 +46,7 @@ import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
-    int mno = 1;
+    int mno = 0;
 
     LocalDateTime today = LocalDateTime.now();
     DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -67,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
     Button waterPlus, waterMinus;
     int temp_water = 0, rdi = 0;
 
-    int userMno;
-
     TextView profileName, profileAge, profileHeight, profileWeight, profileBMI, profileBMIName;
     TextView main_dayKcal, main_maxKcal;
 
@@ -77,11 +75,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        userMno = intent.getIntExtra("userMno", -1);
-
         LayoutInflater inflater = getLayoutInflater();
         View navi_header = inflater.inflate(R.layout.navi_header, null);
+
+        if (mno == 0) {
+
+            goLoginPage();
+        }
 
         retrofitClient = RetrofitClient.getInstance();
         retrofitInterface = RetrofitClient.getRetrofitInterface();
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         waterPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                retrofitInterface.plusWater(date,userMno).enqueue(new Callback<Integer>() {
+                retrofitInterface.plusWater(date, mno).enqueue(new Callback<Integer>() {
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
@@ -350,11 +350,20 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("getProfileInfo", "Member 테이블에 정보가 없거나");
                 Log.d("getProfileInfo", "로그인이 안돼있어 발생할 가능성 높음");
 //                t.printStackTrace();
-                
+
                 /*================ 로그인페이지로 이동시키는 메서드 ================*/
+//                goLoginPage();
+
             }//onFailure
         });
     }//getProfileInfo
+    private void goLoginPage(){
+
+        Intent loginPage = new Intent(this, LoginActivity.class);
+        startActivityForResult(loginPage, 200);
+
+
+    }
 
     private void getMealInfo(int mno) {
         retrofitInterface.getDailyMeal(date, mno).enqueue(new Callback<List<MealVO>>() {
@@ -363,8 +372,8 @@ public class MainActivity extends AppCompatActivity {
                 main_dayKcal = (TextView) findViewById(R.id.main_dayKcal);
                 main_maxKcal = (TextView) findViewById(R.id.main_maxKcal);
 
-                int kcal = response.body().stream().mapToInt(MealVO::getFkcal).sum();
-                main_dayKcal.setText(String.valueOf(kcal));
+                //int kcal = response.body().stream().mapToInt(MealVO::getFkcal).sum();
+//                main_dayKcal.setText(String.valueOf(kcal));
                 main_maxKcal.setText("/".concat(String.valueOf(rdi)).concat("kcal"));
             }
 
@@ -399,9 +408,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
+            if (resultCode != 0) mno = resultCode;
             getMealInfo(mno);
             dailySumKcal();
-            getProfileInfo(2);
+            getProfileInfo(mno);
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
         }
