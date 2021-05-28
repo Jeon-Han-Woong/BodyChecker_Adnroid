@@ -1,5 +1,6 @@
 package org.ict.bodychecker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -35,6 +36,8 @@ public class ModifyInfoActivity extends AppCompatActivity {
     DatePicker birthDP;
     Button modifyBtn, modCancelBtn;
 
+    int mno = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +62,10 @@ public class ModifyInfoActivity extends AppCompatActivity {
         modifyBtn = (Button) findViewById(R.id.modifyBtn);
         modCancelBtn = (Button) findViewById(R.id.modCancelBtn);
 
-        retrofitInterface.getInfo(2).enqueue(new Callback<MemberVO>() {
+        Intent getIntent = getIntent();
+        mno = getIntent.getIntExtra("mno", 0);
+
+        retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
             @Override
             public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
                 info = response.body();
@@ -128,7 +134,7 @@ public class ModifyInfoActivity extends AppCompatActivity {
                     return;
                 }
                 info.setPwd(pwd);
-                info.setMno(2);
+                info.setMno(mno);
 
                 retrofitInterface.modifyInfo(info).enqueue(new Callback<String>() {
                     @Override
