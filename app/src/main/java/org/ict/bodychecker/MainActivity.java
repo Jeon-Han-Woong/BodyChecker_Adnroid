@@ -118,19 +118,7 @@ public class MainActivity extends AppCompatActivity {
         waterPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                retrofitInterface.plusWater(date, mno).enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("에러", t+"");
-                    }
-                });
-
-
+                waterPlus(date, mno);
             }
         });
 
@@ -138,18 +126,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (temp_water > 0) {
-                    retrofitInterface.minusWater(date, mno).enqueue(new Callback<Integer>() {
-                        @Override
-                        public void onResponse(Call<Integer> call, Response<String> response) {
-                            temp_water = response.body();
-                            setWaterState(temp_water);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Integer> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
+                    waterMinus(date, mno);
                 } else {
                     Toast.makeText(getApplicationContext(), "물 섭취량은 0보다 낮을 수 없습니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -251,20 +228,35 @@ public class MainActivity extends AppCompatActivity {
     }//addDaily
 
     private void waterPlus(String date, int mno) {
-        retrofitInterface.plusWater(date,mno).enqueue(new Callback<Integer>() {
+        retrofitInterface.plusWater(date, mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
 //                Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
-
+                getDailyWater(date, mno);
             }
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-
+                t.printStackTrace();
             }
 
         });
     }//waterPlus
+
+    private void waterMinus(String date, int mno) {
+        retrofitInterface.minusWater(date, mno).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                temp_water = response.body();
+                setWaterState(temp_water);
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }//waterMinus
 
     private void setWaterState(int water) {
         waterProgress.setProgress(water * 10);
@@ -280,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
         drinkWater.setText(water + "");
     }//waterState
 
-    private void dailySumKcal(){
+    private void dailySumKcal(String date, int mno){
         retrofitInterface.getSumKcal(date, mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -404,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
             }
             getRDI(mno);
             getMealInfo(date, mno);
-            dailySumKcal();
+            dailySumKcal(date, mno);
             getDailyWater(date, mno);
             getProfileInfo(mno);
         } else {
