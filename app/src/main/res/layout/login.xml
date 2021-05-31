@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/login_id"
         android:hint="아이디"
-
         android:textSize="25sp"
         android:minWidth="160sp"></EditText>
 
@@ -24,6 +23,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/login_pwd"
         android:hint="비밀번호"
+        android:password="true"
         android:textSize="25sp"
         android:minWidth="160sp"></EditText>
 

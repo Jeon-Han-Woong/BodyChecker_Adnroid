@@ -53,8 +53,8 @@ public interface RetrofitInterface {
     Call<Void> removeExer(@Path("eno") int eno);
 
     /*================== Goal ====================*/
-    @GET("goal/doing/{fin_date}.json")
-    Call<List<GoalVO>> getDoing(@Path("fin_date") String fin_date);
+    @GET("goal/doing/{fin_date}/{mno}")
+    Call<List<GoalVO>> getDoing(@Path("fin_date") String fin_date, @Path("mno") int mno);
 
     @GET("goal/newgno.json")
     Call<Integer> getNewGno();
@@ -68,8 +68,8 @@ public interface RetrofitInterface {
     @DELETE("goal/remove/{gno}")
     Call<Void> removeGoal(@Path("gno") int gno);
 
-    @GET("goal/finish/{fin_date}.json")
-    Call<List<GoalVO>> getFinish(@Path("fin_date") String fin_date);
+    @GET("goal/finish/{fin_date}/{mno}")
+    Call<List<GoalVO>> getFinish(@Path("fin_date") String fin_date, @Path("mno") int mno);
 
     @PUT("goal/finish/success/{gno}")
     Call<GoalVO> selectSuccess(@Path("gno") int gno, @Body GoalVO goal);

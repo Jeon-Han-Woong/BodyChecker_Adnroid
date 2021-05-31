@@ -66,7 +66,9 @@ public class ExerciseActivity extends AppCompatActivity {
     String selectexer;
     float selectitem;
 
-    int mno = 1;
+    int mno = 0;
+
+    Intent intent;
 
     Button accountkcal;
 
@@ -108,6 +110,10 @@ public class ExerciseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+        intent = getIntent();
+
+        mno = intent.getIntExtra("mno", 0);
         consumeKcal = (TextView) findViewById(R.id.consumeKcal);
 
         newExerciseBtn = (LinearLayout) findViewById(R.id.newExerciseBtn);
