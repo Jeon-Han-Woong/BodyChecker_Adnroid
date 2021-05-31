@@ -2,6 +2,7 @@ package org.ict.bodychecker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import org.ict.bodychecker.ValueObject.GoalVO;
 import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -30,10 +33,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     Button modifyInfoBtn;
     ImageView genderImg;
-    TextView username, genderTV, heightTV, weightTV, birthTV, joindateTV;
+    TextView username, genderTV, heightTV, weightTV, birthTV, joindateTV, goalTotalTV, goalSuccessTV;
 
     Intent intent;
-    int mno = 0;
+    int mno = 0, total = 0, success = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +59,13 @@ public class ProfileActivity extends AppCompatActivity {
         weightTV = (TextView) findViewById(R.id.weightTV);
         birthTV = (TextView) findViewById(R.id.birthTV);
         joindateTV = (TextView) findViewById(R.id.joindateTV);
+        goalTotalTV = (TextView) findViewById(R.id.goalTotalTV);
+        goalSuccessTV = (TextView) findViewById(R.id.goalSuccessTV);
 
         intent = getIntent();
         mno = intent.getIntExtra("mno", 0);
+        Log.d("mno", String.valueOf(mno));
         getInfo(mno);
-
 
         modifyInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,9 +98,37 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MemberVO> call, Throwable t) {
-
+                t.printStackTrace();
             }//onFailure
+        });//getInfo
+
+        retrofitInterface.getTotal().enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                total = response.body();
+                goalTotalTV.setText(total + "개의 목표 중");
+                Log.d("total", total + "");
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                t.printStackTrace();
+            }
         });
+
+        retrofitInterface.getsuccessFinish().enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                success = response.body();
+                goalSuccessTV.setText(success + "개 성공");
+                Log.d("success", success + "");
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });//getsuccessFinish
     }//getInfo
 
     @Override

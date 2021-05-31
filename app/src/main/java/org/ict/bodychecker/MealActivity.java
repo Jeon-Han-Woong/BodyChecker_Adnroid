@@ -38,7 +38,6 @@ import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MealActivity extends AppCompatActivity {
-    int mno = 1;
 
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
@@ -58,8 +57,9 @@ public class MealActivity extends AppCompatActivity {
     MaterialButton moreDaysAgoBtn, sixDaysAgoBtn, fiveDaysAgoBtn, fourDaysAgoBtn, threeDaysAgoBtn, twoDaysAgoBtn, oneDaysAgoBtn, todayBtn;
     DatePicker mealDatePick;
 
+    Intent intent;
     float rdi = 0;
-    int progress = 0;
+    int progress = 0, mno = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +72,9 @@ public class MealActivity extends AppCompatActivity {
 
         retrofitClient = RetrofitClient.getInstance();
         retrofitInterface = RetrofitClient.getRetrofitInterface();
+
+        intent = getIntent();
+        mno = intent.getIntExtra("mno", 0);
 
         meal_calendar = (View) View.inflate(MealActivity.this, R.layout.meal_calendar, null);
 
@@ -120,6 +123,7 @@ public class MealActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
                 intent.putExtra("time", "breakfast");
                 intent.putExtra("date", dbFormat.format(today));
+                intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
         });//bfll.onclick
@@ -130,6 +134,7 @@ public class MealActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
                 intent.putExtra("time", "lunch");
                 intent.putExtra("date", dbFormat.format(today));
+                intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
         });//lcll.onclick
@@ -140,6 +145,7 @@ public class MealActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
                 intent.putExtra("time", "dinner");
                 intent.putExtra("date", dbFormat.format(today));
+                intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
         });//dnll.onclick
@@ -150,6 +156,7 @@ public class MealActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
                 intent.putExtra("time", "disert");
                 intent.putExtra("date", dbFormat.format(today));
+                intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
         });//dsll.onclick
@@ -293,6 +300,7 @@ public class MealActivity extends AppCompatActivity {
                     progress += mealVO.getFkcal();
                 });//forEach
 
+                Log.d("mno", "" + mno);
                 getRDI(mno);
 //                try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
                 circlebar.setProgress((int)(progress/rdi*100));
@@ -321,11 +329,13 @@ public class MealActivity extends AppCompatActivity {
     }//getMealList
 
     private void getRDI(int mno) {
+        Log.d("mno", "" + mno);
         retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
             @Override
             public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
                 MemberVO info = response.body();
                 rdi = (int)((info.getHeight()-100) * (info.getGender() == 1 ? 0.9f : 0.85f) * 30);
+                Log.d("RDI", ""+rdi);
             }
 
             @Override

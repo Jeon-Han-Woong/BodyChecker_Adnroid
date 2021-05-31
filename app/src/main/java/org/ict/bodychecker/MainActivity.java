@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ExerciseActivity.class);
+                intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
         });
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealActivity.class);
+                intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
         });
@@ -157,17 +159,17 @@ public class MainActivity extends AppCompatActivity {
                 if (id == R.id.myProfile) {
                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                     intent.putExtra("mno", mno);
-                    startActivity(intent);
+                    startActivityForResult(intent, 200);
                 } else if (id == R.id.myGoal) {
                     Intent intent = new Intent(getApplicationContext(), GoalActivity.class);
-
-                    startActivity(intent);
+                    intent.putExtra("mno", mno);
+                    startActivityForResult(intent, 200);
                 } else if (id == R.id.notice) {
                     Intent intent = new Intent(getApplicationContext(), NoticeActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, 200);
                 } else if (id == R.id.FAQ) {
                     Intent intent = new Intent(getApplicationContext(), FAQActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, 200);
                 }
 
                 return false;
@@ -177,11 +179,6 @@ public class MainActivity extends AppCompatActivity {
 
         /*=================== DB정보 불러오기 ===================*/
         getProfileInfo(mno);
-//        getRDI(mno);
-//        try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
-//        getMealInfo(mno);
-//        dailySumKcal();
-//        getDailyWater(mno);
 
     }//onCreate
 

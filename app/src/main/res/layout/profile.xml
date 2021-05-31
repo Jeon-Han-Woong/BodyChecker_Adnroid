@@ -180,12 +180,25 @@
                 android:src="@drawable/porfile_list"
                 android:layout_marginRight="10dp" />
 
-            <TextView
-                android:id="@+id/listTV"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5개의 도전 중 \n3개 성공"
-                android:textSize="20dp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/goalTotalTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0개의 도전 중"
+                    android:textSize="20dp" />
+                <TextView
+                    android:id="@+id/goalSuccessTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0개 성공"
+                    android:textSize="20dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

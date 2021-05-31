@@ -170,7 +170,7 @@ public class DoingFragment extends Fragment {
 
                         temp_date = year + "-" + String.format("%02d", monthOfYear + 1) + "-" + String.format("%02d", dayOfMonth);
 
-                        Log.d("선택 : ", temp_date.toString());
+//                        Log.d("선택 : ", temp_date);
                     }
                 });
                 dlg.setView(dialog);

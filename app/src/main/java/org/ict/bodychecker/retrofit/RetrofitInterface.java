@@ -74,6 +74,12 @@ public interface RetrofitInterface {
     @PUT("goal/finish/success/{gno}")
     Call<GoalVO> selectSuccess(@Path("gno") int gno, @Body GoalVO goal);
 
+    @GET("goal/total")
+    Call<Integer> getTotal();
+
+    @GET("goal/success/finish")
+    Call<Integer> getsuccessFinish();
+
     /*================== Meal ====================*/
     @GET("meal/getlist/{fdate}/{mno}")
     Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate, @Path("mno") int mno);

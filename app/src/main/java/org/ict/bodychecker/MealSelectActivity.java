@@ -30,7 +30,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MealSelectActivity extends AppCompatActivity {
-    int mno = 1;
 
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
@@ -40,7 +39,9 @@ public class MealSelectActivity extends AppCompatActivity {
     ArrayList<Integer> selectKcalList = new ArrayList<>();
     ArrayList<Integer> unselectKcalList = new ArrayList<>();
 
+    Intent intent;
     String date, time;
+    int mno = 0;
 
     ListView mealSelected, mealUnSelected;
     Button cancelBtn, selectBtn;
@@ -62,6 +63,9 @@ public class MealSelectActivity extends AppCompatActivity {
 
         retrofitClient = RetrofitClient.getInstance();
         retrofitInterface = RetrofitClient.getRetrofitInterface();
+
+        intent = getIntent();
+        mno = intent.getIntExtra("mno", 0);
 
         mealSelected = (ListView) findViewById(R.id.mealSelected);
         mealUnSelected = (ListView) findViewById(R.id.mealUnSelected);

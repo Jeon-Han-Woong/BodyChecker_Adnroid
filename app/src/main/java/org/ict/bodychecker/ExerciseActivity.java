@@ -66,7 +66,7 @@ public class ExerciseActivity extends AppCompatActivity {
     String selectexer;
     float selectitem;
 
-    int mno = 1;
+    int mno = 0;
 
     Button accountkcal;
 
