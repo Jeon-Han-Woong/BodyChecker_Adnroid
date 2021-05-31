@@ -56,7 +56,8 @@ public class FinishFragment extends Fragment {
     RadioButton btnSuccess, btnFail;
     Button selectComplete;
 
-
+    int mno = 0;
+    Bundle bundle;
     String today;
 
     List<GoalVO> finishList;
@@ -71,11 +72,22 @@ public class FinishFragment extends Fragment {
         init();
         today = String.valueOf(LocalDate.now());
 
+        bundle = getArguments();
+
+
+
+        if (bundle != null) {
+            mno = bundle.getInt("mno");
+        }
+
+        Toast.makeText(GoalActivity, mno+"", Toast.LENGTH_SHORT).show();
+
+
         retrofitClient = retrofitClient.getInstance();
 
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
-        retrofitInterface.getFinish(today).enqueue(new Callback<List<GoalVO>>() {
+        retrofitInterface.getFinish(today, mno).enqueue(new Callback<List<GoalVO>>() {
             @Override
             public void onResponse(Call<List<GoalVO>> call, Response<List<GoalVO>> response) {
                 finishList = response.body();

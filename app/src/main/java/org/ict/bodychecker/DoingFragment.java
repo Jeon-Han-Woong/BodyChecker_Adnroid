@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,6 +50,9 @@ public class DoingFragment extends Fragment {
 
     View dialog;
 
+    int mno = 0;
+    Bundle bundle;
+
     EditText edtTitle, edtContent;
     DatePicker dPicker;
     LinearLayout newGoalBtn;
@@ -75,13 +79,20 @@ public class DoingFragment extends Fragment {
         init();
         today = String.valueOf(LocalDate.now());
 
+        bundle = getArguments();
+
+        if (bundle != null) {
+            mno = bundle.getInt("mno");
+        }
+
+        Toast.makeText(GoalActivity, mno+"", Toast.LENGTH_SHORT).show();
 //        getData();
 
         retrofitClient = retrofitClient.getInstance();
 
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
-        retrofitInterface.getDoing(today).enqueue(new Callback<List<GoalVO>>() {
+        retrofitInterface.getDoing(today, mno).enqueue(new Callback<List<GoalVO>>() {
             @Override
             public void onResponse(Call<List<GoalVO>> call, Response<List<GoalVO>> response) {
                 doingList = response.body();

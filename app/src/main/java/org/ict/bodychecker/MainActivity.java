@@ -6,12 +6,19 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,8 +52,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     int mno = 0;
+
+    private long backKeyPressedTime = 0;
 
     LocalDateTime today = LocalDateTime.now();
     DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -54,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
+
+    SensorManager sensorManager;
+    Sensor stepCountSensor;
 
     DrawerLayout drawerLayout;
     Context context = this;
@@ -63,9 +75,10 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar walkProgress, waterProgress;
     LinearLayout goExerciseBtn, goMealBtn;
     TextView drinkWater, nowWater, myWeight, myBMI;
+    TextView myWalk;
     TextView reduceKcal;
     Button waterPlus, waterMinus;
-    int temp_water = 0, rdi = 0;
+    int temp_water = 0, rdi = 0, currentSteps = 0;
 
     TextView profileName, profileAge, profileHeight, profileWeight, profileBMI, profileBMIName;
     TextView main_dayKcal, main_maxKcal;
@@ -78,6 +91,13 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View navi_header = inflater.inflate(R.layout.navi_header, null);
 
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
+        }
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
         retrofitClient = RetrofitClient.getInstance();
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
@@ -89,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         nowWater = (TextView) findViewById(R.id.nowWater);
         myWeight = (TextView) findViewById(R.id.myWeight);
         myBMI = (TextView) findViewById(R.id.myBMI);
+        myWalk = (TextView) findViewById(R.id.myWalk);
         reduceKcal = (TextView) findViewById(R.id.reduceKcal);
         waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
 
@@ -181,6 +202,28 @@ public class MainActivity extends AppCompatActivity {
         getProfileInfo(mno);
 
     }//onCreate
+
+    public void onStart() {
+        super.onStart();
+        if(stepCountSensor != null) {
+            sensorManager.registerListener( this, stepCountSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent e) {
+        if (e.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            if(e.values[0]==1.0f) {
+                currentSteps++;
+                myWalk.setText(currentSteps + " / 10000");
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 
     /*======================= 호출 메서드 =======================*/
     private void getDailyWater(String date, int mno) {
@@ -433,4 +476,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDrawerStateChanged(int newState) { }
     };//listener
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(this, "\'뒤로가기\' 버튼을 한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            finish();
+        }
+
+//        finishAffinity();
+//        System.runFinalization();
+//        System.exit(0);
+    }
 }//class

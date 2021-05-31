@@ -1,6 +1,7 @@
 package org.ict.bodychecker;
 
 import android.app.TabActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TabHost;
@@ -16,6 +17,9 @@ public class GoalActivity extends AppCompatActivity {
     DoingFragment fragmentDoing;
     FinishFragment fragmentFinish;
 
+    Intent intent;
+    int mno = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,10 +28,17 @@ public class GoalActivity extends AppCompatActivity {
         fragmentDoing = new DoingFragment();
         fragmentFinish = new FinishFragment();
 
+        intent = getIntent();
+        mno = intent.getIntExtra("mno", 0);
+
+        Bundle bundle = new Bundle(1);
+        bundle.putInt("mno", mno);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_goal);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        fragmentDoing.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().add(R.id.frame, fragmentDoing).commit();
 
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
@@ -42,8 +53,10 @@ public class GoalActivity extends AppCompatActivity {
                 Fragment selected = null;
                 if(position == 0) {
                     selected = fragmentDoing;
+                    selected.setArguments(bundle);
                 } else if (position == 1) {
                     selected = fragmentFinish;
+                    selected.setArguments(bundle);
                 }
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame, selected).commit();
