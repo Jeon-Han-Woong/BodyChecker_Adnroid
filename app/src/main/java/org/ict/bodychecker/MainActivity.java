@@ -444,6 +444,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 mno = resultCode;
             }
             getRDI(mno);
+            try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
             getMealInfo(date, mno);
             dailySumKcal(date, mno);
             getDailyWater(date, mno);

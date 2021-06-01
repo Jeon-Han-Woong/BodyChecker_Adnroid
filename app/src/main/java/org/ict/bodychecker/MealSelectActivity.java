@@ -148,15 +148,18 @@ public class MealSelectActivity extends AppCompatActivity {
                 time = getIntent.getStringExtra("time");
                 date = getIntent.getStringExtra("date");
 
+                Log.d("MealSelect", date);
+
                 Intent setIntent = new Intent(getApplicationContext(), MealActivity.class);
                 setIntent.putExtra("date", date);
 
                 removeDB(date, time, mno);
+                    try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
                 addDB(date, time, mno);
                 if(selectList.isEmpty())
-                try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+                    try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
                 else
-                try { TimeUnit.MILLISECONDS.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
+                    try { TimeUnit.MILLISECONDS.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
 
                 finish();
             }
