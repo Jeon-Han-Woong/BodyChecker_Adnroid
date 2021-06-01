@@ -19,6 +19,8 @@ import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 
+import java.util.concurrent.TimeUnit;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -139,6 +141,7 @@ public class ModifyInfoActivity extends AppCompatActivity {
                 retrofitInterface.modifyInfo(info).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
+                        try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
                         Toast.makeText(getApplicationContext(), "회원정보가 수정되었습니다.", Toast.LENGTH_SHORT).show();
                     }
 

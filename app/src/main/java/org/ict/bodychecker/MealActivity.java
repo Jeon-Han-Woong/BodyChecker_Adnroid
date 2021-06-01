@@ -46,7 +46,6 @@ public class MealActivity extends AppCompatActivity {
     DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter btnFormat = DateTimeFormatter.ofPattern("MM/dd");
 
-    final String TIME = "T00:00:00";
     String date = dbFormat.format(today);
 
     View meal_calendar;
@@ -113,7 +112,7 @@ public class MealActivity extends AppCompatActivity {
         sixDaysAgoBtn.setText(setBtnDate(-6));
 
         getRDI(mno);
-//        try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+        try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
         getMealList(date, mno);
 
 //======================================== onclick 이벤트 =========================================
@@ -122,7 +121,7 @@ public class MealActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
                 intent.putExtra("time", "breakfast");
-                intent.putExtra("date", dbFormat.format(today));
+                intent.putExtra("date", date);
                 intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
@@ -133,7 +132,7 @@ public class MealActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
                 intent.putExtra("time", "lunch");
-                intent.putExtra("date", dbFormat.format(today));
+                intent.putExtra("date", date);
                 intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
@@ -144,7 +143,7 @@ public class MealActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
                 intent.putExtra("time", "dinner");
-                intent.putExtra("date", dbFormat.format(today));
+                intent.putExtra("date", date);
                 intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
@@ -155,7 +154,7 @@ public class MealActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MealSelectActivity.class);
                 intent.putExtra("time", "disert");
-                intent.putExtra("date", dbFormat.format(today));
+                intent.putExtra("date", date);
                 intent.putExtra("mno", mno);
                 startActivityForResult(intent, 200);
             }
@@ -234,7 +233,7 @@ public class MealActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mealDatePick = (DatePicker) meal_calendar.findViewById(R.id.mealDatePick);
 
-                        date = mealDatePick.getYear()+"-"+String.format("%02d", mealDatePick.getMonth()+1)+"-"+String.format("%02d", mealDatePick.getDayOfMonth())+TIME;
+                        date = mealDatePick.getYear()+"-"+String.format("%02d", mealDatePick.getMonth()+1)+"-"+String.format("%02d", mealDatePick.getDayOfMonth());
                         getMealList(date, mno);
                     }
                 });//dlg.positive
@@ -300,10 +299,9 @@ public class MealActivity extends AppCompatActivity {
                     progress += mealVO.getFkcal();
                 });//forEach
 
-                Log.d("mno", "" + mno);
                 getRDI(mno);
-//                try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
-                circlebar.setProgress((int)(progress/rdi*100));
+                int per = (int)(progress/rdi*100);
+                circlebar.setProgress(per);
                 all.setText("일일 권장량 " + String.valueOf((int)rdi) + "kcal 중 " + String.valueOf(progress) + "kcal 섭취");
 
                 if(breakfast!=null) breakfast = breakfast.replace("null", "");
@@ -329,13 +327,13 @@ public class MealActivity extends AppCompatActivity {
     }//getMealList
 
     private void getRDI(int mno) {
-        Log.d("mno", "" + mno);
         retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
             @Override
             public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
                 MemberVO info = response.body();
-                rdi = (int)((info.getHeight()-100) * (info.getGender() == 1 ? 0.9f : 0.85f) * 30);
-                Log.d("RDI", ""+rdi);
+                do{
+                    rdi = ((info.getHeight()-100) * (info.getGender() == 1 ? 0.9f : 0.85f) * 30);
+                }while(rdi == 0);
             }
 
             @Override
