@@ -22,6 +22,11 @@
             android:icon="@drawable/faq"
             android:title="FAQ"/>
 
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logout"
+            android:title="로그아웃" />
+
     </group>
 
 </menu>

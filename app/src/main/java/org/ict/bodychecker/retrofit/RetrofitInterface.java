@@ -74,11 +74,11 @@ public interface RetrofitInterface {
     @PUT("goal/finish/success/{gno}")
     Call<GoalVO> selectSuccess(@Path("gno") int gno, @Body GoalVO goal);
 
-    @GET("goal/total")
-    Call<Integer> getTotal();
+    @GET("goal/total/{mno}")
+    Call<Integer> getTotal(@Path("mno") int mno);
 
-    @GET("goal/success/finish")
-    Call<Integer> getsuccessFinish();
+    @GET("goal/success/finish/{mno}")
+    Call<Integer> getsuccessFinish(@Path("mno") int mno);
 
     /*================== Meal ====================*/
     @GET("meal/getlist/{fdate}/{mno}")

@@ -102,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
             }//onFailure
         });//getInfo
 
-        retrofitInterface.getTotal().enqueue(new Callback<Integer>() {
+        retrofitInterface.getTotal(mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 total = response.body();
@@ -116,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        retrofitInterface.getsuccessFinish().enqueue(new Callback<Integer>() {
+        retrofitInterface.getsuccessFinish(mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 success = response.body();
