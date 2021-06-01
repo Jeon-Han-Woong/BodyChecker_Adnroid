@@ -91,7 +91,13 @@ public class LoginActivity extends AppCompatActivity {
         retrofitInterface.login(id, pwd).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                userMno = response.body();
+                try {
+                    userMno = response.body();
+                } catch (NullPointerException e){
+                    e.printStackTrace();
+                    Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 //                        Toast.makeText(LoginActivity.this, userMno+"", Toast.LENGTH_SHORT).show();
 
                 setResult(userMno);

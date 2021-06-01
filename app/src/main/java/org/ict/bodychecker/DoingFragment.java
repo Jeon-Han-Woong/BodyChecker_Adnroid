@@ -278,7 +278,7 @@ public class DoingFragment extends Fragment {
                                 return;
                             }
                             newGoalData.setSetDate(today);
-                            newGoalData.setMno(1);
+                            newGoalData.setMno(mno);
 
                             Toast.makeText(GoalActivity, temp_date+"", Toast.LENGTH_SHORT).show();
                             retrofitInterface.registerGoal(newGoalData).enqueue(new Callback<GoalVO>() {

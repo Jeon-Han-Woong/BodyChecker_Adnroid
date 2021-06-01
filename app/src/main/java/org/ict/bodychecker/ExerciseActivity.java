@@ -113,6 +113,8 @@ public class ExerciseActivity extends AppCompatActivity {
         intent = getIntent();
 
         mno = intent.getIntExtra("mno", 0);
+
+        Toast.makeText(this, mno + "", Toast.LENGTH_SHORT).show();
         consumeKcal = (TextView) findViewById(R.id.consumeKcal);
 
         newExerciseBtn = (LinearLayout) findViewById(R.id.newExerciseBtn);
@@ -351,7 +353,7 @@ public class ExerciseActivity extends AppCompatActivity {
                         newExerData.setEtime(Integer.parseInt(edtminute.getText().toString()));
                         newExerData.setEkcal(temp_result);
                         newExerData.setEdate(date);
-                        newExerData.setMno(1);
+                        newExerData.setMno(mno);
                         newExerData.setEno(temp_Eno);
 
                         sel_spinner.add(sel_index);
