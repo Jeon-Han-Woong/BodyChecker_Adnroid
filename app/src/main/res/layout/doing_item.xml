@@ -28,8 +28,8 @@
             android:includeFontPadding="false"
             android:layout_gravity="center|left"
             android:text="목표이름"
-            android:textSize="25dp"
-            android:layout_marginLeft="40dp"
+            android:textSize="30sp"
+            android:layout_marginLeft="30dp"
             android:textStyle="bold"></TextView>
 
         <View
@@ -45,7 +45,7 @@
             android:layout_gravity="center|right"
             android:text="목표"
             android:layout_marginRight="30dp"
-            android:textSize="20dp" />
+            android:textSize="30sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -31,6 +31,7 @@ import org.ict.bodychecker.retrofit.RetrofitInterface;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -368,6 +369,7 @@ public class DoingFragment extends Fragment {
             return new RecyclerAdapter.ItemViewHolder(view);
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onBindViewHolder(@NonNull RecyclerAdapter.ItemViewHolder holder, int position) {
             holder.onBind(listData.get(position));
@@ -534,9 +536,11 @@ public class DoingFragment extends Fragment {
                 });
             }
 
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
             void onBind(GoalVO data) {
                 doingTitle.setText(data.getGtitle());
-                doingDate.setText("종료 : " + data.getFinDate());
+                doingDate.setText("D-"+ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())));
                 myGno.setText(data.getGno()+"");
             }
         }

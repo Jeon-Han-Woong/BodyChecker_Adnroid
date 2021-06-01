@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -60,16 +62,15 @@ public class ExerciseActivity extends AppCompatActivity {
 
 //    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    String [] exeritems = {"걷기", "달리기", "계단 오르기", "스쿼트", "윗몸 일으키기", "훌라후프"};
+    String [] exeritems = {"걷기", "달리기", "등산", "수영", "계단 오르기", "요가", "복싱", "스쿼트", "윗몸 일으키기", "훌라후프", "줄넘기", "자전거", "사이클", "스쿼시", "런닝머신", "에어로빅"};
 
-    float [] exerkcal = {0.067f, 0.123f, 0.123f, 0.123f, 0.14f, 0.07f};
+    float [] exerkcal = {0.067f, 0.123f, 0.14f, 0.158f, 0.123f,  0.044f, 0.175f, 0.123f, 0.14f, 0.07f, 0.175f, 0.14f, 0.123f, 0.21f, 0.184f, 0.105f};
     String selectexer;
     float selectitem;
 
     int mno = 0;
     Intent intent;
 
-    Button accountkcal;
 
     LocalDateTime today = LocalDateTime.now();
     DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -292,7 +293,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 spinner_exer = (Spinner) dialog.findViewById(R.id.exer_spinner);
                 edtminute = (EditText) dialog.findViewById(R.id.edtminute);
                 resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
-                accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
+//                accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
 
                 retrofitInterface.getNewEno().enqueue(new Callback<Integer>() {
                     @Override
@@ -320,6 +321,17 @@ public class ExerciseActivity extends AppCompatActivity {
                         selectitem = exerkcal[i];
                         selectexer = exeritems[i];
                         sel_index = i;
+                        try {
+
+                            temp_min = Integer.parseInt(edtminute.getText().toString());
+                            temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
+                            resultkcal.setText(temp_result + " kcal");
+                        } catch (NumberFormatException e) {
+                            temp_min = 0;
+                            temp_result = 0;
+                            resultkcal.setText(temp_result + " kcal");
+                            return;
+                        }
                     }
 
                     @Override
@@ -327,19 +339,46 @@ public class ExerciseActivity extends AppCompatActivity {
 
                     }
                 });
-                accountkcal.setOnClickListener(new View.OnClickListener() {
+
+                edtminute.addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void onClick(View view) {
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         try {
 
                             temp_min = Integer.parseInt(edtminute.getText().toString());
                             temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
                             resultkcal.setText(temp_result + " kcal");
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), "시간을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        } catch (NumberFormatException e) {
+                            temp_min = 0;
+                            temp_result = 0;
+                            resultkcal.setText(temp_result + " kcal");
+                            return;
                         }
                     }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
                 });
+//                accountkcal.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        try {
+//
+//                            temp_min = Integer.parseInt(edtminute.getText().toString());
+//                            temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
+//                            resultkcal.setText(temp_result + " kcal");
+//                        } catch (Exception e) {
+//                            Toast.makeText(getApplicationContext(), "시간을 입력해주세요.", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
 
 
                 dlg.setTitle("운동 기록 추가");
@@ -349,8 +388,58 @@ public class ExerciseActivity extends AppCompatActivity {
                 dlg.setPositiveButton("추가", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+//                        newExerData.setEname(selectexer);
+//                        try {
+//
+//                            newExerData.setEtime(Integer.parseInt(edtminute.getText().toString()));
+//                        } catch (NumberFormatException e) {
+//
+//                            Toast.makeText(ExerciseActivity.this, "입력 값을 확인해 주세요.", Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//                        newExerData.setEkcal(temp_result);
+//                        newExerData.setEdate(date);
+//                        newExerData.setMno(mno);
+//                        newExerData.setEno(temp_Eno);
+//
+//                        sel_spinner.add(sel_index);
+//
+//                        retrofitInterface.registerExer(newExerData).enqueue(new Callback<String>() {
+//                            @Override
+//                            public void onResponse(Call<String> call, Response<String> response) {
+//                                Toast.makeText(ExerciseActivity.this, "새 운동 입력", Toast.LENGTH_SHORT).show();
+//                            }
+//                            @Override
+//                            public void onFailure(Call<String> call, Throwable t) {
+//                                Log.d("오류", t+"");
+//                            }
+//                        });
+//                        adapter.addItem(newExerData);
+//                        try { TimeUnit.MILLISECONDS.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
+//                        getDailySum(date);
+//
+//                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+                dlg.setNegativeButton("취소", null);
+
+                final AlertDialog dia = dlg.create();
+
+                dia.show();
+
+                dia.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         newExerData.setEname(selectexer);
-                        newExerData.setEtime(Integer.parseInt(edtminute.getText().toString()));
+                        try {
+
+                            newExerData.setEtime(Integer.parseInt(edtminute.getText().toString()));
+                        } catch (NumberFormatException e) {
+
+                            Toast.makeText(ExerciseActivity.this, "\'분\'은 숫자만 입력해 주세요." , Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         newExerData.setEkcal(temp_result);
                         newExerData.setEdate(date);
                         newExerData.setMno(mno);
@@ -373,12 +462,10 @@ public class ExerciseActivity extends AppCompatActivity {
                         getDailySum(date);
 
                         adapter.notifyDataSetChanged();
+
+                        dia.dismiss();
                     }
                 });
-
-                dlg.setNegativeButton("취소", null);
-
-                dlg.show();
             }
         });
 
@@ -421,7 +508,7 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private void getDailySum(String date) {
-        consumeKcal.setText(0+ " kcal");
+
         retrofitInterface.getSumKcal(date, mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -431,7 +518,8 @@ public class ExerciseActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-
+                Log.d("에러", t+"");
+                consumeKcal.setText(0+ " kcal");
             }
         });
     }
@@ -520,7 +608,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
                         edtminute = (EditText) dialog.findViewById(R.id.edtminute);
                         resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
-                        accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
+//                        accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
 
                         edtminute.setText(sel_data.getEtime()+"");
 
@@ -535,6 +623,17 @@ public class ExerciseActivity extends AppCompatActivity {
                                 selectitem = exerkcal[i];
                                 selectexer = exeritems[i];
                                 sel_index = i;
+                                try {
+
+                                    temp_min = Integer.parseInt(edtminute.getText().toString());
+                                    temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
+                                    resultkcal.setText(temp_result + " kcal");
+                                } catch (NumberFormatException e) {
+                                    temp_min = 0;
+                                    temp_result = 0;
+                                    resultkcal.setText(temp_result + " kcal");
+                                    return;
+                                }
                             }
 
                             @Override
@@ -552,14 +651,40 @@ public class ExerciseActivity extends AppCompatActivity {
                         // end
 
 
-                        accountkcal.setOnClickListener(new View.OnClickListener() {
+                        edtminute.addTextChangedListener(new TextWatcher() {
                             @Override
-                            public void onClick(View view) {
-                                temp_min = Integer.parseInt(edtminute.getText().toString());
-                                temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
-                                resultkcal.setText(temp_result + " kcal");
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                try {
+                                    temp_min = Integer.parseInt(edtminute.getText().toString());
+                                    temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
+                                    resultkcal.setText(temp_result + " kcal");
+                                } catch (NumberFormatException e) {
+                                    temp_min = 0;
+                                    temp_result = 0;
+                                    resultkcal.setText(temp_result + " kcal");
+                                    return;
+                                }
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+
                             }
                         });
+
+//                        accountkcal.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                temp_min = Integer.parseInt(edtminute.getText().toString());
+//                                temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
+//                                resultkcal.setText(temp_result + " kcal");
+//                            }
+//                        });
 
                         dlg.setTitle("운동 기록 변경");
 
