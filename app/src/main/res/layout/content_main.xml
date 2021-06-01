@@ -15,24 +15,48 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:padding="5dp"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:orientation="vertical"
+            android:id="@+id/goGoalBtn">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="목표 이름"
-                android:layout_margin="5dp"
-                android:textSize="50dp"
-                android:id="@+id/recentGoal"></TextView>
+                android:textSize="15sp"
+                android:layout_marginLeft="15dp"
+                android:text="진행중인 목표">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="D-7"
-                android:textSize="50dp"
-                android:layout_margin="5dp"
-                android:id="@+id/dDay"></TextView>
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="목표 이름"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center|left"
+                    android:textSize="40sp"
+                    android:id="@+id/recentGoal"></TextView>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"></View>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dday"
+                    android:layout_gravity="center|right"
+                    android:textSize="40sp"
+                    android:layout_marginRight="30dp"
+                    android:id="@+id/dDay"></TextView>
+            </LinearLayout>
+
+
 
         </LinearLayout>
 
@@ -56,7 +80,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="500 / 10000"
+                android:text="0 / 10000"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -68,8 +92,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"
-                android:progress="20"
-                android:max="100"
+
+                android:max="10000"
                 android:id="@+id/walkProgress"
                 style="?android:progressBarStyleHorizontal"></ProgressBar>
 
@@ -112,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:layout_gravity="center|right"
-                android:text="/0kcal"
+                android:text="/ 0kcal"
                 android:textSize="30dp"></TextView>
 
         </LinearLayout>
@@ -168,7 +192,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/goProfileBtn">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -269,6 +294,7 @@
                         android:layout_height="38dp"
                         android:layout_marginLeft="5dp"
                         android:text="+"
+                        android:backgroundTint="#2AB52F"
                         android:id="@+id/waterPlus"></Button>
 
                     <Button
@@ -276,6 +302,7 @@
                         android:layout_height="38dp"
                         android:layout_marginLeft="5dp"
                         android:text="-"
+                        android:backgroundTint="#FF0000"
                         android:id="@+id/waterMinus"></Button>
 
                 </LinearLayout>

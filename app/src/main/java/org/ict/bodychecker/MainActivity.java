@@ -37,14 +37,17 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 
 import org.ict.bodychecker.ValueObject.DailyVO;
+import org.ict.bodychecker.ValueObject.GoalVO;
 import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 import org.w3c.dom.Text;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -73,8 +76,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     View drawerView;
     ListView listView;
     TextView hitext;
+    TextView recentGoal, dDay;
     ProgressBar walkProgress, waterProgress;
-    LinearLayout goExerciseBtn, goMealBtn;
+    LinearLayout goGoalBtn, goExerciseBtn, goMealBtn, goProfileBtn;
     TextView drinkWater, nowWater, myWeight, myBMI;
     TextView myWalk;
     TextView reduceKcal;
@@ -83,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     TextView profileName, profileAge, profileHeight, profileWeight, profileBMI, profileBMIName;
     TextView main_dayKcal, main_maxKcal;
+
+    GoalVO goalDday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +108,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         retrofitClient = RetrofitClient.getInstance();
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
+        recentGoal = (TextView) findViewById(R.id.recentGoal);
+        dDay = (TextView) findViewById(R.id.dDay);
+
         goExerciseBtn = (LinearLayout) findViewById(R.id.goExerciseBtn);
         goMealBtn = (LinearLayout) findViewById(R.id.goMealBtn);
+        goGoalBtn = (LinearLayout) findViewById(R.id.goGoalBtn);
+        goProfileBtn = (LinearLayout) findViewById(R.id.goProfileBtn);
         waterPlus = (Button) findViewById(R.id.waterPlus);
         waterMinus = (Button) findViewById(R.id.waterMinus);
         drinkWater = (TextView) findViewById(R.id.drinkWater);
@@ -120,6 +131,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         profileWeight = (TextView) navi_header.findViewById(R.id.profileWeight);
         profileBMI = (TextView) navi_header.findViewById(R.id.profileBMI);
         profileBMIName = (TextView) navi_header.findViewById(R.id.profileBMIName);
+
+        goGoalBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), GoalActivity.class);
+                intent.putExtra("mno", mno);
+                startActivityForResult(intent, 200);
+            }
+        });
+
+        goProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.putExtra("mno", mno);
+                startActivityForResult(intent, 200);
+            }
+        });
 
         goExerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(e.values[0]==1.0f) {
                 currentSteps++;
                 myWalk.setText(currentSteps + " / 10000");
+                walkProgress.setProgress(currentSteps);
             }
         }
     }
@@ -406,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 int kcal = response.body().stream().mapToInt(MealVO::getFkcal).sum();
                 main_dayKcal.setText(String.valueOf(kcal));
-                main_maxKcal.setText("/".concat(String.valueOf(rdi)).concat("kcal"));
+                main_maxKcal.setText("/ ".concat(String.valueOf(rdi)).concat("kcal"));
             }
 
             @Override
@@ -437,6 +467,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }//getRDI
 
+    private void getDday(String date, int mno) {
+        retrofitInterface.getDday(date, mno).enqueue(new Callback<GoalVO>() {
+            @Override
+            public void onResponse(Call<GoalVO> call, Response<GoalVO> response) {
+                goalDday = response.body();
+                recentGoal.setText(goalDday.getGtitle());
+                if (ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate())) > 0) {
+                    dDay.setText("D-" + (ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate()))));
+                } else if (ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate())) == 0) {
+                    dDay.setText("Dday");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GoalVO> call, Throwable t) {
+                Log.e("에러", t+"");
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
@@ -448,12 +498,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             dailySumKcal(date, mno);
             getDailyWater(date, mno);
             getProfileInfo(mno);
+            getDday(date, mno);
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }//onActivityResult
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

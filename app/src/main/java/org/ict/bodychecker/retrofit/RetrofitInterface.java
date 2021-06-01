@@ -80,6 +80,9 @@ public interface RetrofitInterface {
     @GET("goal/success/finish/{mno}")
     Call<Integer> getsuccessFinish(@Path("mno") int mno);
 
+    @GET("goal/dday/{fin_date}/{mno}")
+    Call<GoalVO> getDday(@Path("fin_date") String fin_date, @Path("mno") int mno);
+
     /*================== Meal ====================*/
     @GET("meal/getlist/{fdate}/{mno}")
     Call<List<MealVO>> getDailyMeal(@Path("fdate") String fdate, @Path("mno") int mno);
