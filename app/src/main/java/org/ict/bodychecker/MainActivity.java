@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -190,6 +191,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     startActivityForResult(intent, 200);
                 } else if (id == R.id.FAQ) {
                     Intent intent = new Intent(getApplicationContext(), FAQActivity.class);
+                    startActivityForResult(intent, 200);
+                } else if(id == R.id.logout) {
+                    SharedPreferences autoLogin = getSharedPreferences("auto", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = autoLogin.edit();
+                    editor.putInt("MNO", 0);
+                    editor.commit();
+                    mno = 0;
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivityForResult(intent, 200);
                 }
 

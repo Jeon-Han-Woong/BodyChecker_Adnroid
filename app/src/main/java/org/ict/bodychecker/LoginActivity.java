@@ -44,20 +44,11 @@ public class LoginActivity extends AppCompatActivity {
 
         autoLogin = getSharedPreferences("auto", Activity.MODE_PRIVATE);
 
-
         userMno = autoLogin.getInt("MNO", 0);
         if(userMno > 0) {
             setResult(userMno);
             finish();
         }
-
-//        id = autoLogin.getString("ID", "");
-//        pwd = autoLogin.getString("PWD", "");
-//        Log.d("ID", id);
-//        Log.d("PWD", pwd);
-//        if(id != "" && pwd != "") {
-//            login(id, pwd);
-//        }
 
         auto_login = (CheckBox) findViewById(R.id.auto_login);
         login_id = (EditText) findViewById(R.id.login_id);
@@ -74,6 +65,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 id = login_id.getText().toString().trim();
                 pwd = login_pwd.getText().toString().trim();
+
+                if(id.isEmpty() || pwd.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "아이디와 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 login(id, pwd);
             }
         });//btnLoginOnClick
@@ -91,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         retrofitInterface.login(id, pwd).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
+
                 try {
                     userMno = response.body();
                 } catch (NullPointerException e){
@@ -99,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 //                        Toast.makeText(LoginActivity.this, userMno+"", Toast.LENGTH_SHORT).show();
+
 
                 setResult(userMno);
 
@@ -114,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
             }//onFailure
         });
     }//login
