@@ -498,6 +498,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFailure(Call<GoalVO> call, Throwable t) {
                 Log.e("에러", t+"");
+                recentGoal.setText("진행중인 목표가 없습니다.");
+                recentGoal.setTextSize(30);
+                dDay.setText("");
             }
         });
     }
