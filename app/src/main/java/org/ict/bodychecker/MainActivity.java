@@ -16,6 +16,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -85,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Button waterPlus, waterMinus;
     int temp_water = 0, rdi = 0, currentSteps = 0;
 
-    TextView profileName, profileAge, profileHeight, profileWeight, profileBMI, profileBMIName;
+    TextView profileName, profileAge, profileHeight, profileWeight, profileBMIName;
+//    profileBMI,
     TextView main_dayKcal, main_maxKcal;
 
     GoalVO goalDday;
@@ -129,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         profileAge = (TextView) navi_header.findViewById(R.id.profileAge);
         profileHeight = (TextView) navi_header.findViewById(R.id.profileHeight);
         profileWeight = (TextView) navi_header.findViewById(R.id.profileWeight);
-        profileBMI = (TextView) navi_header.findViewById(R.id.profileBMI);
+//        profileBMI = (TextView) navi_header.findViewById(R.id.profileBMI);
         profileBMIName = (TextView) navi_header.findViewById(R.id.profileBMIName);
 
         goGoalBtn.setOnClickListener(new View.OnClickListener() {
@@ -340,10 +343,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void setWaterState(int water) {
         waterProgress.setProgress(water * 10);
         if (water < 5) {
+            drinkWater.setTextColor(Color.RED);
             nowWater.setTextColor(Color.RED);
         } else if (water >= 5 && water < 10) {
+            drinkWater.setTextColor(Color.parseColor("#FF5E00"));
             nowWater.setTextColor(Color.parseColor("#FF5E00"));
         } else if (water >= 10) {
+            drinkWater.setTextColor(Color.parseColor("#189186"));
             nowWater.setTextColor(Color.parseColor("#189186"));
         }
 
@@ -385,26 +391,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 profileHeight.setText(height);
                 profileWeight.setText(weight);
                 myWeight.setText(weight);
-                profileBMI.setText(String.valueOf(bmi));
+//                profileBMI.setText(String.valueOf(bmi));
                 if(bmi < 18.5) {
                     myBMI.setText("확찌자");
-                    profileBMIName.setText("확찌자");
+                    myBMI.setTextColor(Color.rgb(51, 102, 153));
+                    profileBMIName.setText("확찌자 (" + bmi + ")");
                     profileBMIName.setTextColor(Color.rgb(51, 102, 153));
                 } else if(18.5 < bmi && bmi < 23) {
                     myBMI.setText("안찐자");
-                    profileBMIName.setText("안찐자");
+                    myBMI.setTextColor(Color.rgb(121, 210, 121));
+                    profileBMIName.setText("안찐자 (" + bmi + ")");
                     profileBMIName.setTextColor(Color.rgb(121, 210, 121));
                 } else if(23 <= bmi && bmi < 25) {
                     myBMI.setText("좀찐자");
-                    profileBMIName.setText("좀찐자");
+                    myBMI.setTextColor(Color.rgb(233, 105, 0));
+                    profileBMIName.setText("좀찐자 (" + bmi + ")");
                     profileBMIName.setTextColor(Color.rgb(233, 105, 0));
                 } else if(25 <= bmi && bmi < 28) {
                     myBMI.setText("확찐자");
-                    profileBMIName.setText("확찐자");
+                    myBMI.setTextColor(Color.rgb(192, 39, 34));
+                    profileBMIName.setText("확찐자 (" + bmi + ")");
                     profileBMIName.setTextColor(Color.rgb(192, 39, 34));
                 } else if(28 <= bmi) {
                     myBMI.setText("확!찐자");
-                    profileBMIName.setText("확!찐자");
+                    myBMI.setTextColor(Color.rgb(209, 0, 0));
+                    profileBMIName.setText("확!찐자 (" + bmi + ")");
                     profileBMIName.setTextColor(Color.rgb(209, 0, 0));
                 }//else if
 
@@ -474,9 +485,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 goalDday = response.body();
                 recentGoal.setText(goalDday.getGtitle());
                 if (ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate())) > 0) {
+                    if(ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate())) < 7) {
+                        dDay.setTextColor(Color.parseColor("#FF5E00"));
+                    }
                     dDay.setText("D-" + (ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate()))));
                 } else if (ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate())) == 0) {
                     dDay.setText("Dday");
+                    dDay.setTextColor(Color.parseColor("#FF0000"));
                 }
             }
 

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -540,7 +541,10 @@ public class DoingFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.O)
             void onBind(GoalVO data) {
                 doingTitle.setText(data.getGtitle());
-                doingDate.setText("D-"+ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())));
+                doingDate.setText("D-"+ ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())));
+                if (ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())) < 7) {
+                    doingDate.setTextColor(Color.parseColor("#FF5E00"));
+                }
                 myGno.setText(data.getGno()+"");
             }
         }
