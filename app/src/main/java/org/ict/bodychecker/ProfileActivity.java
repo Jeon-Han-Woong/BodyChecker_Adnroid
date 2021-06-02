@@ -1,6 +1,10 @@
 package org.ict.bodychecker;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -31,7 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
 
-    Button modifyInfoBtn;
+    Button modifyInfoBtn, removeBtn;
     ImageView genderImg;
     TextView username, genderTV, heightTV, weightTV, birthTV, joindateTV, goalTotalTV, goalSuccessTV;
 
@@ -51,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         retrofitInterface = RetrofitClient.getRetrofitInterface();
 
         modifyInfoBtn = (Button) findViewById(R.id.modifyInfoBtn);
+        removeBtn = (Button) findViewById(R.id.removeBtn);
         username = (TextView) findViewById(R.id.username);
 
         genderImg = (ImageView) findViewById(R.id.genderImg);
@@ -75,6 +80,43 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivityForResult(intent, 200);
             }
         });
+
+        removeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder dlg = new AlertDialog.Builder(ProfileActivity.this);
+                dlg.setTitle("회원탈퇴");
+                dlg.setMessage("회원탈퇴를 원하신다면 확인을 눌러주세요.");
+                dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        retrofitInterface.remove(mno).enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                if(response.body().equals("SUCCESS")) {
+                                    SharedPreferences autoLogin = getSharedPreferences("auto", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = autoLogin.edit();
+                                    editor.putInt("MNO", 0);
+                                    editor.commit();
+                                    setResult(0);
+                                    Toast.makeText(getApplicationContext(), "그동안 이용해주셔서 감사합니다.", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "시스템 오류입니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                                }//else
+                            }//onResponse
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(), "시스템 오류입니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                            }//onFailure
+                        });
+                    }
+                });
+                dlg.setNegativeButton("취소", null);
+                dlg.show();
+            }
+        });//removeBtnOnClick
     }//onCreate
 
     private void getInfo(int mno) {
@@ -85,10 +127,10 @@ public class ProfileActivity extends AppCompatActivity {
                 username.setText(info.getMname());
                 if(info.getGender() == 1) {
                     genderImg.setImageResource(R.drawable.porfile_male);
-                    genderTV.setText("남자");
+                    genderTV.setText("남성");
                 } else if(info.getGender() == 2) {
                     genderImg.setImageResource(R.drawable.porfile_female);
-                    genderTV.setText("여자");
+                    genderTV.setText("여성");
                 }
                 heightTV.setText(String.valueOf(info.getHeight()).concat("cm"));
                 weightTV.setText(String.valueOf(info.getWeight()).concat("kg"));
