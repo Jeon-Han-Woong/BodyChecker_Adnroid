@@ -314,6 +314,7 @@
             android:layout_marginRight="1dp"
             android:layout_marginLeft="1dp"
             android:padding="0dp"
+            android:backgroundTint="#EA4444"
             app:cornerRadius="45dp"
             android:text="..." />
 
@@ -324,6 +325,7 @@
             android:padding="0dp"
             app:cornerRadius="45dp"
             android:text="00/00"
+            android:backgroundTint="#E8714C"
             android:layout_marginRight="1dp"
             android:layout_marginLeft="1dp" />
 
@@ -334,6 +336,7 @@
             android:padding="0dp"
             app:cornerRadius="45dp"
             android:text="00/00"
+            android:backgroundTint="#EFB406"
             android:layout_marginRight="1dp"
             android:layout_marginLeft="1dp"/>
 
@@ -344,6 +347,7 @@
             android:padding="0dp"
             app:cornerRadius="45dp"
             android:text="00/00"
+            android:backgroundTint="#66C56A"
             android:layout_marginRight="1dp"
             android:layout_marginLeft="1dp"/>
 
@@ -354,6 +358,7 @@
             android:padding="0dp"
             app:cornerRadius="45dp"
             android:text="00/00"
+            android:backgroundTint="#37AADD"
             android:layout_marginRight="1dp"
             android:layout_marginLeft="1dp"/>
 
@@ -364,6 +369,7 @@
             android:padding="0dp"
             app:cornerRadius="45dp"
             android:text="00/00"
+            android:backgroundTint="#5066E1"
             android:layout_marginRight="1dp"
             android:layout_marginLeft="1dp"/>
 
@@ -374,6 +380,7 @@
             android:padding="0dp"
             app:cornerRadius="45dp"
             android:text="00/00"
+            android:backgroundTint="#8052D1"
             android:layout_marginRight="1dp"
             android:layout_marginLeft="1dp"/>
 
@@ -384,6 +391,7 @@
             android:padding="0dp"
             app:cornerRadius="45dp"
             android:text="00/00"
+            android:backgroundTint="#B451C5"
             android:layout_marginRight="1dp"
             android:layout_marginLeft="1dp"/>
 

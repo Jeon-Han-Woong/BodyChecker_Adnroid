@@ -44,7 +44,7 @@ public class JoinActivity extends AppCompatActivity {
     RetrofitInterface retrofitInterface;
 
     RadioGroup join_gender;
-    Button join_idCheck, joinBtn;
+    Button join_idCheck, joinBtn, joinCancelBtn;
     TextView idCheck;
     EditText join_name, join_id, join_pwd, join_pwdChk, join_height, join_weight;
     DatePicker join_birthday;
@@ -64,6 +64,7 @@ public class JoinActivity extends AppCompatActivity {
         join_gender = (RadioGroup) findViewById(R.id.join_gender);
         join_idCheck = (Button) findViewById(R.id.join_idCheck);
         joinBtn = (Button) findViewById(R.id.joinBtn);
+        joinCancelBtn = (Button) findViewById(R.id.joinCancelBtn);
         idCheck = (TextView) findViewById(R.id.idCheck);
         join_birthday = (DatePicker) findViewById(R.id.join_birthday);
 
@@ -177,6 +178,13 @@ public class JoinActivity extends AppCompatActivity {
                 }//else
             }
         });//joinBtnOnClick
+
+        joinCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }//onCreate
 
     @Override

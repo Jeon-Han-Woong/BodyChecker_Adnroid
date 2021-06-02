@@ -542,7 +542,7 @@ public class DoingFragment extends Fragment {
             void onBind(GoalVO data) {
                 doingTitle.setText(data.getGtitle());
                 doingDate.setText("D-"+ ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())));
-                if (ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())) < 7) {
+                if (ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())) <= 7) {
                     doingDate.setTextColor(Color.parseColor("#FF5E00"));
                 }
                 myGno.setText(data.getGno()+"");

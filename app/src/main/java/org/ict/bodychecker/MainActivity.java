@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 goalDday = response.body();
                 recentGoal.setText(goalDday.getGtitle());
                 if (ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate())) > 0) {
-                    if(ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate())) < 7) {
+                    if(ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate())) <= 7) {
                         dDay.setTextColor(Color.parseColor("#FF5E00"));
                     }
                     dDay.setText("D-" + (ChronoUnit.DAYS.between(LocalDate.parse(date), LocalDate.parse(goalDday.getFinDate()))));

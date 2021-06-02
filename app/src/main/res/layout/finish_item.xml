@@ -2,18 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
+    android:layout_margin="5dp"
     android:gravity="center_vertical"
-    android:layout_marginBottom="8dp"
     android:background="@android:color/white">
-
-
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_weight="1"
-        android:layout_margin="5dp"
         android:orientation="horizontal"
         android:id="@+id/finishLayout"
         android:background="@drawable/border_choice">
