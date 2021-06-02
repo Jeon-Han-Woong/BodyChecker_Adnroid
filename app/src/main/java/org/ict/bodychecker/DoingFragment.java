@@ -544,6 +544,8 @@ public class DoingFragment extends Fragment {
                 doingDate.setText("D-"+ ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())));
                 if (ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())) <= 7) {
                     doingDate.setTextColor(Color.parseColor("#FF5E00"));
+                } else if (ChronoUnit.DAYS.between(LocalDate.parse(today), LocalDate.parse(data.getFinDate())) > 7) {
+                    doingDate.setTextColor(Color.parseColor("#000000"));
                 }
                 myGno.setText(data.getGno()+"");
             }
