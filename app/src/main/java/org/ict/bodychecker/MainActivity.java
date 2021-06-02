@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 walkProgress.setProgress(currentSteps);
             }
         }
-    }
+    }//onSensorChanged
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -297,8 +297,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         retrofitInterface.addDaily(dailyVO).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                getDailyWater(date, mno);
-                Log.d("addDaily", "daily 테이블 생성 완료");
+                if(response.body() == null) {
+                    Log.d("addDaily", "에러발생");
+                    return;
+                } else {
+                    getDailyWater(date, mno);
+                    Log.d("addDaily", "daily 테이블 생성 완료");
+                }
             }
 
             @Override
@@ -368,6 +373,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onFailure(Call<Integer> call, Throwable t) {
                 Log.d("dailySumKcal", "dailySumKcal Fail");
                 Log.d("dailySumKcal", "Exercise 테이블에 정보가 없어서 발생할 가능성 높음");
+                reduceKcal.setText(String.valueOf(0));
 //                t.printStackTrace();
             }
         });
@@ -509,6 +515,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
             if(resultCode != 0) {
+                Log.d("check", resultCode + "");
                 mno = resultCode;
             }
             getRDI(mno);

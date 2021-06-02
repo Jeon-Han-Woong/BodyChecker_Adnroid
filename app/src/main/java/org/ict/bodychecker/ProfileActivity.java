@@ -98,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     SharedPreferences.Editor editor = autoLogin.edit();
                                     editor.putInt("MNO", 0);
                                     editor.commit();
-                                    setResult(0);
+                                    setResult(-1);
                                     Toast.makeText(getApplicationContext(), "그동안 이용해주셔서 감사합니다.", Toast.LENGTH_SHORT).show();
                                     finish();
                                 } else {
