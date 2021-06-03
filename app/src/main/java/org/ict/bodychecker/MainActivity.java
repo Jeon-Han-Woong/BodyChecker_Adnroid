@@ -16,8 +16,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -28,7 +26,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -38,13 +35,17 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.ict.bodychecker.faq.FAQActivity;
+import org.ict.bodychecker.meal.MealActivity;
+import org.ict.bodychecker.member.LoginActivity;
+import org.ict.bodychecker.profile.ProfileActivity;
 import org.ict.bodychecker.ValueObject.DailyVO;
 import org.ict.bodychecker.ValueObject.GoalVO;
 import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.ValueObject.MemberVO;
+import org.ict.bodychecker.notice.NoticeActivity;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
-import org.w3c.dom.Text;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package org.ict.bodychecker;
+package org.ict.bodychecker.notice;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import org.ict.bodychecker.R;
 
 public class NoticeDetailActivity extends AppCompatActivity {
 

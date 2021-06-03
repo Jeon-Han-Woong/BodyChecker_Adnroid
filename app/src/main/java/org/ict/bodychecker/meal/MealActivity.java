@@ -1,4 +1,4 @@
-package org.ict.bodychecker;
+package org.ict.bodychecker.meal;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.android.material.button.MaterialButton;
 
+import org.ict.bodychecker.R;
 import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
