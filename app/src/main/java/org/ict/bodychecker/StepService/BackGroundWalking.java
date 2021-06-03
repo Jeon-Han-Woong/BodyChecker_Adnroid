@@ -39,7 +39,6 @@ public class BackGroundWalking extends Service implements SensorEventListener {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        mno = intent.getIntExtra("mno", 0);
         return null;
     }
 
@@ -47,13 +46,12 @@ public class BackGroundWalking extends Service implements SensorEventListener {
     public void onCreate() {
         super.onCreate();
 
-        retrofitClient = RetrofitClient.getInstance();
-        retrofitInterface = RetrofitClient.getRetrofitInterface();
-
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
+        retrofitClient = RetrofitClient.getInstance();
+        retrofitInterface = RetrofitClient.getRetrofitInterface();
     }
 
     @Override
@@ -62,6 +60,11 @@ public class BackGroundWalking extends Service implements SensorEventListener {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
+        if(intent != null) {
+            mno = intent.getIntExtra("mno", 0);
+            Log.d("Service_mno", String.valueOf(mno));
+        }//if
 
         return super.onStartCommand(intent, flags, startId);
     }

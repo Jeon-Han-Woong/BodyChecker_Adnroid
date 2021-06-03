@@ -78,9 +78,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int walk = 0;
 
     DrawerLayout drawerLayout;
-    Context context = this;
-    View drawerView;
-    ListView listView;
     TextView hitext;
     TextView recentGoal, dDay;
     ProgressBar walkProgress, waterProgress;
@@ -92,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int temp_water = 0, rdi = 0;
 
     TextView profileName, profileAge, profileHeight, profileWeight, profileBMIName;
-//    profileBMI,
     TextView main_dayKcal, main_maxKcal;
 
     GoalVO goalDday;
@@ -102,16 +98,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Intent bgwIntent = new Intent(this, BackGroundWalking.class);
-        startService(bgwIntent);
-
-        SensorManager sensorManager;
-        Sensor stepDetectorSensor;
-
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-        sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
         LayoutInflater inflater = getLayoutInflater();
         View navi_header = inflater.inflate(R.layout.navi_header, null);
@@ -222,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 drawerLayout.closeDrawers();
 
                 int id = item.getItemId();
-                String title = item.getTitle().toString();
 
                 if (id == R.id.myProfile) {
                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -263,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         retrofitInterface.getDailyWater(date, mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-//                Toast.makeText(MainActivity.this, "물" + response.body(), Toast.LENGTH_SHORT).show();
 
                 Log.d("water", String.valueOf(response.body()));
                 temp_water = response.body();
@@ -309,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         retrofitInterface.plusWater(date, mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-//                Toast.makeText(MainActivity.this, "한 잔" + response.body(), Toast.LENGTH_SHORT).show();
                 getDailyWater(date, mno);
             }
 
@@ -388,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 profileHeight.setText(height);
                 profileWeight.setText(weight);
                 myWeight.setText(weight);
-//                profileBMI.setText(String.valueOf(bmi));
+
                 if(bmi < 18.5) {
                     myBMI.setText("확찌자");
                     myBMI.setTextColor(Color.rgb(51, 102, 153));
@@ -503,22 +486,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }//getDday
 
     private void getWalk(int mno) {
-//        retrofitInterface.getWalk(mno).enqueue(new Callback<Integer>() {
-//            @Override
-//            public void onResponse(Call<Integer> call, Response<Integer> response) {
-//                if(response.body() != null) {
-//                    int walk = response.body();
+        retrofitInterface.getWalk(mno).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if(response.body() != null) {
+                    int walk = response.body();
                     myWalk.setText(walk + " / 10000");
                     walkProgress.setProgress((int)(walk/100));
-//                }
-//            }//onResponse
+                }
+            }//onResponse
 
-//            @Override
-//            public void onFailure(Call<Integer> call, Throwable t) {
-//                Log.d("getWalk", "걸음수 조회 실패");
-//                getWalk(mno);
-//            }//onFailure
-//        });
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.d("getWalk", "걸음수 조회 실패");
+                getWalk(mno);
+            }//onFailure
+        });
     }//getWalk
 
     @Override
@@ -536,6 +519,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             getProfileInfo(mno);
             getDday(date, mno);
             getWalk(mno);
+
+
+            SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            Sensor stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+            sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
+            Intent bgwIntent = new Intent(this, BackGroundWalking.class);
+            bgwIntent.putExtra("mno", mno);
+            startService(bgwIntent);
+
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
         }
