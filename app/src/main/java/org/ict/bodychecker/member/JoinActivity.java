@@ -1,4 +1,4 @@
-package org.ict.bodychecker;
+package org.ict.bodychecker.member;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import org.ict.bodychecker.R;
 import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;

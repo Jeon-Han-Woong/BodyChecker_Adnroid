@@ -1,7 +1,6 @@
-package org.ict.bodychecker;
+package org.ict.bodychecker.profile;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,12 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import org.ict.bodychecker.ValueObject.GoalVO;
+import org.ict.bodychecker.R;
 import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;

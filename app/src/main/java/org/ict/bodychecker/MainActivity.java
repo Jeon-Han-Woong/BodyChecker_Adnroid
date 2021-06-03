@@ -35,12 +35,17 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.ict.bodychecker.faq.FAQActivity;
+import org.ict.bodychecker.meal.MealActivity;
+import org.ict.bodychecker.member.LoginActivity;
+import org.ict.bodychecker.profile.ProfileActivity;
 import org.ict.bodychecker.ValueObject.DailyVO;
 import org.ict.bodychecker.ValueObject.GoalVO;
 import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.exercise.ExerciseActivity;
 import org.ict.bodychecker.goal.GoalActivity;
+import org.ict.bodychecker.notice.NoticeActivity;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 

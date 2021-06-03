@@ -1,4 +1,4 @@
-package org.ict.bodychecker;
+package org.ict.bodychecker.faq;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -10,6 +10,8 @@ import android.widget.ListView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import org.ict.bodychecker.R;
 
 public class FAQActivity extends AppCompatActivity {
 

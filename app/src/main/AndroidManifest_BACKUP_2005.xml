@@ -27,9 +27,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+<<<<<<< HEAD
         <activity android:name=".goal.GoalActivity" android:label="목표 리스트"></activity>
         <activity android:name=".exercise.ExerciseActivity" android:label="운동"></activity>
+        <activity android:name=".ProfileActivity" android:label="프로필" />
+        <activity android:name=".MealActivity" android:label="식단" />
+        <activity android:name=".MealSelectActivity" android:label="식단 음식선택" />
+        <activity android:name=".NoticeActivity" android:label="공지사항" />
+        <activity android:name=".NoticeDetailActivity" android:label="공지사항 상세" />
+        <activity android:name=".FAQActivity" android:label="FAQ" />
+        <activity android:name=".ModifyInfoActivity" android:label="내정보 수정" />
+        <activity android:name=".JoinActivity" android:label="회원가입" />
+        <activity android:name=".LoginActivity" android:label="로그인" />
+=======
+        <activity android:name=".GoalActivity" android:label="목표 리스트"></activity>
+        <activity android:name=".ExerciseActivity" android:label="운동"></activity>
         <activity android:name=".profile.ProfileActivity" android:label="프로필" />
         <activity android:name=".meal.MealActivity" android:label="식단" />
         <activity android:name=".meal.MealSelectActivity" android:label="식단 음식선택" />
@@ -39,7 +51,7 @@
         <activity android:name=".profile.ModifyInfoActivity" android:label="내정보 수정" />
         <activity android:name=".member.JoinActivity" android:label="회원가입" />
         <activity android:name=".member.LoginActivity" android:label="로그인" />
-
+>>>>>>> 2304709f719ba106c0d9bf0105f7c8b0d1d1782c
     </application>
 
 </manifest>

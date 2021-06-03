@@ -1,4 +1,4 @@
-package org.ict.bodychecker;
+package org.ict.bodychecker.meal;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import org.ict.bodychecker.R;
 import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
