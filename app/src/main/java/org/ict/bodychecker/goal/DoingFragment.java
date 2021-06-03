@@ -1,4 +1,4 @@
-package org.ict.bodychecker;
+package org.ict.bodychecker.goal;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.ict.bodychecker.R;
 import org.ict.bodychecker.ValueObject.GoalVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;

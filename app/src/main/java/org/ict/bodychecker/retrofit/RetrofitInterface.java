@@ -103,8 +103,8 @@ public interface RetrofitInterface {
     @POST("member/join")
     Call<String> join(@Body MemberVO memberVO);
 
-    @GET("member/login/{mid}/{pwd}")
-    Call<Integer> login(@Path("mid") String mid, @Path("pwd") String pwd);
+    @POST("member/login")
+    Call<Integer> login(@Body MemberVO vo);
 
     @PUT("member/modify")
     Call<String> modifyInfo(@Body MemberVO memberVO);

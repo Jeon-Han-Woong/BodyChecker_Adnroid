@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.ict.bodychecker.ValueObject.MemberVO;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
 
@@ -85,7 +86,10 @@ public class LoginActivity extends AppCompatActivity {
     }//onCreate
 
     private void login(String id, String pwd) {
-        retrofitInterface.login(id, pwd).enqueue(new Callback<Integer>() {
+        MemberVO loginVO = new MemberVO();
+        loginVO.setMid(id);
+        loginVO.setPwd(pwd);
+        retrofitInterface.login(loginVO).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
 

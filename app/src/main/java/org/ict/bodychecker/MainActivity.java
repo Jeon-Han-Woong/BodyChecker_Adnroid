@@ -16,8 +16,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -28,7 +26,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -42,9 +39,10 @@ import org.ict.bodychecker.ValueObject.DailyVO;
 import org.ict.bodychecker.ValueObject.GoalVO;
 import org.ict.bodychecker.ValueObject.MealVO;
 import org.ict.bodychecker.ValueObject.MemberVO;
+import org.ict.bodychecker.exercise.ExerciseActivity;
+import org.ict.bodychecker.goal.GoalActivity;
 import org.ict.bodychecker.retrofit.RetrofitClient;
 import org.ict.bodychecker.retrofit.RetrofitInterface;
-import org.w3c.dom.Text;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,9 +55,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+@RequiresApi(api = Build.VERSION_CODES.Q)
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    int mno = 0;
+    int mno = 1;
 
     private long backKeyPressedTime = 0;
 
@@ -73,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     SensorManager sensorManager;
     Sensor stepCountSensor;
 
+    int currentSteps = 0;
+
     DrawerLayout drawerLayout;
     Context context = this;
     View drawerView;
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView myWalk;
     TextView reduceKcal;
     Button waterPlus, waterMinus;
-    int temp_water = 0, rdi = 0, currentSteps = 0;
+    int temp_water = 0, rdi = 0;
 
     TextView profileName, profileAge, profileHeight, profileWeight, profileBMIName;
 //    profileBMI,
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     GoalVO goalDday;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,10 +101,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         LayoutInflater inflater = getLayoutInflater();
         View navi_header = inflater.inflate(R.layout.navi_header, null);
-
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
-            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
-        }
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -134,6 +131,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         profileWeight = (TextView) navi_header.findViewById(R.id.profileWeight);
 //        profileBMI = (TextView) navi_header.findViewById(R.id.profileBMI);
         profileBMIName = (TextView) navi_header.findViewById(R.id.profileBMIName);
+
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
+
+            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
+        }
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+        if (stepCountSensor == null) {
+            Toast.makeText(this, "No Step Sensor", Toast.LENGTH_SHORT).show();
+        }
 
         goGoalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,21 +256,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void onStart() {
         super.onStart();
-        if(stepCountSensor != null) {
-            sensorManager.registerListener( this, stepCountSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        if(stepCountSensor !=null) {
+            // 센서 속도 설정
+            // * 옵션
+            // - SENSOR_DELAY_NORMAL: 20,000 초 딜레이
+            // - SENSOR_DELAY_UI: 6,000 초 딜레이
+            // - SENSOR_DELAY_GAME: 20,000 초 딜레이
+            // - SENSOR_DELAY_FASTEST: 딜레이 없음
+            //
+            sensorManager.registerListener(this,stepCountSensor,SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 
     @Override
-    public void onSensorChanged(SensorEvent e) {
-        if (e.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            if(e.values[0]==1.0f) {
+    public void onSensorChanged(SensorEvent event) {
+        // 걸음 센서 이벤트 발생시
+        if(event.sensor.getType() == Sensor.TYPE_STEP_COUNTER){
+
+            if(event.values[0]==1.0f){
+                // 센서 이벤트가 발생할때 마다 걸음수 증가
                 currentSteps++;
-                myWalk.setText(currentSteps + " / 10000");
-                walkProgress.setProgress(currentSteps);
+                myWalk.setText(String.valueOf(currentSteps));
             }
+
         }
-    }//onSensorChanged
+
+    }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
