@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.ict.bodychecker.StepService.BackGroundWalking;
 import org.ict.bodychecker.faq.FAQActivity;
 import org.ict.bodychecker.meal.MealActivity;
 import org.ict.bodychecker.member.LoginActivity;
@@ -62,7 +63,8 @@ import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.Q)
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    int mno = 1;
+
+    int mno = 0;
 
     private long backKeyPressedTime = 0;
 
@@ -73,10 +75,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     RetrofitClient retrofitClient;
     RetrofitInterface retrofitInterface;
 
-    SensorManager sensorManager;
-    Sensor stepCountSensor;
-
-    int currentSteps = 0;
+    int walk = 0;
 
     DrawerLayout drawerLayout;
     Context context = this;
@@ -104,11 +103,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LayoutInflater inflater = getLayoutInflater();
-        View navi_header = inflater.inflate(R.layout.navi_header, null);
+        Intent bgwIntent = new Intent(this, BackGroundWalking.class);
+        startService(bgwIntent);
+
+        SensorManager sensorManager;
+        Sensor stepDetectorSensor;
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View navi_header = inflater.inflate(R.layout.navi_header, null);
 
         retrofitClient = RetrofitClient.getInstance();
         retrofitInterface = RetrofitClient.getRetrofitInterface();
@@ -129,25 +135,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         myWalk = (TextView) findViewById(R.id.myWalk);
         reduceKcal = (TextView) findViewById(R.id.reduceKcal);
         waterProgress = (ProgressBar) findViewById(R.id.waterProgress);
+        walkProgress = (ProgressBar) findViewById(R.id.walkProgress);
 
         profileName = (TextView) navi_header.findViewById(R.id.profileName);
         profileAge = (TextView) navi_header.findViewById(R.id.profileAge);
         profileHeight = (TextView) navi_header.findViewById(R.id.profileHeight);
         profileWeight = (TextView) navi_header.findViewById(R.id.profileWeight);
-//        profileBMI = (TextView) navi_header.findViewById(R.id.profileBMI);
         profileBMIName = (TextView) navi_header.findViewById(R.id.profileBMIName);
 
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
 
             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
-        }
-
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-
-        if (stepCountSensor == null) {
-            Toast.makeText(this, "No Step Sensor", Toast.LENGTH_SHORT).show();
         }
 
         goGoalBtn.setOnClickListener(new View.OnClickListener() {
@@ -259,41 +258,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }//onCreate
 
-    public void onStart() {
-        super.onStart();
-        if(stepCountSensor !=null) {
-            // 센서 속도 설정
-            // * 옵션
-            // - SENSOR_DELAY_NORMAL: 20,000 초 딜레이
-            // - SENSOR_DELAY_UI: 6,000 초 딜레이
-            // - SENSOR_DELAY_GAME: 20,000 초 딜레이
-            // - SENSOR_DELAY_FASTEST: 딜레이 없음
-            //
-            sensorManager.registerListener(this,stepCountSensor,SensorManager.SENSOR_DELAY_FASTEST);
-        }
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        // 걸음 센서 이벤트 발생시
-        if(event.sensor.getType() == Sensor.TYPE_STEP_COUNTER){
-
-            if(event.values[0]==1.0f){
-                // 센서 이벤트가 발생할때 마다 걸음수 증가
-                currentSteps++;
-                myWalk.setText(String.valueOf(currentSteps));
-            }
-
-        }
-
-    }
-
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
     /*======================= 호출 메서드 =======================*/
     private void getDailyWater(String date, int mno) {
         retrofitInterface.getDailyWater(date, mno).enqueue(new Callback<Integer>() {
@@ -310,13 +274,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onFailure(Call<Integer> call, Throwable t) {
                 Log.d("getDailyWater", "getDailyWater Fail");
                 Log.d("getDailyWater", "Daily 테이블에 정보가 없어 발생할 가능성 높음");
-                addDaily(mno);
+                addDaily(date, mno);
 //                t.printStackTrace();
             }
         });
     }//getDailyWater
 
-    private void addDaily(int mno) {
+    private void addDaily(String date, int mno) {
         DailyVO dailyVO = new DailyVO();
         dailyVO.setMno(mno);
         dailyVO.setDdate(date);
@@ -328,8 +292,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     Log.d("addDaily", "에러발생");
                     return;
                 } else {
-                    getDailyWater(date, mno);
                     Log.d("addDaily", "daily 테이블 생성 완료");
+                    getDailyWater(date, mno);
                 }
             }
 
@@ -536,7 +500,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 dDay.setText("");
             }
         });
-    }
+    }//getDday
+
+    private void getWalk(int mno) {
+//        retrofitInterface.getWalk(mno).enqueue(new Callback<Integer>() {
+//            @Override
+//            public void onResponse(Call<Integer> call, Response<Integer> response) {
+//                if(response.body() != null) {
+//                    int walk = response.body();
+                    myWalk.setText(walk + " / 10000");
+                    walkProgress.setProgress((int)(walk/100));
+//                }
+//            }//onResponse
+
+//            @Override
+//            public void onFailure(Call<Integer> call, Throwable t) {
+//                Log.d("getWalk", "걸음수 조회 실패");
+//                getWalk(mno);
+//            }//onFailure
+//        });
+    }//getWalk
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -552,6 +535,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             getDailyWater(date, mno);
             getProfileInfo(mno);
             getDday(date, mno);
+            getWalk(mno);
         } else {
             Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
         }
@@ -594,18 +578,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onBackPressed() {
-        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+        if(System.currentTimeMillis() > backKeyPressedTime + 2000) {
             backKeyPressedTime = System.currentTimeMillis();
             Toast.makeText(this, "\'뒤로가기\' 버튼을 한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+        if(System.currentTimeMillis() <= backKeyPressedTime + 2000) {
             finish();
         }
 
-//        finishAffinity();
-//        System.runFinalization();
-//        System.exit(0);
-    }
+    }//onBackPressed
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(sensorEvent.values[0] == 1.0f) {
+            getWalk(mno);
+            myWalk.setText(walk + " / 10000");
+            walkProgress.setProgress((int)(walk/100));
+        }
+    }//onSensorChanged
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }//onAccuracyChanged
 }//class

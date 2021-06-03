@@ -33,6 +33,12 @@ public interface RetrofitInterface {
     @POST("daily/addDaily")
     Call<String> addDaily(@Body DailyVO vo);
 
+    @GET("daily/getwalk/{mno}")
+    Call<Integer> getWalk(@Path("mno") int mno);
+
+    @PATCH("daily/addwalk/{mno}")
+    Call<String> addWalk(@Path("mno") int mno);
+
     /*================== Exercise ====================*/
     @GET("exer/{edate}/{mno}")
     Call<List<ExerciseVO>> getDailyExer(@Path("edate") String edate, @Path("mno") int mno);

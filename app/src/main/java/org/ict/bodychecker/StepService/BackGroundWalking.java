@@ -7,89 +7,116 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
+import org.ict.bodychecker.ValueObject.DailyVO;
+import org.ict.bodychecker.retrofit.RetrofitClient;
+import org.ict.bodychecker.retrofit.RetrofitInterface;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class BackGroundWalking extends Service implements SensorEventListener {
 
-    private MyBinder myBinder = new MyBinder();
+    RetrofitClient retrofitClient;
+    RetrofitInterface retrofitInterface;
 
-    class MyBinder extends Binder {
-        BackGroundWalking getService() {
-            return BackGroundWalking.this;
-        }//getService
-    }//MyBinder
+    SensorManager sensorManager;
+    Sensor stepDetectorSensor;
 
-    private int stepDetector;
-    private StepCallBack callBack;
-
-    public void setCallBack(StepCallBack callBack) {
-        this.callBack = callBack;
-    }
+    private static int mno;
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return myBinder;
-    }//onBind
-
-    private SensorManager sensorManager;
-    private Sensor stepDetectorSensor;
+        mno = intent.getIntExtra("mno", 0);
+        return null;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        retrofitClient = RetrofitClient.getInstance();
+        retrofitInterface = RetrofitClient.getRetrofitInterface();
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-        if(stepDetectorSensor != null) {
-            sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-    }//onCreate
+        sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-        if (stepDetectorSensor != null) {
-            sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
+        sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
         return super.onStartCommand(intent, flags, startId);
-    }//onStartCommand
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        unRegistManager();
-        if (callBack != null)
-            callBack.onUnbindService();
-        return super.onUnbind(intent);
-    }
-
-    public void unRegistManager() { //혹시 모를 에러상황에 트라이 캐치
-        try {
-            sensorManager.unregisterListener(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-            if (sensorEvent.values[0] == 1.0f) {
-                stepDetector += sensorEvent.values[0];
-                if (callBack != null)
-                    callBack.onStepCallBack(stepDetector);
-                Log.e("스텝 디텍터", "" + sensorEvent.values[0]);
-            }//if
+        if(sensorEvent.values[0] == 1.0f) {
+            addWalk(mno);
         }//if
-    }//onSensorChanged
+    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
-    }//onAccuracyChanged
-}
+    }
+
+    private void addDaily(int mno) {
+        DailyVO dailyVO = new DailyVO();
+        dailyVO.setMno(mno);
+        dailyVO.setDdate(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()));
+
+        retrofitInterface.addDaily(dailyVO).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.body() == "SUCCESS") {
+                    Log.d("addDaily", "daily 테이블 생성 완료");
+                } else {
+                    Log.d("addDaily", "에러발생");
+                    return;
+                }//else
+            }//onResponse
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d("addDaily", "addDaily Fail");
+//                t.printStackTrace();
+            }//onFailure
+        });//addDaily
+    }//addDaily
+
+    private void addWalk(int mno) {
+        retrofitInterface.addWalk(mno).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+            }//onResponse
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d("countWalk", "countWalk Fail");
+                Log.d("countWalk", "Daily 테이블에 정보가 없어 발생할 가능성 높음");
+                addDaily(mno);
+            }//onFailure
+
+        });//countWalk
+    }//getWalk
+
+}//Service

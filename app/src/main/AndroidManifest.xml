@@ -40,6 +40,12 @@
         <activity android:name=".member.JoinActivity" android:label="회원가입" />
         <activity android:name=".member.LoginActivity" android:label="로그인" />
 
+        <service android:name=".StepService.BackGroundWalking">
+            <intent-filter>
+                <action android:name="org.ict.BodyChecker" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
