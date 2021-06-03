@@ -61,6 +61,7 @@
         android:layout_height="wrap_content"
         android:text="성공 여부 선택"
         android:id="@+id/selectComplete"
+        android:backgroundTint="#009688"
         android:visibility="invisible"></Button>
 
     <TextView

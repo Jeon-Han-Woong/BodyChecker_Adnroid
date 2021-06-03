@@ -215,6 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20sp"
                 android:text="내정보 수정"
+                android:backgroundTint="#4CAF50"
                 android:textSize="20dp" />
 
         </LinearLayout>
