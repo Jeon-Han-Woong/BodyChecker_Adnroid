@@ -27,6 +27,8 @@ import retrofit2.Response;
 
 public class ModifyInfoActivity extends AppCompatActivity {
 
+    int mno = 0;
+
     MemberVO info = new MemberVO();
 
     RetrofitClient retrofitClient;
@@ -37,8 +39,6 @@ public class ModifyInfoActivity extends AppCompatActivity {
     EditText edtName, edtHeight, edtWeight, modi_pwd, modi_pwdChk;
     DatePicker birthDP;
     Button modifyBtn, modCancelBtn;
-
-    int mno = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +148,7 @@ public class ModifyInfoActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
                         t.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                     }
                 });
 

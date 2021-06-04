@@ -257,9 +257,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 Log.d("getDailyWater", "getDailyWater Fail");
-                Log.d("getDailyWater", "Daily 테이블에 정보가 없어 발생할 가능성 높음");
+                t.printStackTrace();
                 addDaily(date, mno);
-//                t.printStackTrace();
             }
         });
     }//getDailyWater
@@ -284,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Log.d("addDaily", "addDaily Fail");
-//                t.printStackTrace();
+                t.printStackTrace();
             }
         });
     }//addDaily
@@ -346,15 +345,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 Log.d("dailySumKcal", "dailySumKcal Fail");
-                Log.d("dailySumKcal", "Exercise 테이블에 정보가 없어서 발생할 가능성 높음");
+                t.printStackTrace();
                 reduceKcal.setText(String.valueOf(0));
-//                t.printStackTrace();
             }
         });
     }//dailySumKcal
 
     private void getProfileInfo(int mno) {
-        Log.d("getProfileInfoStart", String.valueOf(mno));
         retrofitInterface.getInfo(mno).enqueue(new Callback<MemberVO>() {
             @Override
             public void onResponse(Call<MemberVO> call, Response<MemberVO> response) {
@@ -404,9 +401,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFailure(Call<MemberVO> call, Throwable t) {
                 Log.d("getProfileInfo", "getProfileInfo Fail");
-                Log.d("getProfileInfo", "Member 테이블에 정보가 없거나");
-                Log.d("getProfileInfo", "로그인이 안돼있어 발생할 가능성 높음");
-//                t.printStackTrace();
+                t.printStackTrace();
 
                 /*================ 로그인페이지로 이동시키는 메서드 ================*/
                 goLoginPage();
@@ -433,8 +428,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFailure(Call<List<MealVO>> call, Throwable t) {
                 Log.d("getMealInfo", "getMealInfo Fail");
-                Log.d("getMealInfo", "Meal 테이블에 정보가 없어서 나오는 에러일 가능성 높음.");
-//                t.printStackTrace();
+                t.printStackTrace();
             }
         });
     }//getMealInfo
@@ -451,9 +445,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFailure(Call<MemberVO> call, Throwable t) {
                 Log.d("getRDI", "getRDI Fail");
-                Log.d("getRDI", "Member 테이블에 정보가 없거나");
-                Log.d("getRDI", "로그인이 안돼있어 발생할 가능성 높음");
-//                t.printStackTrace();
+                t.printStackTrace();
             }
         });
     }//getRDI
@@ -486,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }//getDday
 
     private void getWalk(int mno) {
+        if(mno == -1) return;
         retrofitInterface.getWalk(mno).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -499,6 +492,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 Log.d("getWalk", "걸음수 조회 실패");
+                t.printStackTrace();
                 getWalk(mno);
             }//onFailure
         });
@@ -507,31 +501,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
-            if(resultCode != 0) {
-                Log.d("check", resultCode + "");
+            if(resultCode > 0) {
                 mno = resultCode;
-            }
-            getRDI(mno);
-            try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
-            getMealInfo(date, mno);
-            dailySumKcal(date, mno);
-            getDailyWater(date, mno);
-            getProfileInfo(mno);
-            getDday(date, mno);
-            getWalk(mno);
+            } else if(resultCode == -1) {
+                mno = resultCode;
+                goLoginPage();
+            }//else if
 
+            if(mno > 0) {
+                getProfileInfo(mno);
+                getRDI(mno);
+                try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+                getMealInfo(date, mno);
+                dailySumKcal(date, mno);
+                getDailyWater(date, mno);
+                getDday(date, mno);
+                getWalk(mno);
 
-            SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-            Sensor stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-            sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
+                SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+                Sensor stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+                sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
-            Intent bgwIntent = new Intent(this, BackGroundWalking.class);
-            bgwIntent.putExtra("mno", mno);
-            startService(bgwIntent);
-
+                Intent bgwIntent = new Intent(this, BackGroundWalking.class);
+                bgwIntent.putExtra("mno", mno);
+                startService(bgwIntent);
+            }//if
         } else {
-            Toast.makeText(getApplicationContext(), "오류 발생", Toast.LENGTH_SHORT).show();
-        }
+            Toast.makeText(getApplicationContext(), "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+        }//else
 
         super.onActivityResult(requestCode, resultCode, data);
     }//onActivityResult
@@ -552,12 +549,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-//            drawerLayout.openDrawer(drawerView);
+
         }
 
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
-//            drawerLayout.openDrawer(drawerView);
+
         }
 
         @Override

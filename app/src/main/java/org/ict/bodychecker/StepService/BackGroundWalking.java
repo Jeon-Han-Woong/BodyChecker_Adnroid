@@ -63,7 +63,6 @@ public class BackGroundWalking extends Service implements SensorEventListener {
 
         if(intent != null) {
             mno = intent.getIntExtra("mno", 0);
-            Log.d("Service_mno", String.valueOf(mno));
         }//if
 
         return super.onStartCommand(intent, flags, startId);
@@ -100,7 +99,7 @@ public class BackGroundWalking extends Service implements SensorEventListener {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Log.d("addDaily", "addDaily Fail");
-//                t.printStackTrace();
+                t.printStackTrace();
             }//onFailure
         });//addDaily
     }//addDaily
@@ -114,8 +113,8 @@ public class BackGroundWalking extends Service implements SensorEventListener {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.d("countWalk", "countWalk Fail");
-                Log.d("countWalk", "Daily 테이블에 정보가 없어 발생할 가능성 높음");
+                Log.d("addWalk", "addWalk Fail");
+                t.printStackTrace();
                 addDaily(mno);
             }//onFailure
 

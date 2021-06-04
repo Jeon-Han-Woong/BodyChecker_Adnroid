@@ -303,7 +303,7 @@ public class MealActivity extends AppCompatActivity {
                 getRDI(mno);
                 int per = (int)(progress/rdi*100);
                 circlebar.setProgress(per);
-                all.setText("일일 권장량 " + String.valueOf((int)rdi) + "kcal 중 " + String.valueOf(progress) + "kcal 섭취");
+                all.setText("일일 권장량 " + (int)rdi + "kcal 중 " + progress + "kcal 섭취");
 
                 if(breakfast!=null) breakfast = breakfast.replace("null", "");
                 breakfastTV.setText(breakfast);
@@ -322,6 +322,7 @@ public class MealActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<MealVO>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }//onFailure
         });
@@ -339,6 +340,7 @@ public class MealActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MemberVO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
         });

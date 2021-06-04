@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -199,7 +200,10 @@ public class MealSelectActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) { Log.d("addSuccess", vo.getFname()); }
                 @Override
-                public void onFailure(Call<String> call, Throwable t) { t.printStackTrace(); }
+                public void onFailure(Call<String> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+                    t.printStackTrace();
+                }
             });
         }//for
     }//addDB

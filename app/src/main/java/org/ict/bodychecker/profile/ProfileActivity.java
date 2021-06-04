@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,9 +37,12 @@ public class ProfileActivity extends AppCompatActivity {
     Button modifyInfoBtn, removeBtn;
     ImageView genderImg;
     TextView username, genderTV, heightTV, weightTV, birthTV, joindateTV, goalTotalTV, goalSuccessTV;
+    View remove_confirm;
+    EditText removeEdt;
 
     Intent intent;
     int mno = 0, total = 0, success = 0;
+    Boolean confirm = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +69,11 @@ public class ProfileActivity extends AppCompatActivity {
         goalTotalTV = (TextView) findViewById(R.id.goalTotalTV);
         goalSuccessTV = (TextView) findViewById(R.id.goalSuccessTV);
 
+        remove_confirm = (View) View.inflate(ProfileActivity.this, R.layout.remove_confirm, null);
+        removeEdt = (EditText) remove_confirm.findViewById(R.id.removeEdt);
+
         intent = getIntent();
         mno = intent.getIntExtra("mno", 0);
-        Log.d("mno", String.valueOf(mno));
         getInfo(mno);
 
         modifyInfoBtn.setOnClickListener(new View.OnClickListener() {
@@ -84,35 +90,31 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog.Builder dlg = new AlertDialog.Builder(ProfileActivity.this);
                 dlg.setTitle("회원탈퇴");
-                dlg.setMessage("회원탈퇴를 원하신다면 확인을 눌러주세요.");
+                dlg.setView(remove_confirm);
                 dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        retrofitInterface.remove(mno).enqueue(new Callback<String>() {
-                            @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
-                                if(response.body().equals("SUCCESS")) {
-                                    SharedPreferences autoLogin = getSharedPreferences("auto", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = autoLogin.edit();
-                                    editor.putInt("MNO", 0);
-                                    editor.commit();
-                                    setResult(-1);
-                                    Toast.makeText(getApplicationContext(), "그동안 이용해주셔서 감사합니다.", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "시스템 오류입니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                                }//else
-                            }//onResponse
 
-                            @Override
-                            public void onFailure(Call<String> call, Throwable t) {
-                                Toast.makeText(getApplicationContext(), "시스템 오류입니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                            }//onFailure
-                        });
+                    }
+                });//setPositiveButton
+                dlg.setNegativeButton("취소", null);//setNegativeButton
+
+                final AlertDialog dia = dlg.create();
+
+                dia.show();
+
+                dia.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String pwd = removeEdt.getText().toString().trim();
+                        if(pwd == null || pwd.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            confirm(mno, pwd);
+                        }//else
                     }
                 });
-                dlg.setNegativeButton("취소", null);
-                dlg.show();
+
             }
         });//removeBtnOnClick
     }//onCreate
@@ -147,7 +149,6 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 total = response.body();
                 goalTotalTV.setText(total + "개의 목표 중");
-                Log.d("total", total + "");
             }
 
             @Override
@@ -161,7 +162,6 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 success = response.body();
                 goalSuccessTV.setText(success + "개 성공");
-                Log.d("success", success + "");
             }
 
             @Override
@@ -171,17 +171,59 @@ public class ProfileActivity extends AppCompatActivity {
         });//getsuccessFinish
     }//getInfo
 
+    private void remove(int mno) {
+        retrofitInterface.remove(mno).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.body().equals("SUCCESS")) {
+                    SharedPreferences autoLogin = getSharedPreferences("auto", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = autoLogin.edit();
+                    editor.putInt("MNO", 0);
+                    editor.commit();
+                    setResult(-1);
+                    Toast.makeText(getApplicationContext(), "그동안 이용해주셔서 감사합니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+                }//else
+            }//onResponse
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+            }//onFailure
+        });
+    }//remove
+
+    private void confirm(int mno, String pwd) {
+        retrofitInterface.confirm(mno, pwd).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if(response.body() == 0) {
+                    Toast.makeText(getApplicationContext(), "비밀번호가 맞지 않습니다.", Toast.LENGTH_SHORT).show();
+                } else if(response.body() != 0) {
+                    remove(mno);
+                }//else if
+            }//onResponse
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                t.printStackTrace();
+            }//onFailure
+        });
+    }//confirm
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 200) {
             try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
             getInfo(mno);
         } else {
-            Toast.makeText(getApplicationContext(), "에러발생", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "시스템에러가 발생했습니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
+    }//onActivityResult
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

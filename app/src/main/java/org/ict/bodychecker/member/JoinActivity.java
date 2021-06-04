@@ -114,7 +114,7 @@ public class JoinActivity extends AppCompatActivity {
                 if(join_name.getText().toString().trim() == null || join_name.getText().toString().trim().equals("")) {
                     Toast.makeText(getApplicationContext(), "이름을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
-                } else if(checked != 0 || !memberVO.getMid().equals(mid)) {
+                } else if(checked != 0 || !memberVO.getMid().equals(join_id.getText().toString().trim())) {
                     Toast.makeText(getApplicationContext(), "아이디 중복체크를 진행해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 } else if(!join_pwd.getText().toString().equals(join_pwdChk.getText().toString())) {
@@ -136,12 +136,12 @@ public class JoinActivity extends AppCompatActivity {
                     weight = Math.round(Float.parseFloat(join_weight.getText().toString().trim()));
                     try {
                         bmi = (int)(weight/((height*0.01)*(height*0.01)));
-                        if(bmi < 0) {
-                            Toast.makeText(getApplicationContext(), "키는 0이하가 될 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        if(bmi < 0 || height == 0 || weight == 0) {
+                            Toast.makeText(getApplicationContext(), "키와 체중은 0이하가 될 수 없습니다.", Toast.LENGTH_SHORT).show();
                             return;
                         }
                     } catch(ArithmeticException e) {
-                        Toast.makeText(getApplicationContext(), "키는 0이하가 될 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "키와 체중은 0이하가 될 수 없습니다.", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -173,7 +173,7 @@ public class JoinActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-                            Toast.makeText(getApplicationContext(), "잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                         }//onFailure
                     });//join
                 }//else

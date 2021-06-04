@@ -103,8 +103,8 @@ public interface RetrofitInterface {
     @GET("member/getinfo/{mno}")
     Call<MemberVO> getInfo(@Path("mno") int mno);
 
-    @POST("member/check")
-    Call<String> check(@Body String mid);
+    @POST("member/check/{mid}")
+    Call<String> check(@Path("mid") String mid);
 
     @POST("member/join")
     Call<String> join(@Body MemberVO memberVO);
@@ -117,4 +117,7 @@ public interface RetrofitInterface {
 
     @DELETE("member/remove/{mno}")
     Call<String> remove(@Path("mno") int mno);
+
+    @POST("member/confirm/{mno}/{pwd}")
+    Call<Integer> confirm(@Path("mno") int mno, @Path("pwd") String pwd);
 }
