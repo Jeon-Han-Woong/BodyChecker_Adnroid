@@ -19,7 +19,12 @@ public class NoticeActivity extends AppCompatActivity {
 
     ListView noticeList;
 
-    ArrayList<String> nlist = new ArrayList<>();
+    String[] ntitle = {"확찐자 길들이기 서비스 시작했습니다!", "별점 이벤트 진행!", "문의 주소입니다."};
+    String[] ndate = {"2021-06-01", "2021-06-02", "2021-06-03"};
+    String[] ncontent = {"확찐자 길들이기 정식 서비스 시작했습니다! 많은 사랑부탁드립니다이~",
+            "별점을 남겨주시고 이메일을 보내주세요! 추첨을 통해 문화상품권을 드립니다~",
+            "문의 주소는 qwer@asdf.com, 연락처는 010-9876-1234 입니다."};
+
     ArrayAdapter<String> adapter;
 
     @Override
@@ -31,22 +36,18 @@ public class NoticeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        for(int i=0; i<20; i++) {
-            nlist.add("공지사항" + (i+1));
-        }
-
         noticeList = (ListView) findViewById(R.id.noticeList);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, nlist);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ntitle);
         noticeList.setAdapter(adapter);
 
         noticeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getApplicationContext(), NoticeDetailActivity.class);
-                intent.putExtra("title", "공지사항 제목"+i);
-                intent.putExtra("writedate", "2021.05.04");
-                intent.putExtra("content", "공지사항 본문");
+                intent.putExtra("title", ntitle[i]);
+                intent.putExtra("writedate", ndate[i]);
+                intent.putExtra("content", ncontent[i]);
                 startActivity(intent);
             }
         });

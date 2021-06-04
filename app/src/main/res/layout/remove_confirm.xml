@@ -10,12 +10,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="20sp"
+        android:textSize="25sp"
         android:layout_gravity="center_horizontal"
+        android:textColor="#ff0000"
         android:text="회원탈퇴를 원하신다면\n비밀번호를 입력해주세요." />
 
     <EditText
         android:id="@+id/removeEdt"
+        android:textSize="20sp"
+        android:password="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="비밀번호를 입력해주세요." />
