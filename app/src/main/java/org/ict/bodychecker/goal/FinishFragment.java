@@ -68,21 +68,15 @@ public class FinishFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_finish, container, false);
-
         recyclerView2 = (RecyclerView) rootview.findViewById(R.id.recyclerView2);
         init();
         today = String.valueOf(LocalDate.now());
 
         bundle = getArguments();
 
-
-
         if (bundle != null) {
             mno = bundle.getInt("mno");
         }
-
-        Toast.makeText(GoalActivity, mno+"", Toast.LENGTH_SHORT).show();
-
 
         retrofitClient = retrofitClient.getInstance();
 
@@ -104,37 +98,13 @@ public class FinishFragment extends Fragment {
             }
         });
 
-
-//        getData();
-
         return rootview;
     }
 
     private void init() {
-
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView2.setLayoutManager(linearLayoutManager);
     }
-
-
-
-
-//    private void getData() {
-//        List<String> listTitle = Arrays.asList("1", "2", "3", "1", "2", "3", "1", "2", "3");
-//
-//        List<String> listContent = Arrays.asList("1a", "2b", "3c", "1a", "2b", "3c", "1a", "2b", "3c");
-//
-//        for (int i = 0; i < listTitle.size(); i++) {
-//
-//            Data2 data = new Data2();
-//            data.setFinishTitle(listTitle.get(i));
-//
-//            adapter.addItem(data);
-//        }
-//
-//        adapter.notifyDataSetChanged();
-//    }
 
     @Override
     public void onAttach(Context context) {
@@ -192,7 +162,6 @@ public class FinishFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         GoalVO sel_data = listData.get(getAdapterPosition());
-                        Toast.makeText(getContext().getApplicationContext(), sel_data.getGno()+"", Toast.LENGTH_SHORT).show();
                         dialog = (View) View.inflate(GoalActivity, R.layout.goal_finish_dialog, null);
 
                         finTitle = (TextView) dialog.findViewById(R.id.edtFinishTitle);
@@ -203,7 +172,6 @@ public class FinishFragment extends Fragment {
                         btnFail = (RadioButton) dialog.findViewById(R.id.btnFail);
                         selectComplete = (Button) dialog.findViewById(R.id.selectComplete);
                         goalState = (TextView) dialog.findViewById(R.id.goalState);
-
 
                         finTitle.setText(finishTitle.getText().toString());
                         finContent.setText(sel_data.getGcontent());
@@ -237,12 +205,14 @@ public class FinishFragment extends Fragment {
                             public void onClick(View view) {
                                 if (radioSelect.getCheckedRadioButtonId() == (R.id.btnSuccess)) {
                                     sel_data.setGsts(1);
-                                    retrofitInterface.selectSuccess(sel_data.getGno(), sel_data).enqueue(new Callback<GoalVO>() {
+                                    retrofitInterface.selectSuccess(sel_data.getGno(), sel_data).enqueue(new Callback<String>() {
                                         @Override
-                                        public void onResponse(Call<GoalVO> call, Response<GoalVO> response) {
+                                        public void onResponse(Call<String> call, Response<String> response) {
+                                            Toast.makeText(GoalActivity, "도전을 성공하셨습니다!", Toast.LENGTH_SHORT).show();
                                         }
                                         @Override
-                                        public void onFailure(Call<GoalVO> call, Throwable t) {
+                                        public void onFailure(Call<String> call, Throwable t) {
+                                            Toast.makeText(GoalActivity, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                                         }
                                     });
 
@@ -259,14 +229,14 @@ public class FinishFragment extends Fragment {
                                     adapter.notifyDataSetChanged();
                                 } else if (radioSelect.getCheckedRadioButtonId() == (R.id.btnFail)) {
                                     sel_data.setGsts(2);
-                                    retrofitInterface.selectSuccess(sel_data.getGno(), sel_data).enqueue(new Callback<GoalVO>() {
+                                    retrofitInterface.selectSuccess(sel_data.getGno(), sel_data).enqueue(new Callback<String>() {
                                         @Override
-                                        public void onResponse(Call<GoalVO> call, Response<GoalVO> response) {
-                                            Log.d("성공", response.body()+"");
+                                        public void onResponse(Call<String> call, Response<String> response) {
+                                            Toast.makeText(GoalActivity, "도전을 실패하셨습니다.", Toast.LENGTH_SHORT).show();
                                         }
                                         @Override
-                                        public void onFailure(Call<GoalVO> call, Throwable t) {
-                                            Log.d("에러", t+"");
+                                        public void onFailure(Call<String> call, Throwable t) {
+                                            Toast.makeText(GoalActivity, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                                         }
                                     });
 
@@ -277,9 +247,6 @@ public class FinishFragment extends Fragment {
                                     goalState.setText("도전 실패!");
                                     goalState.setTextColor(Color.parseColor("#D83E72"));
                                     goalState.setVisibility(View.VISIBLE);
-
-
-                                    Toast.makeText(getContext().getApplicationContext(), sel_data.getGsts()+ "", Toast.LENGTH_SHORT).show();
                                     listData.set(getAdapterPosition(), sel_data);
 
                                     adapter.notifyDataSetChanged();
@@ -293,7 +260,7 @@ public class FinishFragment extends Fragment {
 
                         AlertDialog.Builder dlg = new AlertDialog.Builder(GoalActivity);
 
-                        dlg.setTitle("목표 상세");
+                        dlg.setTitle("도전 상세");
 
                         dlg.setView(dialog);
 
@@ -302,17 +269,16 @@ public class FinishFragment extends Fragment {
                         dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(getContext(), "목표 \"" + finTitle.getText().toString() + "\" 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
 
                                 retrofitInterface.removeGoal(sel_data.getGno()).enqueue(new Callback<Void>() {
                                     @Override
                                     public void onResponse(Call<Void> call, Response<Void> response) {
-
+                                        Toast.makeText(GoalActivity, "도전 \"" + finTitle.getText().toString() + "\" 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
                                     public void onFailure(Call<Void> call, Throwable t) {
-
+                                        Toast.makeText(GoalActivity, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
