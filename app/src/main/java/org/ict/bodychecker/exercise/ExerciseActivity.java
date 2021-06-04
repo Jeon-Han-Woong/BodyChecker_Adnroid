@@ -56,11 +56,9 @@ public class ExerciseActivity extends AppCompatActivity {
     private RetrofitInterface retrofitInterface;
     private Spinner spinner_exer;
 
-//    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    String[] exeritems = {"걷기", "달리기", "등산", "수영", "계단 오르기", "요가", "복싱", "스쿼트", "윗몸 일으키기", "훌라후프", "줄넘기", "자전거", "사이클", "스쿼시", "런닝머신", "에어로빅"};
 
-    String [] exeritems = {"걷기", "달리기", "등산", "수영", "계단 오르기", "요가", "복싱", "스쿼트", "윗몸 일으키기", "훌라후프", "줄넘기", "자전거", "사이클", "스쿼시", "런닝머신", "에어로빅"};
-
-    float [] exerkcal = {0.067f, 0.123f, 0.14f, 0.158f, 0.123f,  0.044f, 0.175f, 0.123f, 0.14f, 0.07f, 0.175f, 0.14f, 0.123f, 0.21f, 0.184f, 0.105f};
+    float[] exerkcal = {0.067f, 0.123f, 0.14f, 0.158f, 0.123f, 0.044f, 0.175f, 0.123f, 0.14f, 0.07f, 0.175f, 0.14f, 0.123f, 0.21f, 0.184f, 0.105f};
     String selectexer;
     float selectitem;
 
@@ -72,12 +70,11 @@ public class ExerciseActivity extends AppCompatActivity {
     DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter btnFormat = DateTimeFormatter.ofPattern("MM/dd");
 
-    final String TIME = "T00:00:00";
     String date = dbFormat.format(today);
 
     int temp_min, sel_index, temp_Eno;
     float temp_kg = 87.4f;
-    int temp_result, temp_result_kcal = 0;
+    int temp_result;
 
     View exer_calendar;
     DatePicker exerDatePick;
@@ -89,29 +86,22 @@ public class ExerciseActivity extends AppCompatActivity {
     List<Integer> sel_spinner;
     List<ExerciseVO> exerList;
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
-//        today = sdf.format(new Date());
         sel_spinner = new ArrayList<>();
 
-        Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
-
         init();
-//        getData();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_exer);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         intent = getIntent();
 
         mno = intent.getIntExtra("mno", 0);
 
-        Toast.makeText(this, mno + "", Toast.LENGTH_SHORT).show();
         consumeKcal = (TextView) findViewById(R.id.consumeKcal);
 
         newExerciseBtn = (LinearLayout) findViewById(R.id.newExerciseBtn);
@@ -147,31 +137,21 @@ public class ExerciseActivity extends AppCompatActivity {
 
                     exerList = response.body();
 
-                    Log.d("샘플", exerList+"");
-
                     adapter = new RecyclerAdapter(exerList);
 
                     recyclerView3.setAdapter(adapter);
-
-//                    for (int i = 0; i < exerList.size(); i++) {
-//                        temp_result_kcal = temp_result_kcal + exerList.get(i).getEkcal();
-//                    }
-//
-//                    consumeKcal.setText(temp_result_kcal+" kcal");
 
                     adapter.notifyDataSetChanged();
 
 
                 } else {
-                    Toast.makeText(ExerciseActivity.this, "통신 실패", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<ExerciseVO>> call, Throwable t) {
-                Log.d("에러", t + " : " + call);
-
-
+                Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -246,7 +226,7 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
                 dlg.setTitle("날짜 선택");
-                if(exer_calendar.getParent() != null) {
+                if (exer_calendar.getParent() != null) {
                     ((ViewGroup) exer_calendar.getParent()).removeView(exer_calendar);
                 }
                 dlg.setView(exer_calendar);
@@ -256,7 +236,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         exerDatePick = (DatePicker) exer_calendar.findViewById(R.id.exerDatePick);
 
-                        date = exerDatePick.getYear()+"-"+String.format("%02d", exerDatePick.getMonth()+1)+"-"+String.format("%02d", exerDatePick.getDayOfMonth());
+                        date = exerDatePick.getYear() + "-" + String.format("%02d", exerDatePick.getMonth() + 1) + "-" + String.format("%02d", exerDatePick.getDayOfMonth());
                         getDBList(date);
                         getDailySum(date);
                     }
@@ -267,36 +247,23 @@ public class ExerciseActivity extends AppCompatActivity {
                 dlg.show();
             }
         });
-
-
-
-
-//        recyclerView3 = findViewById(R.id.recyclerView3);
-//
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        recyclerView3.setLayoutManager(linearLayoutManager);
-//
-//        adapter = new RecyclerAdapter();
-//        recyclerView3.setAdapter(adapter);
+        
 
         newExerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
                 dialog = (View) View.inflate(ExerciseActivity.this, R.layout.exercise_dialog, null);
 
                 AlertDialog.Builder dlg = new AlertDialog.Builder(ExerciseActivity.this);
                 spinner_exer = (Spinner) dialog.findViewById(R.id.exer_spinner);
                 edtminute = (EditText) dialog.findViewById(R.id.edtminute);
                 resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
-//                accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
+
 
                 retrofitInterface.getNewEno().enqueue(new Callback<Integer>() {
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         temp_Eno = response.body() + 1;
-                        Toast.makeText(ExerciseActivity.this, temp_Eno+"", Toast.LENGTH_SHORT).show();
-                        Log.d("ENO = ", temp_Eno + "");
                     }
 
                     @Override
@@ -318,7 +285,6 @@ public class ExerciseActivity extends AppCompatActivity {
                         selectexer = exeritems[i];
                         sel_index = i;
                         try {
-
                             temp_min = Integer.parseInt(edtminute.getText().toString());
                             temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
                             resultkcal.setText(temp_result + " kcal");
@@ -362,20 +328,6 @@ public class ExerciseActivity extends AppCompatActivity {
 
                     }
                 });
-//                accountkcal.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        try {
-//
-//                            temp_min = Integer.parseInt(edtminute.getText().toString());
-//                            temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
-//                            resultkcal.setText(temp_result + " kcal");
-//                        } catch (Exception e) {
-//                            Toast.makeText(getApplicationContext(), "시간을 입력해주세요.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-
 
                 dlg.setTitle("운동 기록 추가");
 
@@ -384,37 +336,6 @@ public class ExerciseActivity extends AppCompatActivity {
                 dlg.setPositiveButton("추가", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-//                        newExerData.setEname(selectexer);
-//                        try {
-//
-//                            newExerData.setEtime(Integer.parseInt(edtminute.getText().toString()));
-//                        } catch (NumberFormatException e) {
-//
-//                            Toast.makeText(ExerciseActivity.this, "입력 값을 확인해 주세요.", Toast.LENGTH_SHORT).show();
-//                            return;
-//                        }
-//                        newExerData.setEkcal(temp_result);
-//                        newExerData.setEdate(date);
-//                        newExerData.setMno(mno);
-//                        newExerData.setEno(temp_Eno);
-//
-//                        sel_spinner.add(sel_index);
-//
-//                        retrofitInterface.registerExer(newExerData).enqueue(new Callback<String>() {
-//                            @Override
-//                            public void onResponse(Call<String> call, Response<String> response) {
-//                                Toast.makeText(ExerciseActivity.this, "새 운동 입력", Toast.LENGTH_SHORT).show();
-//                            }
-//                            @Override
-//                            public void onFailure(Call<String> call, Throwable t) {
-//                                Log.d("오류", t+"");
-//                            }
-//                        });
-//                        adapter.addItem(newExerData);
-//                        try { TimeUnit.MILLISECONDS.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
-//                        getDailySum(date);
-//
-//                        adapter.notifyDataSetChanged();
                     }
                 });
 
@@ -433,7 +354,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             newExerData.setEtime(Integer.parseInt(edtminute.getText().toString()));
                         } catch (NumberFormatException e) {
 
-                            Toast.makeText(ExerciseActivity.this, "\'분\'은 숫자만 입력해 주세요." , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ExerciseActivity.this, "\'분\'은 숫자만 입력해 주세요.", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         newExerData.setEkcal(temp_result);
@@ -446,15 +367,20 @@ public class ExerciseActivity extends AppCompatActivity {
                         retrofitInterface.registerExer(newExerData).enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-                                Toast.makeText(ExerciseActivity.this, "새 운동 입력", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ExerciseActivity.this, "운동 정보를 추가했습니다.", Toast.LENGTH_SHORT).show();
                             }
+
                             @Override
                             public void onFailure(Call<String> call, Throwable t) {
-                                Log.d("오류", t+"");
+                                Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                             }
                         });
                         adapter.addItem(newExerData);
-                        try { TimeUnit.MILLISECONDS.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         getDailySum(date);
 
                         adapter.notifyDataSetChanged();
@@ -481,24 +407,19 @@ public class ExerciseActivity extends AppCompatActivity {
 
                     exerList = response.body();
 
-                    Log.d("샘플", exerList+"");
-
                     adapter = new RecyclerAdapter(exerList);
 
                     recyclerView3.setAdapter(adapter);
 
-
                     adapter.notifyDataSetChanged();
-
-
                 } else {
-                    Toast.makeText(ExerciseActivity.this, "통신 실패", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<ExerciseVO>> call, Throwable t) {
-                Log.d("에러", t + " : " + call);
+                Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -509,18 +430,14 @@ public class ExerciseActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 consumeKcal.setText(response.body() + " kcal");
-                Toast.makeText(ExerciseActivity.this, response.body() + "", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-                Log.d("에러", t+"");
-                consumeKcal.setText(0+ " kcal");
+                consumeKcal.setText(0 + " kcal");
             }
         });
     }
-
-
 
     private void init() {
         recyclerView3 = findViewById(R.id.recyclerView3);
@@ -529,32 +446,15 @@ public class ExerciseActivity extends AppCompatActivity {
         recyclerView3.setLayoutManager(linearLayoutManager);
     }
 
-//    private void getData() {
-//        List<String> listTitle = new ArrayList<>();
-//
-//        List<Integer> listContent = new ArrayList<>();
-//
-//        for (int i = 0; i < listTitle.size(); i++) {
-//
-//            ExerciseVO data = new ExerciseVO();
-//            data.setEname(listTitle.get(i));
-//            data.setEkcal(listContent.get(i));
-//
-//            adapter.addItem(data);
-//        }
-//
-//        adapter.notifyDataSetChanged();
-//    }
-
-
-
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
         private List<ExerciseVO> listData;
 
         private RecyclerAdapter(List<ExerciseVO> listData) {
             this.listData = listData;
-        };
+        }
+
+        ;
 
         @NonNull
         @Override
@@ -592,10 +492,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        Toast.makeText(getActivity().getApplicationContext(), "zz", Toast.LENGTH_SHORT).show();
                         ExerciseVO sel_data = listData.get(getAdapterPosition());
-
-                        Toast.makeText(ExerciseActivity.this, sel_data.getEno()+"", Toast.LENGTH_SHORT).show();
 
                         dialog = (View) View.inflate(ExerciseActivity.this, R.layout.exercise_dialog, null);
 
@@ -604,9 +501,8 @@ public class ExerciseActivity extends AppCompatActivity {
 
                         edtminute = (EditText) dialog.findViewById(R.id.edtminute);
                         resultkcal = (TextView) dialog.findViewById(R.id.resultkcal);
-//                        accountkcal = (Button) dialog.findViewById(R.id.accountkcal);
 
-                        edtminute.setText(sel_data.getEtime()+"");
+                        edtminute.setText(sel_data.getEtime() + "");
 
                         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(ExerciseActivity.this, android.R.layout.simple_spinner_item, exeritems);
 
@@ -637,20 +533,9 @@ public class ExerciseActivity extends AppCompatActivity {
 
                             }
                         });
-
-
-                        // 운동 내역을 변경했을 경우 현재 소모 칼로리를 함께 변경. start
-                        ExerciseVO old_data = listData.get(getAdapterPosition());
-                        int old_kcal = old_data.getEkcal();
-
-//                        Toast.makeText(getApplicationContext(), int_kcal+ "", Toast.LENGTH_SHORT).show();
-                        // end
-
-
                         edtminute.addTextChangedListener(new TextWatcher() {
                             @Override
                             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                             }
 
                             @Override
@@ -673,15 +558,6 @@ public class ExerciseActivity extends AppCompatActivity {
                             }
                         });
 
-//                        accountkcal.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                temp_min = Integer.parseInt(edtminute.getText().toString());
-//                                temp_result = Math.round(temp_kg * (float) temp_min * selectitem);
-//                                resultkcal.setText(temp_result + " kcal");
-//                            }
-//                        });
-
                         dlg.setTitle("운동 기록 변경");
 
                         dlg.setView(dialog);
@@ -692,46 +568,48 @@ public class ExerciseActivity extends AppCompatActivity {
                                 sel_data.setEname(selectexer);
                                 sel_data.setEtime(Integer.parseInt(edtminute.getText().toString()));
                                 sel_data.setEkcal(temp_result);
-
-//                                Toast.makeText(ExerciseActivity.this, temp_result+"", Toast.LENGTH_SHORT).show();
                                 listData.set(getAdapterPosition(), sel_data);
-
                                 retrofitInterface.modifyExer(Integer.parseInt(myEno.getText().toString()), sel_data).enqueue(new Callback<String>() {
                                     @Override
                                     public void onResponse(Call<String> call, Response<String> response) {
-                                        Toast.makeText(ExerciseActivity.this, "운동 변경", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ExerciseActivity.this, "운동 정보를 변경하였습니다.", Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
                                     public void onFailure(Call<String> call, Throwable t) {
-                                        Toast.makeText(ExerciseActivity.this, "실패", Toast.LENGTH_SHORT).show();
-                                        Log.d("에러", t+"");
+                                        Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+                                        Log.d("에러", t + "");
                                     }
                                 });
-                                try { TimeUnit.MILLISECONDS.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
+                                try {
+                                    TimeUnit.MILLISECONDS.sleep(200);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 getDailySum(date);
 
                                 adapter.notifyDataSetChanged();
                             }
                         });
-
                         dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                int del_kcal = sel_data.getEkcal();
-
                                 retrofitInterface.removeExer(Integer.parseInt(myEno.getText().toString())).enqueue(new Callback<Void>() {
                                     @Override
                                     public void onResponse(Call<Void> call, Response<Void> response) {
-                                        Toast.makeText(ExerciseActivity.this, "삭제 완료", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ExerciseActivity.this, "운동 정보를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
                                     public void onFailure(Call<Void> call, Throwable t) {
-                                        Toast.makeText(ExerciseActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                                try { TimeUnit.MILLISECONDS.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
+                                try {
+                                    TimeUnit.MILLISECONDS.sleep(200);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 getDailySum(date);
 
                                 listData.remove(getAdapterPosition());
@@ -744,15 +622,13 @@ public class ExerciseActivity extends AppCompatActivity {
                     }
                 });
             }
-
             void onBind(ExerciseVO data) {
                 exerciseTitle.setText(data.getEname());
-                exerciseKcal.setText(data.getEkcal()+"");
-                myEno.setText(data.getEno()+"");
+                exerciseKcal.setText(data.getEkcal() + "");
+                myEno.setText(data.getEno() + "");
             }
         }
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -762,20 +638,4 @@ public class ExerciseActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    public class MyDBHelper extends SQLiteOpenHelper {
-//        public MyDBHelper(Context context) {
-//            super(context, "bodychecker", null, 1);
-//        }//생성자
-//
-//        @Override
-//        public void onCreate(SQLiteDatabase db) {
-//            db.execSQL("CREATE TABLE exercise()");
-//        }//onCreate
-//
-//        @Override
-//        public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-//
-//        }
-//    }
 }

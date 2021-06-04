@@ -62,14 +62,14 @@ public interface RetrofitInterface {
     @GET("goal/doing/{fin_date}/{mno}")
     Call<List<GoalVO>> getDoing(@Path("fin_date") String fin_date, @Path("mno") int mno);
 
-    @GET("goal/newgno.json")
+    @GET("goal/newgno")
     Call<Integer> getNewGno();
 
     @POST("goal/new")
-    Call<GoalVO> registerGoal(@Body GoalVO goal);
+    Call<String> registerGoal(@Body GoalVO goal);
 
     @PUT("goal/modify/{gno}")
-    Call<GoalVO> modifyGoal(@Path("gno") int gno, @Body GoalVO goal);
+    Call<String> modifyGoal(@Path("gno") int gno, @Body GoalVO goal);
 
     @DELETE("goal/remove/{gno}")
     Call<Void> removeGoal(@Path("gno") int gno);
@@ -78,7 +78,7 @@ public interface RetrofitInterface {
     Call<List<GoalVO>> getFinish(@Path("fin_date") String fin_date, @Path("mno") int mno);
 
     @PUT("goal/finish/success/{gno}")
-    Call<GoalVO> selectSuccess(@Path("gno") int gno, @Body GoalVO goal);
+    Call<String> selectSuccess(@Path("gno") int gno, @Body GoalVO goal);
 
     @GET("goal/total/{mno}")
     Call<Integer> getTotal(@Path("mno") int mno);
