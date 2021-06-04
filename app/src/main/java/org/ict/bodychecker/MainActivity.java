@@ -508,6 +508,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 goLoginPage();
             }//else if
 
+
             if(mno > 0) {
                 getProfileInfo(mno);
                 getRDI(mno);
