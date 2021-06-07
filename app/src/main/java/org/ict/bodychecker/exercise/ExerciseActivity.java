@@ -127,31 +127,26 @@ public class ExerciseActivity extends AppCompatActivity {
 
 
         retrofitClient = RetrofitClient.getInstance();
-
         retrofitInterface = RetrofitClient.getRetrofitInterface();
-
         retrofitInterface.getDailyExer(date, mno).enqueue(new Callback<List<ExerciseVO>>() {
             @Override
             public void onResponse(Call<List<ExerciseVO>> call, Response<List<ExerciseVO>> response) {
                 if (response.isSuccessful()) {
-
                     exerList = response.body();
-
                     adapter = new RecyclerAdapter(exerList);
-
                     recyclerView3.setAdapter(adapter);
-
                     adapter.notifyDataSetChanged();
-
-
                 } else {
-                    Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ExerciseActivity.this,
+                            "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<List<ExerciseVO>> call, Throwable t) {
-                Toast.makeText(ExerciseActivity.this, "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ExerciseActivity.this,
+                        "시스템 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
